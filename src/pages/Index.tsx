@@ -50,7 +50,7 @@ const Index = () => {
         <section className="container py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center bg-gradient-subtle rounded-2xl">
           <div className="space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gradient-brand mb-6 md:mb-8">
-              Smarter Documents. Powered by AI.
+              Smarter Documents. Powered b<span className="font-extrabold">y</span> AI.
             </h1>
             <p className="mt-3 text-lg text-muted-foreground max-w-prose">
               Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.
