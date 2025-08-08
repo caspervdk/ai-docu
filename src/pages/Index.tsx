@@ -72,7 +72,7 @@ const Index = () => {
         </section>
 
         {/* Features */}
-        <section id="features" className="container py-12 md:py-20">
+        <section id="features" className="container py-12 md:py-20 rounded-2xl border bg-gradient-subtle shadow-glow">
           <div className="mx-auto max-w-3xl text-center mb-10">
             <h2 className="text-3xl font-semibold">Everything you need for smarter docs</h2>
             <p className="text-muted-foreground">Clean, fast, and built for clarity and trust.</p>
