@@ -77,7 +77,7 @@ const Index = () => {
             <h2 className="text-3xl font-semibold">Everything you need for smarter docs</h2>
             <p className="text-muted-foreground">Clean, fast, and built for clarity and trust.</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory text-primary">
             {[{
               icon: Upload, title: 'Document Upload', desc: 'Drag and drop PDF, Word, or TXT files'
             },{
