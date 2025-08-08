@@ -52,7 +52,7 @@ const Index = () => {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gradient-brand">
               Smarter Documents. Powered by AI.
             </h1>
-            <p className="text-lg text-muted-foreground max-w-prose">
+            <p className="mt-3 text-lg text-muted-foreground max-w-prose">
               Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
