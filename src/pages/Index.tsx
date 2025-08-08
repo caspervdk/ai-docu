@@ -66,7 +66,7 @@ const Index = () => {
               src="/lovable-uploads/8e6290ce-6740-43f8-9480-ee864f724a65.png"
               alt="DocMind AI document analysis illustration"
               loading="lazy"
-              className="w-full rounded-lg border shadow-sm"
+              className="w-[70%] mx-auto rounded-lg border shadow-sm"
             />
           </div>
         </section>
