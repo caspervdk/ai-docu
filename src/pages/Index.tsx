@@ -47,9 +47,9 @@ const Index = () => {
 
       <main>
         {/* Hero */}
-        <section className="container py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+        <section className="container py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center bg-gradient-subtle rounded-2xl">
           <div className="space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gradient-brand">
               Smarter Documents. Powered by AI.
             </h1>
             <p className="text-lg text-muted-foreground max-w-prose">
