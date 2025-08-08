@@ -91,7 +91,7 @@ const Index = () => {
             }].map((f, i) => (
               <Card key={i} className="hover:shadow-md transition-shadow">
                 <CardHeader>
-                  <div className="size-9 rounded-md bg-secondary text-secondary-foreground flex items-center justify-center">
+                  <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 shadow-glow flex items-center justify-center">
                     <f.icon className="size-5" />
                   </div>
                   <CardTitle className="mt-2 text-xl">{f.title}</CardTitle>
