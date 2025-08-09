@@ -8,18 +8,53 @@ import { useEffect, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [yearly, setYearly] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedName, setUploadedName] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsAuthed(!!session);
+      setUserId(session?.user?.id ?? null);
     });
-    supabase.auth.getSession().then(({ data: { session } }) => setIsAuthed(!!session));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthed(!!session);
+      setUserId(session?.user?.id ?? null);
+    });
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!userId) {
+      toast({ title: "Please log in", description: "Log in to upload documents.", });
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadedName(null);
+      const filePath = `${userId}/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage
+        .from('documents')
+        .upload(filePath, file, { upsert: true, contentType: file.type });
+
+      if (error) throw error;
+      setUploadedName(file.name);
+      toast({ title: "Upload complete", description: "Your document was uploaded successfully." });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err?.message ?? 'Something went wrong', variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -104,17 +139,19 @@ const Index = () => {
               {/* Left: Upload area */}
               <div className="space-y-4">
                 <label className="flex items-center justify-center rounded-xl border border-dashed bg-muted/30 p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-48 md:min-h-56">
-                  <input type="file" className="sr-only" aria-label="Upload document" />
+                  <input id="upload-input" type="file" className="sr-only" aria-label="Upload document" accept=".pdf,.doc,.docx,.txt,image/*" onChange={handleFileSelected} disabled={uploading} />
                   <div className="flex items-center justify-center gap-3 text-muted-foreground">
                     <Upload className="size-5 text-primary" />
                     <span className="text-sm">Drop a file here or click to upload</span>
                   </div>
                 </label>
                 <div className="flex items-center gap-3">
-                  <Button size="sm">Upload Document</Button>
+                  <Button size="sm" onClick={() => document.getElementById('upload-input')?.click()} disabled={uploading}>
+                    {uploading ? 'Uploading…' : 'Upload Document'}
+                  </Button>
                   <Button size="sm" variant="outline">Use sample</Button>
                 </div>
-                <p className="text-xs text-muted-foreground">Max 10MB per file. Your data stays private.</p>
+                <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : 'Max 10MB per file. Your data stays private.'}</p>
               </div>
 
               {/* Right: Actions list */}
