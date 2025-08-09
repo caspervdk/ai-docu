@@ -218,34 +218,6 @@ const Index = () => {
           </Card>
         </section>
 
-        {/* Use Cases */}
-        <section id="use-cases" className="container py-12 md:py-20">
-          <div className="mx-auto max-w-3xl text-center mb-10">
-            <h2 className="text-3xl font-semibold">Built for your workflow</h2>
-          </div>
-          {/* Changed layout: all cards next to each other in one row with horizontal scroll */}
-          <div className="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory">
-            {[{
-              icon: ShieldCheck, title: 'Legal Teams', desc: 'Spot risks and clauses faster'
-            },{
-              icon: PenLine, title: 'Content Editors', desc: 'Rewrite for clarity and tone'
-            },{
-              icon: Users, title: 'HR & Policy', desc: 'Standardize docs in minutes'
-            },{
-              icon: GraduationCap, title: 'Freelancers & Students', desc: 'Summaries and translations'
-            }].map((c, i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow min-w-[240px] snap-start">
-                <CardHeader>
-                  <div className="size-9 rounded-md bg-secondary text-secondary-foreground flex items-center justify-center">
-                    <c.icon className="size-5" />
-                  </div>
-                  <CardTitle className="mt-2 text-xl">For {c.title}</CardTitle>
-                  <CardDescription>{c.desc}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </section>
 
         {/* Workflow */}
         <section className="container py-12 md:py-20">
