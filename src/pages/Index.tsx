@@ -4,10 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+
 const Index = () => {
   const [yearly, setYearly] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
@@ -17,25 +20,19 @@ const Index = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<'image' | 'pdf' | 'text' | 'other' | null>(null);
   const [previewText, setPreviewText] = useState<string | null>(null);
+
   useEffect(() => {
-    const {
-      data: {
-        subscription
-      }
-    } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsAuthed(!!session);
       setUserId(session?.user?.id ?? null);
     });
-    supabase.auth.getSession().then(({
-      data: {
-        session
-      }
-    }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthed(!!session);
       setUserId(session?.user?.id ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
+
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -43,6 +40,7 @@ const Index = () => {
       }
     };
   }, [previewUrl]);
+
   const onFileSelected = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -53,19 +51,25 @@ const Index = () => {
       setPreviewText(null);
       setUploadedName(null);
       setUploading(true);
-      setPreviewUrl(prev => {
+
+      setPreviewUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
         return prev;
       });
+
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
+
       const mime = file.type;
       let kind: 'image' | 'pdf' | 'text' | 'other' = 'other';
-      if (mime?.startsWith('image/')) kind = 'image';else if (mime === 'application/pdf') kind = 'pdf';else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
+      if (mime?.startsWith('image/')) kind = 'image';
+      else if (mime === 'application/pdf') kind = 'pdf';
+      else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
       setPreviewKind(kind);
+
       if (kind === 'text') {
         // Load text content (non-blocking)
-        file.text().then(t => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
+        file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
       }
 
       // Proceed with upload
@@ -73,52 +77,41 @@ const Index = () => {
       const keyPrefix = userId ?? 'anon';
       const random = Math.random().toString(36).slice(2, 8);
       const filePath = `${keyPrefix}/${Date.now()}-${random}-${file.name}`;
-      const {
-        error
-      } = await supabase.storage.from(targetBucket).upload(filePath, file, {
-        upsert: Boolean(userId),
-        contentType: file.type
-      });
+
+      const { error } = await supabase.storage
+        .from(targetBucket)
+        .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
+
       if (error) throw error;
       setUploadedName(file.name);
       toast({
         title: 'Upload complete',
-        description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.'
+        description: userId
+          ? 'Your document was uploaded successfully.'
+          : 'Uploaded anonymously. Anyone with the link can view.',
       });
     } catch (err: any) {
-      toast({
-        title: 'Upload failed',
-        description: err?.message ?? 'Something went wrong',
-        variant: 'destructive'
-      });
+      toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
       setUploading(false);
     }
   }, [userId]);
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "DocMind AI",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    offers: [{
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      name: "Free"
-    }, {
-      "@type": "Offer",
-      price: yearly ? "144" : "15",
-      priceCurrency: "USD",
-      name: "Pro"
-    }, {
-      "@type": "Offer",
-      price: yearly ? "468" : "49",
-      priceCurrency: "USD",
-      name: "Team"
-    }]
+    offers: [
+      { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
+      { "@type": "Offer", price: yearly ? "144" : "15", priceCurrency: "USD", name: "Pro" },
+      { "@type": "Offer", price: yearly ? "468" : "49", priceCurrency: "USD", name: "Team" }
+    ]
   };
-  return <>
+
+  return (
+    <>
       <Helmet>
         <title>AI Document Assistant – Smarter Documents</title>
         <meta name="description" content="Upload contracts, reports, or notes — let our AI read, analyze, summarize, translate, and improve your documents." />
@@ -135,7 +128,11 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
             <a href="#use-cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Use Cases</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            {isAuthed ? <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button> : <Button variant="outline" asChild><a href="/login">Log in</a></Button>}
+            {isAuthed ? (
+              <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
+            ) : (
+              <Button variant="outline" asChild><a href="/login">Log in</a></Button>
+            )}
           </div>
         </nav>
       </header>
@@ -151,16 +148,18 @@ const Index = () => {
               Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            })}>Try for Free</Button>
+              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
               <Button size="lg" variant="outline">Watch Demo →</Button>
             </div>
             <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
           </div>
           <div className="relative">
-            <img src="/lovable-uploads/8e6290ce-6740-43f8-9480-ee864f724a65.png" alt="DocMind AI document analysis illustration" loading="lazy" className="w-[70%] mx-auto rounded-lg border shadow-sm" />
+            <img
+              src="/lovable-uploads/8e6290ce-6740-43f8-9480-ee864f724a65.png"
+              alt="DocMind AI document analysis illustration"
+              loading="lazy"
+              className="w-[70%] mx-auto rounded-lg border shadow-sm"
+            />
           </div>
         </section>
 
@@ -182,68 +181,76 @@ const Index = () => {
               <div className="space-y-4">
                 <label className="flex items-center justify-center rounded-xl border border-dashed bg-muted/30 p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-48 md:min-h-56">
                   <input id="upload-input" type="file" className="sr-only" aria-label="Upload document" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onFileSelected} disabled={uploading} />
-                  {previewUrl ? <div className="w-full">
-                      {previewKind === 'image' && <img src={previewUrl} alt={uploadedName ? `Preview of ${uploadedName}` : 'Image preview'} className="mx-auto max-h-56 w-auto object-contain rounded-md shadow-sm" loading="lazy" />}
-                      {previewKind === 'pdf' && <iframe src={previewUrl} title="PDF preview" className="w-full h-56 rounded-md border shadow-sm" />}
-                      {previewKind === 'text' && <pre className="w-full max-h-56 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">
+                  {previewUrl ? (
+                    <div className="w-full">
+                      {previewKind === 'image' && (
+                        <img
+                          src={previewUrl}
+                          alt={uploadedName ? `Preview of ${uploadedName}` : 'Image preview'}
+                          className="mx-auto max-h-56 w-auto object-contain rounded-md shadow-sm"
+                          loading="lazy"
+                        />
+                      )}
+                      {previewKind === 'pdf' && (
+                        <iframe
+                          src={previewUrl}
+                          title="PDF preview"
+                          className="w-full h-56 rounded-md border shadow-sm"
+                        />
+                      )}
+                      {previewKind === 'text' && (
+                        <pre className="w-full max-h-56 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">
                           {previewText ?? 'Loading preview...'}
-                        </pre>}
-                      {previewKind === 'other' && <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                        </pre>
+                      )}
+                      {previewKind === 'other' && (
+                        <div className="flex items-center justify-center gap-3 text-muted-foreground">
                           <FileText className="size-5 text-primary" />
                           <span className="text-sm">{uploadedName ?? 'File selected'}</span>
-                        </div>}
-                    </div> : <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-3 text-muted-foreground">
                       <Upload className="size-5 text-primary" />
                       <span className="text-sm">Drop a file here or click to upload</span>
-                    </div>}
+                    </div>
+                  )}
                 </label>
                 <div className="flex items-center gap-3">
                   <Button size="sm" onClick={() => document.getElementById('upload-input')?.click()} disabled={uploading}>
                     {uploading ? 'Uploading…' : previewUrl ? 'Change Document' : 'Upload Document'}
                   </Button>
-                  {(previewUrl || uploadedName) && <DropdownMenu>
+                  {(previewUrl || uploadedName) && (
+                    <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="sm">Choose AI Action</Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
                         <DropdownMenuLabel>Select an action</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => toast({
-                      title: 'AI Action',
-                      description: 'Summarize Long Documents'
-                    })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Summarize Long Documents' })} className="flex items-center gap-2">
                           <FileText className="size-4 text-primary" />
                           <span>Summarize Long Documents</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({
-                      title: 'AI Action',
-                      description: 'Make Content Searchable (OCR)'
-                    })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' })} className="flex items-center gap-2">
                           <Upload className="size-4 text-primary" />
                           <span>Make Content Searchable (OCR)</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({
-                      title: 'AI Action',
-                      description: 'Translate & Localize'
-                    })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Translate & Localize' })} className="flex items-center gap-2">
                           <Languages className="size-4 text-primary" />
                           <span>Translate & Localize</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({
-                      title: 'AI Action',
-                      description: 'Contract Analysis & Risk Detection'
-                    })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' })} className="flex items-center gap-2">
                           <ShieldCheck className="size-4 text-primary" />
                           <span>Contract Analysis & Risk Detection</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({
-                      title: 'AI Action',
-                      description: 'Smart Error Detection'
-                    })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Smart Error Detection' })} className="flex items-center gap-2">
                           <PenLine className="size-4 text-primary" />
                           <span>Smart Error Detection</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
-                    </DropdownMenu>}
+                    </DropdownMenu>
+                  )}
                   
                 </div>
                 <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
@@ -405,23 +412,12 @@ const Index = () => {
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {[{
-            name: 'Free',
-            price: yearly ? 0 : 0,
-            period: yearly ? '/yr' : '/mo',
-            features: ['1 doc/month', 'Basic analysis']
-          }, {
-            name: 'Pro',
-            price: yearly ? 144 : 15,
-            period: yearly ? '/yr' : '/mo',
-            features: ['20 docs', 'All features', 'Priority support'],
-            highlight: true
-          }, {
-            name: 'Team',
-            price: yearly ? 468 : 49,
-            period: yearly ? '/yr' : '/mo',
-            features: ['Unlimited docs', 'Collaboration tools', 'SSO']
-          }].map((p, i) => <Card key={i} className={`flex flex-col ${p.highlight ? 'border-primary' : ''}`}>
+            {[
+              { name: 'Free', price: yearly ? 0 : 0, period: yearly ? '/yr' : '/mo', features: ['1 doc/month', 'Basic analysis'] },
+              { name: 'Pro', price: yearly ? 144 : 15, period: yearly ? '/yr' : '/mo', features: ['20 docs', 'All features', 'Priority support'], highlight: true },
+              { name: 'Team', price: yearly ? 468 : 49, period: yearly ? '/yr' : '/mo', features: ['Unlimited docs', 'Collaboration tools', 'SSO'] }
+            ].map((p, i) => (
+              <Card key={i} className={`flex flex-col ${p.highlight ? 'border-primary' : ''}`}>
                 <CardHeader>
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <CardDescription>For growing teams</CardDescription>
@@ -429,14 +425,17 @@ const Index = () => {
                 <CardContent className="flex-1">
                   <div className="text-4xl font-bold">${p.price}<span className="text-base font-normal text-muted-foreground">{p.period}</span></div>
                   <ul className="mt-4 space-y-2 text-sm">
-                    {p.features.map((f, idx) => <li key={idx} className="flex items-start gap-2">
+                    {p.features.map((f, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
                         <span className="mt-1 size-1.5 rounded-full bg-primary"></span>
                         <span>{f}</span>
-                      </li>)}
+                      </li>
+                    ))}
                   </ul>
                   <Button className="mt-6 w-full">Get Started</Button>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
         </section>
       </main>
@@ -476,6 +475,8 @@ const Index = () => {
           <div className="container py-6 text-xs text-muted-foreground">© {new Date().getFullYear()} DocMind AI. All rights reserved.</div>
         </div>
       </footer>
-    </>;
+    </>
+  );
 };
+
 export default Index;
