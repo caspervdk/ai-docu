@@ -262,7 +262,16 @@ const Index = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
-                  
+                  {selectedAction && (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        toast({ title: 'Starting AI', description: `Starting "${selectedAction}"` })
+                      }
+                    >
+                      Start AI
+                    </Button>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
               </div>
