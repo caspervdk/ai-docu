@@ -347,8 +347,19 @@ const Index = () => {
 
                 {webhookResponse && (
                   <div className="space-y-2">
-                    <h3 className="text-sm font-medium">AI Response</h3>
-                    <pre className="w-full max-h-96 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">{webhookResponse}</pre>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium">AI Response</h3>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigator.clipboard.writeText(webhookResponse!)
+                          .then(() => toast({ title: 'Copied', description: 'Response copied to clipboard.' }))
+                          .catch(() => toast({ title: 'Copy failed', description: 'Unable to copy to clipboard.', variant: 'destructive' }))}
+                      >
+                        Copy
+                      </Button>
+                    </div>
+                    <pre className="w-full max-h-96 overflow-auto text-sm font-mono whitespace-pre-wrap break-words bg-muted/40 text-muted-foreground p-4 rounded-lg ring-1 ring-border shadow-sm">{webhookResponse}</pre>
                   </div>
                 )}
                 {webhookError && (
