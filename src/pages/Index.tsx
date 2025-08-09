@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket } from "lucide-react";
+import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket, CheckCircle2 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -445,6 +445,44 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+
+        {/* Pro Benefits */}
+        <section id="pro-benefits" className="container py-12 md:py-20 rounded-2xl bg-gradient-subtle">
+          <div className="mx-auto max-w-3xl text-center mb-8">
+            <h2 className="text-3xl font-semibold">Upgrade to Pro</h2>
+            <p className="text-muted-foreground">Get unlimited access and more features.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle>Free</CardTitle>
+                <CardDescription>Great to try things out</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>5 uploads per day</span></li>
+                  <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>Basic AI tools</span></li>
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-primary ring-1 ring-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">Pro <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">Best value</span></CardTitle>
+                <CardDescription>Everything in Free, plus</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>Unlimited uploads</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>Cloud storage</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>More AI features</span></li>
+                </ul>
+                <Button variant="pro" size="lg" className="mt-6 w-full" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
+                  <Rocket className="size-4" aria-hidden="true" /> Upgrade Now
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
