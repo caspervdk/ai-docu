@@ -23,6 +23,7 @@ const Index = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewKind, setPreviewKind] = useState<'image' | 'pdf' | 'text' | 'other' | null>(null);
   const [previewText, setPreviewText] = useState<string | null>(null);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -53,6 +54,7 @@ const Index = () => {
       // Revoke previous preview URL to avoid memory leaks
       setPreviewText(null);
       setUploadedName(null);
+      setSelectedAction(null);
       setUploading(true);
 
       setPreviewUrl((prev) => {
@@ -235,25 +237,25 @@ const Index = () => {
                       <DropdownMenuTrigger asChild>
                         <Button size="sm">Choose AI Action</Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
+                      <DropdownMenuContent align="start" className="z-50">
                         <DropdownMenuLabel>Select an action</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Summarize Long Documents' })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => { setSelectedAction('Summarize Long Documents'); toast({ title: 'AI Action', description: 'Summarize Long Documents' }); }} className="flex items-center gap-2">
                           <FileText className="size-4 text-primary" />
                           <span>Summarize Long Documents</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' }); }} className="flex items-center gap-2">
                           <Upload className="size-4 text-primary" />
                           <span>Make Content Searchable (OCR)</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Translate & Localize' })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => { setSelectedAction('Translate & Localize'); toast({ title: 'AI Action', description: 'Translate & Localize' }); }} className="flex items-center gap-2">
                           <Languages className="size-4 text-primary" />
                           <span>Translate & Localize</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' }); }} className="flex items-center gap-2">
                           <ShieldCheck className="size-4 text-primary" />
                           <span>Contract Analysis & Risk Detection</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Smart Error Detection' })} className="flex items-center gap-2">
+                        <DropdownMenuItem onClick={() => { setSelectedAction('Smart Error Detection'); toast({ title: 'AI Action', description: 'Smart Error Detection' }); }} className="flex items-center gap-2">
                           <PenLine className="size-4 text-primary" />
                           <span>Smart Error Detection</span>
                         </DropdownMenuItem>
