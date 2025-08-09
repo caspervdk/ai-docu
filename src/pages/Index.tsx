@@ -103,7 +103,7 @@ const Index = () => {
             <CardContent className="grid gap-6 md:gap-8 md:grid-cols-2">
               {/* Left: Upload area */}
               <div className="space-y-4">
-                <label className="block rounded-lg border border-dashed bg-muted/30 p-6 cursor-pointer hover:bg-muted/40 transition-colors">
+                <label className="flex items-center justify-center rounded-xl border border-dashed bg-muted/30 p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-48 md:min-h-56">
                   <input type="file" className="sr-only" aria-label="Upload document" />
                   <div className="flex items-center justify-center gap-3 text-muted-foreground">
                     <Upload className="size-5 text-primary" />
