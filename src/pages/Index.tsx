@@ -12,6 +12,9 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -125,7 +128,18 @@ const Index = () => {
     ]
   };
 
-  const onStartAI = async () => {
+const isLikelyJSON = (t: string) => {
+  const s = t.trim();
+  if (!(s.startsWith("{") || s.startsWith("["))) return false;
+  try {
+    JSON.parse(s);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const onStartAI = async () => {
     try {
       if (!selectedFile) {
         toast({ title: 'No file selected', description: 'Please upload a file first.', variant: 'destructive' });
@@ -359,7 +373,36 @@ const Index = () => {
                         Copy
                       </Button>
                     </div>
-                    <pre className="w-full max-h-96 overflow-auto text-sm font-mono whitespace-pre-wrap break-words bg-muted/40 text-muted-foreground p-4 rounded-lg ring-1 ring-border shadow-sm">{webhookResponse}</pre>
+{isLikelyJSON(webhookResponse) ? (
+  <pre className="w-full max-h-96 overflow-auto text-sm font-mono whitespace-pre-wrap break-words bg-muted/40 text-muted-foreground p-4 rounded-lg ring-1 ring-border shadow-sm">{webhookResponse}</pre>
+) : (
+  <article className="max-h-96 overflow-auto rounded-lg ring-1 ring-border bg-background p-4 shadow-sm space-y-3">
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        h1: (props) => <h3 className="text-lg font-semibold text-foreground" {...props} />,
+        h2: (props) => <h4 className="text-base font-semibold text-foreground mt-2" {...props} />,
+        p: (props) => <p className="text-sm leading-6 text-muted-foreground" {...props} />,
+        ul: (props) => <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground" {...props} />,
+        ol: (props) => <ol className="list-decimal pl-5 space-y-1 text-sm text-muted-foreground" {...props} />,
+        li: (props) => <li className="marker:text-primary" {...props} />,
+        strong: (props) => <strong className="text-foreground font-semibold" {...props} />,
+code: (props) => {
+          const { inline, children } = props as any;
+          return inline ? (
+            <code className="px-1.5 py-0.5 rounded bg-muted text-foreground text-xs">{children}</code>
+          ) : (
+            <pre className="w-full overflow-auto text-xs font-mono whitespace-pre-wrap break-words bg-muted/40 text-muted-foreground p-3 rounded-md">{children}</pre>
+          );
+        },
+        blockquote: (props) => <blockquote className="border-l-2 pl-3 text-sm italic text-muted-foreground" {...props} />,
+        hr: (props) => <hr className="my-3 border-border" {...props} />,
+      }}
+    >
+      {webhookResponse}
+    </ReactMarkdown>
+  </article>
+)}
                   </div>
                 )}
                 {webhookError && (
