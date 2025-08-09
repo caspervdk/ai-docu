@@ -90,29 +90,28 @@ const Index = () => {
           <div className="mx-auto max-w-3xl text-center mb-10">
             <h2 className="text-3xl font-semibold">Upload your document and choose an AI-powered action:</h2>
           </div>
-          <div className="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory text-primary">
-            {[{
-              icon: FileText, title: 'Summarize Long Documents', desc: 'Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.'
-            },{
-              icon: Upload, title: 'Make Content Searchable (OCR)', desc: 'Extract text from scanned PDFs or images and make it keyword-searchable.'
-            },{
-              icon: Languages, title: 'Translate & Localize', desc: 'Automatically translate documents into multiple languages while preserving layout and formatting.'
-            },{
-              icon: ShieldCheck, title: 'Contract Analysis & Risk Detection', desc: 'Scan legal documents to identify clauses, obligations, and potential risks.'
-            },{
-              icon: PenLine, title: 'Smart Error Detection', desc: 'Spot spelling, grammar, and numerical inconsistencies and suggest corrections.'
-            }].map((f, i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 shadow-glow flex items-center justify-center">
-                    <f.icon className="size-5" />
-                  </div>
-                  <CardTitle className="mt-2 text-xl">{f.title}</CardTitle>
-                  <CardDescription>{f.desc}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
+          <ul className="mx-auto max-w-4xl space-y-4 text-left">
+            <li>
+              <p className="font-medium">Summarize Long Documents</p>
+              <p className="text-sm text-muted-foreground">Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.</p>
+            </li>
+            <li>
+              <p className="font-medium">Make Content Searchable (OCR)</p>
+              <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
+            </li>
+            <li>
+              <p className="font-medium">Translate & Localize</p>
+              <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
+            </li>
+            <li>
+              <p className="font-medium">Contract Analysis & Risk Detection</p>
+              <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
+            </li>
+            <li>
+              <p className="font-medium">Smart Error Detection</p>
+              <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
+            </li>
+          </ul>
         </section>
 
         {/* Use Cases */}
