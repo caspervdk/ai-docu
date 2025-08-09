@@ -2,8 +2,10 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star } from "lucide-react";
+import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -118,14 +120,25 @@ const Index = () => {
               {/* Right: Actions list */}
               <div className="space-y-3">
                 <ul className="space-y-3">
-                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
-                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
-                      <FileText className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Summarize Long Documents</p>
-                      <p className="text-sm text-muted-foreground">Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.</p>
-                    </div>
+                  <li className="p-0">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                          <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                            <FileText className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Summarize Long Documents</p>
+                          </div>
+                          <Plus className="size-4 text-muted-foreground transition-transform" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-3 pb-3">
+                        <p className="text-sm text-muted-foreground">
+                          Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
+                        </p>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </li>
                   <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
                     <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
