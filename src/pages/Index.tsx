@@ -16,6 +16,9 @@ const Index = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadedName, setUploadedName] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewKind, setPreviewKind] = useState<'image' | 'pdf' | 'text' | 'other' | null>(null);
+  const [previewText, setPreviewText] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -29,14 +32,46 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const onFileSelected = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instant local preview
     try {
-      setUploading(true);
+      // Revoke previous preview URL to avoid memory leaks
+      setPreviewText(null);
       setUploadedName(null);
+      setUploading(true);
 
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return prev;
+      });
+
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+
+      const mime = file.type;
+      let kind: 'image' | 'pdf' | 'text' | 'other' = 'other';
+      if (mime?.startsWith('image/')) kind = 'image';
+      else if (mime === 'application/pdf') kind = 'pdf';
+      else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
+      setPreviewKind(kind);
+
+      if (kind === 'text') {
+        // Load text content (non-blocking)
+        file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
+      }
+
+      // Proceed with upload
       const targetBucket = userId ? 'documents' : 'public_uploads';
       const keyPrefix = userId ?? 'anon';
       const random = Math.random().toString(36).slice(2, 8);
@@ -86,7 +121,7 @@ const Index = () => {
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container flex items-center justify-between py-5">
           <a href="#" className="flex items-center gap-2" aria-label="DocMind AI home">
-            <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" fetchPriority="high" />
+            <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" />
           </a>
           <div className="hidden md:flex items-center gap-4">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
@@ -145,18 +180,49 @@ const Index = () => {
               <div className="space-y-4">
                 <label className="flex items-center justify-center rounded-xl border border-dashed bg-muted/30 p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-48 md:min-h-56">
                   <input id="upload-input" type="file" className="sr-only" aria-label="Upload document" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onFileSelected} disabled={uploading} />
-                  <div className="flex items-center justify-center gap-3 text-muted-foreground">
-                    <Upload className="size-5 text-primary" />
-                    <span className="text-sm">Drop a file here or click to upload</span>
-                  </div>
+                  {previewUrl ? (
+                    <div className="w-full">
+                      {previewKind === 'image' && (
+                        <img
+                          src={previewUrl}
+                          alt={uploadedName ? `Preview of ${uploadedName}` : 'Image preview'}
+                          className="mx-auto max-h-56 w-auto object-contain rounded-md shadow-sm"
+                          loading="lazy"
+                        />
+                      )}
+                      {previewKind === 'pdf' && (
+                        <iframe
+                          src={previewUrl}
+                          title="PDF preview"
+                          className="w-full h-56 rounded-md border shadow-sm"
+                        />
+                      )}
+                      {previewKind === 'text' && (
+                        <pre className="w-full max-h-56 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">
+                          {previewText ?? 'Loading preview...'}
+                        </pre>
+                      )}
+                      {previewKind === 'other' && (
+                        <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                          <FileText className="size-5 text-primary" />
+                          <span className="text-sm">{uploadedName ?? 'File selected'}</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                      <Upload className="size-5 text-primary" />
+                      <span className="text-sm">Drop a file here or click to upload</span>
+                    </div>
+                  )}
                 </label>
                 <div className="flex items-center gap-3">
                   <Button size="sm" onClick={() => document.getElementById('upload-input')?.click()} disabled={uploading}>
-                    {uploading ? 'Uploading…' : 'Upload Document'}
+                    {uploading ? 'Uploading…' : previewUrl ? 'Change Document' : 'Upload Document'}
                   </Button>
                   <Button size="sm" variant="outline">Use sample</Button>
                 </div>
-                <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : 'Max 10MB per file. Your data stays private.'}</p>
+                <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
               </div>
 
               {/* Right: Actions list */}
