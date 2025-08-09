@@ -24,6 +24,8 @@ const Index = () => {
   const [previewKind, setPreviewKind] = useState<'image' | 'pdf' | 'text' | 'other' | null>(null);
   const [previewText, setPreviewText] = useState<string | null>(null);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [startingAI, setStartingAI] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -55,6 +57,7 @@ const Index = () => {
       setPreviewText(null);
       setUploadedName(null);
       setSelectedAction(null);
+      setSelectedFile(null);
       setUploading(true);
 
       setPreviewUrl((prev) => {
@@ -72,6 +75,7 @@ const Index = () => {
       else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
       setPreviewKind(kind);
 
+      setSelectedFile(file);
       if (kind === 'text') {
         // Load text content (non-blocking)
         file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
@@ -113,6 +117,44 @@ const Index = () => {
       { "@type": "Offer", price: yearly ? "144" : "15", priceCurrency: "USD", name: "Pro" },
       { "@type": "Offer", price: yearly ? "468" : "49", priceCurrency: "USD", name: "Team" }
     ]
+  };
+
+  const onStartAI = async () => {
+    try {
+      if (!selectedFile) {
+        toast({ title: 'No file selected', description: 'Please upload a file first.', variant: 'destructive' });
+        return;
+      }
+      if (!selectedAction) {
+        toast({ title: 'No action selected', description: 'Please choose an AI action.', variant: 'destructive' });
+        return;
+      }
+
+      setStartingAI(true);
+
+      const fd = new FormData();
+      fd.append('file', selectedFile, selectedFile.name);
+      fd.append('action', selectedAction);
+      fd.append('user_id', userId ?? 'anon');
+      fd.append('file_name', selectedFile.name);
+      fd.append('mime_type', selectedFile.type || '');
+
+      const res = await fetch('https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b', {
+        method: 'POST',
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Webhook responded with ${res.status}`);
+      }
+
+      toast({ title: 'Sent to AI', description: `Started: ${selectedAction}` });
+    } catch (err: any) {
+      toast({ title: 'Failed to start', description: err?.message ?? 'Could not send to AI.', variant: 'destructive' });
+    } finally {
+      setStartingAI(false);
+    }
   };
 
   const onContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -268,11 +310,10 @@ const Index = () => {
                     <Button
                       variant="accent"
                       size="sm"
-                      onClick={() =>
-                        toast({ title: 'Starting AI', description: `Starting "${selectedAction}"` })
-                      }
+                      disabled={startingAI}
+                      onClick={onStartAI}
                     >
-                      Start AI
+                      {startingAI ? 'Starting…' : 'Start AI'}
                     </Button>
                   )}
                 </div>
