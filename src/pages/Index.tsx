@@ -251,7 +251,7 @@ const Index = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
-                  <Button size="sm" variant="outline">Use sample</Button>
+                  
                 </div>
                 <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
               </div>
