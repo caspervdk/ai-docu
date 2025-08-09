@@ -126,7 +126,7 @@ const Index = () => {
           </a>
           <div className="hidden md:flex items-center gap-4">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
-            <a href="#use-cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Use Cases</a>
+            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             {isAuthed ? (
               <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
@@ -359,7 +359,7 @@ const Index = () => {
 
 
         {/* Workflow */}
-        <section className="container py-12 md:py-20">
+        <section id="how-it-works" className="container py-12 md:py-20">
           <div className="mx-auto max-w-3xl text-center mb-10 animate-fade-in">
             <h2 className="text-3xl font-semibold">How it works</h2>
             <p className="text-muted-foreground">Go from upload to insights in four simple steps.</p>
