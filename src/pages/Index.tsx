@@ -33,24 +33,29 @@ const Index = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!userId) {
-      toast({ title: "Please log in", description: "Log in to upload documents.", });
-      return;
-    }
-
     try {
       setUploading(true);
       setUploadedName(null);
-      const filePath = `${userId}/${Date.now()}-${file.name}`;
+
+      const targetBucket = userId ? 'documents' : 'public_uploads';
+      const keyPrefix = userId ?? 'anon';
+      const random = Math.random().toString(36).slice(2, 8);
+      const filePath = `${keyPrefix}/${Date.now()}-${random}-${file.name}`;
+
       const { error } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file, { upsert: true, contentType: file.type });
+        .from(targetBucket)
+        .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
 
       if (error) throw error;
       setUploadedName(file.name);
-      toast({ title: "Upload complete", description: "Your document was uploaded successfully." });
+      toast({
+        title: 'Upload complete',
+        description: userId
+          ? 'Your document was uploaded successfully.'
+          : 'Uploaded anonymously. Anyone with the link can view.',
+      });
     } catch (err: any) {
-      toast({ title: "Upload failed", description: err?.message ?? 'Something went wrong', variant: "destructive" });
+      toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
       setUploading(false);
     }
