@@ -10,6 +10,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -26,6 +27,7 @@ const Index = () => {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [startingAI, setStartingAI] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -150,6 +152,7 @@ const Index = () => {
       }
 
       toast({ title: 'Sent to AI', description: `Started: ${selectedAction}` });
+      navigate('/results', { state: { action: selectedAction, fileName: selectedFile.name } });
     } catch (err: any) {
       toast({ title: 'Failed to start', description: err?.message ?? 'Could not send to AI.', variant: 'destructive' });
     } finally {
