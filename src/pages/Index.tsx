@@ -133,48 +133,84 @@ const Index = () => {
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="px-3 pb-3">
+                      <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">
                           Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
                         </p>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
-                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
-                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
-                      <Upload className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Make Content Searchable (OCR)</p>
-                      <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
-                    </div>
+                  <li className="p-0">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                          <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                            <Upload className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Make Content Searchable (OCR)</p>
+                          </div>
+                          <Plus className="size-4 text-muted-foreground transition-transform" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                        <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </li>
-                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
-                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
-                      <Languages className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Translate & Localize</p>
-                      <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
-                    </div>
+                  <li className="p-0">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                          <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                            <Languages className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Translate & Localize</p>
+                          </div>
+                          <Plus className="size-4 text-muted-foreground transition-transform" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                        <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </li>
-                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
-                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Contract Analysis & Risk Detection</p>
-                      <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
-                    </div>
+                  <li className="p-0">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                          <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                            <ShieldCheck className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Contract Analysis & Risk Detection</p>
+                          </div>
+                          <Plus className="size-4 text-muted-foreground transition-transform" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                        <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </li>
-                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
-                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
-                      <PenLine className="size-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Smart Error Detection</p>
-                      <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
-                    </div>
+                  <li className="p-0">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                          <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                            <PenLine className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">Smart Error Detection</p>
+                          </div>
+                          <Plus className="size-4 text-muted-foreground transition-transform" />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                        <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </li>
                 </ul>
               </div>
