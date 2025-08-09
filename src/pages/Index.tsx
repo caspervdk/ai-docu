@@ -6,6 +6,7 @@ import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap
 import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -220,6 +221,21 @@ const Index = () => {
                   <Button size="sm" onClick={() => document.getElementById('upload-input')?.click()} disabled={uploading}>
                     {uploading ? 'Uploading…' : previewUrl ? 'Change Document' : 'Upload Document'}
                   </Button>
+                  {(previewUrl || uploadedName) && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm">Choose AI Action</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        <DropdownMenuLabel>Select an action</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Summarize Long Documents' })}>Summarize Long Documents</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' })}>Make Content Searchable (OCR)</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Translate & Localize' })}>Translate & Localize</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' })}>Contract Analysis & Risk Detection</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Smart Error Detection' })}>Smart Error Detection</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                   <Button size="sm" variant="outline">Use sample</Button>
                 </div>
                 <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
