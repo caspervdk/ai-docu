@@ -228,11 +228,26 @@ const Index = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
                         <DropdownMenuLabel>Select an action</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Summarize Long Documents' })}>Summarize Long Documents</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' })}>Make Content Searchable (OCR)</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Translate & Localize' })}>Translate & Localize</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' })}>Contract Analysis & Risk Detection</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Smart Error Detection' })}>Smart Error Detection</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Summarize Long Documents' })} className="flex items-center gap-2">
+                          <FileText className="size-4 text-primary" />
+                          <span>Summarize Long Documents</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' })} className="flex items-center gap-2">
+                          <Upload className="size-4 text-primary" />
+                          <span>Make Content Searchable (OCR)</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Translate & Localize' })} className="flex items-center gap-2">
+                          <Languages className="size-4 text-primary" />
+                          <span>Translate & Localize</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' })} className="flex items-center gap-2">
+                          <ShieldCheck className="size-4 text-primary" />
+                          <span>Contract Analysis & Risk Detection</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: 'AI Action', description: 'Smart Error Detection' })} className="flex items-center gap-2">
+                          <PenLine className="size-4 text-primary" />
+                          <span>Smart Error Detection</span>
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
