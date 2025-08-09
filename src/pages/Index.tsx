@@ -149,7 +149,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
-              <Button size="lg" variant="outline">Watch Demo →</Button>
+              <Button size="lg" variant="outline">Upgrade for Pro AI-Docu</Button>
             </div>
             <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
           </div>
