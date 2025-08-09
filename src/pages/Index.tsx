@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -29,7 +29,7 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileSelected = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -54,7 +54,7 @@ const Index = () => {
     } finally {
       setUploading(false);
     }
-  };
+  }, [userId]);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -139,7 +139,7 @@ const Index = () => {
               {/* Left: Upload area */}
               <div className="space-y-4">
                 <label className="flex items-center justify-center rounded-xl border border-dashed bg-muted/30 p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-48 md:min-h-56">
-                  <input id="upload-input" type="file" className="sr-only" aria-label="Upload document" accept=".pdf,.doc,.docx,.txt,image/*" onChange={handleFileSelected} disabled={uploading} />
+                  <input id="upload-input" type="file" className="sr-only" aria-label="Upload document" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onFileSelected} disabled={uploading} />
                   <div className="flex items-center justify-center gap-3 text-muted-foreground">
                     <Upload className="size-5 text-primary" />
                     <span className="text-sm">Drop a file here or click to upload</span>
