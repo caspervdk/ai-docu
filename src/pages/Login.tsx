@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      toast.info("Inloggen is nog niet geconfigureerd. Zal ik Supabase-auth inschakelen?");
+      toast.info("Sign-in isn't configured yet. Should I enable Supabase auth?");
       setLoading(false);
     }, 500);
   };
@@ -33,19 +33,19 @@ const Login = () => {
     const confirmPassword = data.get('confirmPassword') as string;
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      toast.error('Vul alle velden in.');
+      toast.error('Please fill in all fields.');
       setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Wachtwoorden komen niet overeen.');
+      toast.error('Passwords do not match.');
       setLoading(false);
       return;
     }
 
     setTimeout(() => {
-      toast.info('Account aanmaken is nog niet geconfigureerd. Zal ik Supabase-auth inschakelen?');
+      toast.info("Sign-up isn't configured yet. Should I enable Supabase auth?");
       setLoading(false);
     }, 500);
   };
@@ -53,41 +53,41 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Inloggen of account aanmaken – DocMind AI</title>
-        <meta name="description" content="Log in of maak een account aan bij DocMind AI om je AI-documentassistent te gebruiken." />
+        <title>Sign in or create an account – DocMind AI</title>
+        <meta name="description" content="Sign in or create an account to use DocMind AI." />
         <link rel="canonical" href="/login" />
       </Helmet>
 
       <main>
         <section className="container py-16 md:py-24">
           <div className="mx-auto max-w-md">
-            <h1 className="text-3xl font-semibold tracking-tight mb-6">Inloggen of account aanmaken</h1>
+            <h1 className="text-3xl font-semibold tracking-tight mb-6">Sign in or create an account</h1>
             <Card className="shadow-sm">
               <CardHeader>
-                <p className="text-sm text-muted-foreground">Kies een optie om door te gaan.</p>
+                <p className="text-sm text-muted-foreground">Choose an option to continue.</p>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="login" className="w-full">
                   <TabsList className="w-full grid grid-cols-2">
-                    <TabsTrigger value="login">Log in</TabsTrigger>
-                    <TabsTrigger value="signup">Maak account</TabsTrigger>
+                    <TabsTrigger value="login">Sign in</TabsTrigger>
+                    <TabsTrigger value="signup">Create account</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="login">
                     <form onSubmit={onLoginSubmit} className="space-y-4" aria-label="Login form">
                       <div className="space-y-2">
-                        <Label htmlFor="email">E-mailadres</Label>
-                        <Input id="email" type="email" placeholder="jij@voorbeeld.com" required autoComplete="email" />
+                        <Label htmlFor="email">Email address</Label>
+                        <Input id="email" name="loginEmail" type="email" placeholder="you@example.com" required autoComplete="email" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="password">Wachtwoord</Label>
-                        <Input id="password" type="password" placeholder="••••••••" required autoComplete="current-password" />
+                        <Label htmlFor="password">Password</Label>
+                        <Input id="password" name="loginPassword" type="password" placeholder="••••••••" required autoComplete="current-password" />
                       </div>
                       <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Bezig met inloggen..." : "Log in"}
+                        {loading ? "Signing in..." : "Sign in"}
                       </Button>
                       <div className="text-sm text-muted-foreground flex items-center justify-between">
-                        <a href="#" className="hover:text-foreground">Wachtwoord vergeten?</a>
+                        <a href="#" className="hover:text-foreground">Forgot your password?</a>
                       </div>
                     </form>
                   </TabsContent>
@@ -96,32 +96,32 @@ const Login = () => {
                     <form onSubmit={onSignupSubmit} className="space-y-4" aria-label="Signup form">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="first-name">Naam</Label>
-                          <Input id="first-name" name="firstName" type="text" placeholder="Jan" required autoComplete="given-name" />
+                          <Label htmlFor="first-name">First name</Label>
+                          <Input id="first-name" name="firstName" type="text" placeholder="John" required autoComplete="given-name" />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="last-name">Achternaam</Label>
-                          <Input id="last-name" name="lastName" type="text" placeholder="Jansen" required autoComplete="family-name" />
+                          <Label htmlFor="last-name">Last name</Label>
+                          <Input id="last-name" name="lastName" type="text" placeholder="Doe" required autoComplete="family-name" />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="signup-email">E-mailadres</Label>
-                        <Input id="signup-email" name="email" type="email" placeholder="jij@voorbeeld.com" required autoComplete="email" />
+                        <Label htmlFor="signup-email">Email address</Label>
+                        <Input id="signup-email" name="email" type="email" placeholder="you@example.com" required autoComplete="email" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="signup-password">Wachtwoord</Label>
+                          <Label htmlFor="signup-password">Password</Label>
                           <Input id="signup-password" name="password" type="password" placeholder="••••••••" required autoComplete="new-password" />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="confirm-password">Wachtwoord opnieuw</Label>
+                          <Label htmlFor="confirm-password">Confirm password</Label>
                           <Input id="confirm-password" name="confirmPassword" type="password" placeholder="••••••••" required autoComplete="new-password" />
                         </div>
                       </div>
                       <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Bezig..." : "Account aanmaken"}
+                        {loading ? "Processing..." : "Create account"}
                       </Button>
-                      <p className="text-xs text-muted-foreground text-center">Door een account te maken ga je akkoord met onze voorwaarden.</p>
+                      <p className="text-xs text-muted-foreground text-center">By creating an account you agree to our terms.</p>
                     </form>
                   </TabsContent>
                 </Tabs>
