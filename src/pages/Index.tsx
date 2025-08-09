@@ -182,7 +182,7 @@ const Index = () => {
 
           <Card className="mx-auto max-w-5xl shadow-sm animate-fade-in">
             <CardHeader className="pb-2 md:pb-4">
-              <CardTitle className="text-xl">Get started</CardTitle>
+              <CardTitle id="get-started" className="text-xl">Get started</CardTitle>
               <CardDescription>Upload on the left, pick an AI action on the right.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8 md:grid-cols-2">
@@ -441,7 +441,7 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-6 w-full">Get Started</Button>
+                  <Button className="mt-6 w-full" onClick={() => document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try Free</Button>
                 </CardContent>
               </Card>
             ))}
