@@ -347,7 +347,7 @@ const Index = () => {
                 {webhookResponse && (
                   <div className="space-y-2">
                     <h3 className="text-sm font-medium">AI Response</h3>
-                    <pre className="w-full max-h-64 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">{webhookResponse}</pre>
+                    <pre className="w-full max-h-96 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">{webhookResponse}</pre>
                   </div>
                 )}
                 {webhookError && (
