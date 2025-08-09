@@ -235,7 +235,9 @@ const Index = () => {
                   {(previewUrl || uploadedName) && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button size="sm">Choose AI Action</Button>
+                        <Button size="sm">
+                          {selectedAction ? selectedAction : 'Choose AI Action'}
+                        </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start" className="z-50">
                         <DropdownMenuLabel>Select an action</DropdownMenuLabel>
