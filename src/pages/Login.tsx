@@ -25,7 +25,7 @@ const Login = () => {
         toast.error(error.message);
       } else {
         toast.success('Signed in successfully');
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err) {
       toast.error('Unexpected error signing in.');
@@ -76,9 +76,9 @@ const Login = () => {
             id: signUpData.session.user.id,
             first_name: firstName,
             last_name: lastName,
-          });
+          }, { onConflict: 'id' });
           toast.success('Account created! Redirecting...');
-          navigate('/');
+          navigate('/dashboard');
         } else {
           toast.info('Please check your email to confirm your account.');
         }

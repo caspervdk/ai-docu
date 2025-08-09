@@ -3,10 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [yearly, setYearly] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => setIsAuthed(!!session));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -39,7 +50,11 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#use-cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Use Cases</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            <Button variant="outline" asChild><a href="/login">Log in</a></Button>
+            {isAuthed ? (
+              <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
+            ) : (
+              <Button variant="outline" asChild><a href="/login">Log in</a></Button>
+            )}
           </div>
         </nav>
       </header>
