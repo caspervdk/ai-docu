@@ -144,6 +144,7 @@ const Index = () => {
       fd.append('user_id', userId ?? 'anon');
       fd.append('file_name', selectedFile.name);
       fd.append('mime_type', selectedFile.type || '');
+      fd.append('message', `Action: ${selectedAction}`);
 
       const res = await fetch('https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b', {
         method: 'POST',
