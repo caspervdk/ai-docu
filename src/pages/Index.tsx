@@ -88,20 +88,19 @@ const Index = () => {
         {/* Features */}
         <section id="features" className="container py-12 md:py-20 rounded-2xl border bg-gradient-subtle shadow-glow">
           <div className="mx-auto max-w-3xl text-center mb-10">
-            <h2 className="text-3xl font-semibold">Everything you need for smarter docs</h2>
-            <p className="text-muted-foreground">Clean, fast, and built for clarity and trust.</p>
+            <h2 className="text-3xl font-semibold">Upload your document and choose an AI-powered action:</h2>
           </div>
           <div className="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory text-primary">
             {[{
-              icon: Upload, title: 'Document Upload', desc: 'Drag and drop PDF, Word, or TXT files'
+              icon: FileText, title: 'Summarize Long Documents', desc: 'Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.'
             },{
-              icon: FileText, title: 'Instant Analysis', desc: 'Get highlights, risks, and summaries'
+              icon: Upload, title: 'Make Content Searchable (OCR)', desc: 'Extract text from scanned PDFs or images and make it keyword-searchable.'
             },{
-              icon: PenLine, title: 'Smart Rewrite', desc: 'Let AI suggest improvements or rewrites'
+              icon: Languages, title: 'Translate & Localize', desc: 'Automatically translate documents into multiple languages while preserving layout and formatting.'
             },{
-              icon: Languages, title: 'Multilingual Support', desc: 'Translate documents in one click'
+              icon: ShieldCheck, title: 'Contract Analysis & Risk Detection', desc: 'Scan legal documents to identify clauses, obligations, and potential risks.'
             },{
-              icon: ShieldCheck, title: 'Compliance Checker', desc: 'Scan for legal/industry risks'
+              icon: PenLine, title: 'Smart Error Detection', desc: 'Spot spelling, grammar, and numerical inconsistencies and suggest corrections.'
             }].map((f, i) => (
               <Card key={i} className="hover:shadow-md transition-shadow">
                 <CardHeader>
