@@ -23,8 +23,29 @@ const Login = () => {
   const onSignupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const firstName = (data.get('firstName') as string)?.trim();
+    const lastName = (data.get('lastName') as string)?.trim();
+    const email = (data.get('email') as string)?.trim();
+    const password = data.get('password') as string;
+    const confirmPassword = data.get('confirmPassword') as string;
+
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      toast.error('Vul alle velden in.');
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error('Wachtwoorden komen niet overeen.');
+      setLoading(false);
+      return;
+    }
+
     setTimeout(() => {
-      toast.info("Account aanmaken is nog niet geconfigureerd. Zal ik Supabase-auth inschakelen?");
+      toast.info('Account aanmaken is nog niet geconfigureerd. Zal ik Supabase-auth inschakelen?');
       setLoading(false);
     }, 500);
   };
@@ -73,13 +94,29 @@ const Login = () => {
 
                   <TabsContent value="signup">
                     <form onSubmit={onSignupSubmit} className="space-y-4" aria-label="Signup form">
-                      <div className="space-y-2">
-                        <Label htmlFor="signup-email">E-mailadres</Label>
-                        <Input id="signup-email" type="email" placeholder="jij@voorbeeld.com" required autoComplete="email" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="first-name">Naam</Label>
+                          <Input id="first-name" name="firstName" type="text" placeholder="Jan" required autoComplete="given-name" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="last-name">Achternaam</Label>
+                          <Input id="last-name" name="lastName" type="text" placeholder="Jansen" required autoComplete="family-name" />
+                        </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="signup-password">Wachtwoord</Label>
-                        <Input id="signup-password" type="password" placeholder="••••••••" required autoComplete="new-password" />
+                        <Label htmlFor="signup-email">E-mailadres</Label>
+                        <Input id="signup-email" name="email" type="email" placeholder="jij@voorbeeld.com" required autoComplete="email" />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="signup-password">Wachtwoord</Label>
+                          <Input id="signup-password" name="password" type="password" placeholder="••••••••" required autoComplete="new-password" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="confirm-password">Wachtwoord opnieuw</Label>
+                          <Input id="confirm-password" name="confirmPassword" type="password" placeholder="••••••••" required autoComplete="new-password" />
+                        </div>
                       </div>
                       <Button type="submit" className="w-full" disabled={loading}>
                         {loading ? "Bezig..." : "Account aanmaken"}
