@@ -33,7 +33,7 @@ const Index = () => {
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container flex items-center justify-between py-5">
           <a href="#" className="flex items-center gap-2" aria-label="DocMind AI home">
-            <img src="/lovable-uploads/a1963d57-f582-429e-8cf8-4653f5e78a01.png" alt="DocMind AI logo" className="h-24 w-auto" loading="eager" fetchPriority="high" />
+            <img src="/lovable-uploads/a1963d57-f582-429e-8cf8-4653f5e78a01.png" alt="DocMind AI logo" className="h-[3.6rem] w-auto" loading="eager" fetchPriority="high" />
           </a>
           <div className="hidden md:flex items-center gap-4">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
