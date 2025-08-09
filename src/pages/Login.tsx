@@ -5,22 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-
-  const onLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const onLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      toast.info("Sign-in isn't configured yet. Should I enable Supabase auth?");
-      setLoading(false);
-    }, 500);
-  };
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = (formData.get('loginEmail') as string)?.trim();
+      const password = (formData.get('loginPassword') as string) ?? "";
 
-  const onSignupSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Signed in successfully');
+        navigate('/');
+      }
+    } catch (err) {
+      toast.error('Unexpected error signing in.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -44,12 +57,38 @@ const Login = () => {
       return;
     }
 
-    setTimeout(() => {
-      toast.info("Sign-up isn't configured yet. Should I enable Supabase auth?");
-      setLoading(false);
-    }, 500);
-  };
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { first_name: firstName, last_name: lastName },
+          emailRedirectTo: redirectUrl,
+        },
+      });
 
+      if (error) {
+        toast.error(error.message);
+      } else {
+        if (signUpData.session?.user) {
+          await supabase.from('profiles').upsert({
+            id: signUpData.session.user.id,
+            first_name: firstName,
+            last_name: lastName,
+          });
+          toast.success('Account created! Redirecting...');
+          navigate('/');
+        } else {
+          toast.info('Please check your email to confirm your account.');
+        }
+      }
+    } catch (err) {
+      toast.error('Unexpected error creating account.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <Helmet>
