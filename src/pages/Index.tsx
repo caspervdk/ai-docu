@@ -90,71 +90,81 @@ const Index = () => {
           <div className="mx-auto max-w-3xl text-center mb-6">
             <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">AI Document Tool</span>
             <h2 className="mt-4 text-3xl font-semibold">Upload your document and choose an AI-powered action:</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Supports PDF, DOCX, and TXT — no training needed.</p>
           </div>
 
-          <Card className="mx-auto max-w-4xl shadow-sm">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-xl">AI Actions</CardTitle>
-              <CardDescription>Select an action to apply after uploading your file.</CardDescription>
+          <Card className="mx-auto max-w-5xl shadow-sm animate-fade-in">
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="text-xl">Get started</CardTitle>
+              <CardDescription>Upload on the left, pick an AI action on the right.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Upload area (visual only) */}
-              <label className="block rounded-lg border border-dashed bg-muted/30 p-5 cursor-pointer hover:bg-muted/40 transition-colors">
-                <input type="file" className="sr-only" aria-label="Upload document" />
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-sm text-muted-foreground">Drop a file here, or click to browse</p>
-                  <Button size="sm" variant="outline">Choose file</Button>
+            <CardContent className="grid gap-6 md:gap-8 md:grid-cols-2">
+              {/* Left: Upload area */}
+              <div className="space-y-4">
+                <label className="block rounded-lg border border-dashed bg-muted/30 p-6 cursor-pointer hover:bg-muted/40 transition-colors">
+                  <input type="file" className="sr-only" aria-label="Upload document" />
+                  <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                    <Upload className="size-5 text-primary" />
+                    <span className="text-sm">Drop a file here or click to upload</span>
+                  </div>
+                </label>
+                <div className="flex items-center gap-3">
+                  <Button size="sm">Upload Document</Button>
+                  <Button size="sm" variant="outline">Use sample</Button>
                 </div>
-              </label>
+                <p className="text-xs text-muted-foreground">Max 10MB per file. Your data stays private.</p>
+              </div>
 
-              {/* Actions list */}
-              <ul className="space-y-5">
-                <li className="flex gap-3">
-                  <div className="size-8 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center">
-                    <FileText className="size-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Summarize Long Documents</p>
-                    <p className="text-sm text-muted-foreground">Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.</p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <div className="size-8 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center">
-                    <Upload className="size-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Make Content Searchable (OCR)</p>
-                    <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <div className="size-8 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center">
-                    <Languages className="size-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Translate & Localize</p>
-                    <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <div className="size-8 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center">
-                    <ShieldCheck className="size-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Contract Analysis & Risk Detection</p>
-                    <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <div className="size-8 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center">
-                    <PenLine className="size-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Smart Error Detection</p>
-                    <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
-                  </div>
-                </li>
-              </ul>
+              {/* Right: Actions list */}
+              <div className="space-y-3">
+                <ul className="space-y-3">
+                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
+                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                      <FileText className="size-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Summarize Long Documents</p>
+                      <p className="text-sm text-muted-foreground">Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
+                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                      <Upload className="size-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Make Content Searchable (OCR)</p>
+                      <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
+                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                      <Languages className="size-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Translate & Localize</p>
+                      <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
+                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="size-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Contract Analysis & Risk Detection</p>
+                      <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors">
+                    <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+                      <PenLine className="size-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Smart Error Detection</p>
+                      <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </section>
