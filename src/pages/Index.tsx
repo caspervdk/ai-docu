@@ -10,7 +10,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useNavigate } from "react-router-dom";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -27,7 +27,9 @@ const Index = () => {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [startingAI, setStartingAI] = useState(false);
-  const navigate = useNavigate();
+  const [webhookResponse, setWebhookResponse] = useState<string | null>(null);
+  const [webhookError, setWebhookError] = useState<string | null>(null);
+  
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -60,6 +62,8 @@ const Index = () => {
       setUploadedName(null);
       setSelectedAction(null);
       setSelectedFile(null);
+      setWebhookResponse(null);
+      setWebhookError(null);
       setUploading(true);
 
       setPreviewUrl((prev) => {
@@ -151,8 +155,26 @@ const Index = () => {
         throw new Error(text || `Webhook responded with ${res.status}`);
       }
 
-      toast({ title: 'Sent to AI', description: `Started: ${selectedAction}` });
-      navigate('/results', { state: { action: selectedAction, fileName: selectedFile.name } });
+      // Read response body and show it on the landing page
+      const contentType = res.headers.get('content-type') || '';
+      let bodyText = '';
+      try {
+        bodyText = await res.text();
+      } catch (_) {
+        bodyText = '';
+      }
+      let display = bodyText;
+      try {
+        if (contentType.includes('application/json') || bodyText.trim().startsWith('{') || bodyText.trim().startsWith('[')) {
+          display = JSON.stringify(JSON.parse(bodyText), null, 2);
+        }
+      } catch (_) {
+        // keep as plain text if JSON parse fails
+      }
+
+      setWebhookError(null);
+      setWebhookResponse(display || 'Success (empty response body)');
+      toast({ title: 'AI responded', description: `Action: ${selectedAction}` });
     } catch (err: any) {
       toast({ title: 'Failed to start', description: err?.message ?? 'Could not send to AI.', variant: 'destructive' });
     } finally {
@@ -321,6 +343,16 @@ const Index = () => {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">{uploading ? 'Uploading…' : uploadedName ? `Uploaded: ${uploadedName}` : previewUrl ? 'Previewing selected file. Click "Change Document" to pick another.' : 'Max 10MB per file. Your data stays private.'}</p>
+
+                {webhookResponse && (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium">AI Response</h3>
+                    <pre className="w-full max-h-64 overflow-auto text-xs bg-muted/40 text-muted-foreground p-3 rounded-md">{webhookResponse}</pre>
+                  </div>
+                )}
+                {webhookError && (
+                  <p className="text-xs text-destructive">Error: {webhookError}</p>
+                )}
               </div>
 
               {/* Right: Actions list */}
