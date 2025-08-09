@@ -2,6 +2,9 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
@@ -108,6 +111,12 @@ const Index = () => {
       { "@type": "Offer", price: yearly ? "144" : "15", priceCurrency: "USD", name: "Pro" },
       { "@type": "Offer", price: yearly ? "468" : "49", priceCurrency: "USD", name: "Team" }
     ]
+  };
+
+  const onContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast({ title: 'Message sent', description: 'We’ll get back to you soon.' });
+    (e.currentTarget as HTMLFormElement).reset();
   };
 
   return (
@@ -436,6 +445,45 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section id="contact" className="container py-12 md:py-20">
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="space-y-4">
+              <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">Get in touch</span>
+              <h2 className="text-3xl font-semibold">Contact our team</h2>
+              <p className="text-sm text-muted-foreground">Questions about pricing, features, or onboarding? Send us a message and we’ll reply within 1 business day.</p>
+              <div className="text-sm text-muted-foreground">
+                <p>Email: hello@docmind.ai</p>
+              </div>
+            </div>
+            <Card className="shadow-sm">
+              <CardContent className="pt-6">
+                <form onSubmit={onContactSubmit} className="space-y-4" aria-label="Contact form">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="contact-name">Your name</Label>
+                      <Input id="contact-name" name="name" placeholder="Jane Doe" required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact-email">Email</Label>
+                      <Input id="contact-email" name="email" type="email" placeholder="you@example.com" required />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-subject">Subject</Label>
+                    <Input id="contact-subject" name="subject" placeholder="How can we help?" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-message">Message</Label>
+                    <Textarea id="contact-message" name="message" placeholder="Tell us a bit about your question..." rows={5} required />
+                  </div>
+                  <Button type="submit" className="w-full hover-scale">Send message</Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </section>
       </main>
