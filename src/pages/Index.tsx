@@ -247,32 +247,45 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Workflow */}
         <section className="container py-12 md:py-20">
-          <div className="mx-auto max-w-3xl text-center mb-10">
-            <h2 className="text-3xl font-semibold">Loved by modern teams</h2>
-            <p className="text-muted-foreground">“A game changer for document-heavy work.”</p>
+          <div className="mx-auto max-w-3xl text-center mb-10 animate-fade-in">
+            <h2 className="text-3xl font-semibold">How it works</h2>
+            <p className="text-muted-foreground">Go from upload to insights in four simple steps.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1,2,3].map((i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <img src={`https://i.pravatar.cc/100?img=${i}`} alt="Customer avatar" className="size-10 rounded-full" loading="lazy" />
-                    <div>
-                      <CardTitle className="text-base">Alex Johnson</CardTitle>
-                      <CardDescription>ACME Inc.</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">“DocMind AI helped our legal team catch issues we’d miss — and rewrite clauses in seconds.”</p>
-                  <div className="mt-3 flex gap-1 text-yellow-500" aria-label="5 star rating">
-                    {Array.from({ length: 5 }).map((_, idx) => <Star key={idx} className="size-4" />)}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+          <div className="grid gap-6 md:grid-cols-4">
+            <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">1</span>
+                <Upload className="size-4 text-primary" aria-hidden="true" />
+              </div>
+              <h3 className="font-medium">Upload Your Document</h3>
+            </article>
+
+            <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:60ms]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">2</span>
+                <FileText className="size-4 text-primary" aria-hidden="true" />
+              </div>
+              <h3 className="font-medium">Choose an AI Processing Option</h3>
+            </article>
+
+            <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:120ms]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">3</span>
+                <ShieldCheck className="size-4 text-primary" aria-hidden="true" />
+              </div>
+              <h3 className="font-medium">AI Processes Your Document</h3>
+            </article>
+
+            <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:180ms]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">4</span>
+                <PenLine className="size-4 text-primary" aria-hidden="true" />
+              </div>
+              <h3 className="font-medium">Review Your Results</h3>
+            </article>
           </div>
         </section>
 
