@@ -106,6 +106,9 @@ const Login = () => {
                 <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" />Go back home</Link>
               </Button>
             </div>
+            <a href="/" className="flex items-center justify-center mb-6" aria-label="AI Docu home">
+              <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-14 w-auto" loading="eager" />
+            </a>
             <h1 className="text-3xl font-semibold tracking-tight mb-6">Sign in or create an account</h1>
             <Card className="shadow-sm">
               <CardHeader>
