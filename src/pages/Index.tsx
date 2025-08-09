@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Upload, Sparkles, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star } from "lucide-react";
+import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star } from "lucide-react";
 import { useState } from "react";
 
 const Index = () => {
@@ -32,9 +32,8 @@ const Index = () => {
 
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container flex items-center justify-between py-5">
-          <a href="#" className="flex items-center gap-2">
-            <Sparkles className="text-primary" />
-            <span className="font-semibold">DocMind AI</span>
+          <a href="#" className="flex items-center gap-2" aria-label="DocMind AI home">
+            <img src="/lovable-uploads/0a2fcf98-0bdf-4d5f-b111-c4aeb1ff03ba.png" alt="DocMind AI logo" className="h-8 w-auto" loading="eager" fetchPriority="high" />
           </a>
           <div className="hidden md:flex items-center gap-4">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
@@ -204,8 +203,7 @@ const Index = () => {
         <div className="container py-12 grid md:grid-cols-2 gap-8">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="text-primary" />
-              <span className="font-semibold">DocMind AI</span>
+              <img src="/lovable-uploads/0a2fcf98-0bdf-4d5f-b111-c4aeb1ff03ba.png" alt="DocMind AI logo" className="h-8 w-auto" loading="lazy" />
             </div>
             <p className="mt-3 text-sm text-muted-foreground max-w-sm">AI-powered document assistant to read, analyze, summarize, translate, and improve your documents.</p>
           </div>
