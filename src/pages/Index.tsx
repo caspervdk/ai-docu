@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus } from "lucide-react";
+import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -149,7 +149,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
-              <Button size="lg" variant="outline">Upgrade for Pro AI-Docu</Button>
+              <Button size="lg" variant="pro"><Rocket className="size-4" aria-hidden="true" /> Upgrade for Pro AI-Docu</Button>
             </div>
             <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
           </div>
