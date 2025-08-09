@@ -266,6 +266,7 @@ const Index = () => {
                   )}
                   {selectedAction && (
                     <Button
+                      variant="accent"
                       size="sm"
                       onClick={() =>
                         toast({ title: 'Starting AI', description: `Starting "${selectedAction}"` })
