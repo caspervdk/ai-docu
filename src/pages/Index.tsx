@@ -39,7 +39,7 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#use-cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Use Cases</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            <Button variant="outline">Log in</Button>
+            <Button variant="outline" asChild><a href="/login">Log in</a></Button>
           </div>
         </nav>
       </header>
