@@ -170,7 +170,7 @@ const onStartAI = async () => {
         throw new Error(text || `Webhook responded with ${res.status}`);
       }
 
-      // Read response body and show it on the landing page
+      // Read response body and format it nicely for display
       const contentType = res.headers.get('content-type') || '';
       let bodyText = '';
       try {
@@ -179,12 +179,23 @@ const onStartAI = async () => {
         bodyText = '';
       }
       let display = bodyText;
-      try {
-        if (contentType.includes('application/json') || bodyText.trim().startsWith('{') || bodyText.trim().startsWith('[')) {
-          display = JSON.stringify(JSON.parse(bodyText), null, 2);
+      const trimmed = bodyText.trim();
+      if (contentType.includes('application/json') || trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(bodyText);
+          const pickField = (obj: any): string | null => {
+            const keys = ['output','result','message','content','text'];
+            for (const k of keys) if (typeof obj?.[k] === 'string') return obj[k];
+            return null;
+          };
+          let picked: string | null = pickField(parsed);
+          if (!picked && Array.isArray(parsed) && parsed.length) {
+            picked = pickField(parsed[0]);
+          }
+          display = picked || JSON.stringify(parsed, null, 2);
+        } catch {
+          display = trimmed;
         }
-      } catch (_) {
-        // keep as plain text if JSON parse fails
       }
 
       setWebhookError(null);
