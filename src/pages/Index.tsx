@@ -449,40 +449,43 @@ const Index = () => {
         </section>
 
         {/* Pro Benefits */}
-        <section id="pro-benefits" className="container py-12 md:py-20 rounded-2xl bg-gradient-subtle">
-          <div className="mx-auto max-w-3xl text-center mb-8">
-            <h2 className="text-3xl font-semibold">Upgrade to Pro</h2>
-            <p className="text-muted-foreground">Get unlimited access and more features.</p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="shadow-sm">
-              <CardHeader>
-                <CardTitle>Free</CardTitle>
-                <CardDescription>Great to try things out</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>5 uploads per day</span></li>
-                  <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>Basic AI tools</span></li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="shadow-sm border-primary ring-1 ring-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">Pro <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">Best value</span></CardTitle>
-                <CardDescription>Everything in Free, plus</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>Unlimited uploads</span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>Cloud storage</span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-primary" aria-hidden="true" /><span>More AI features</span></li>
-                </ul>
-                <Button variant="pro" size="lg" className="mt-6 w-full" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
-                  <Rocket className="size-4" aria-hidden="true" /> Upgrade Now
-                </Button>
-              </CardContent>
-            </Card>
+        <section id="pro-benefits" className="container py-14 md:py-24 relative">
+          <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-subtle ring-1 ring-primary/10 shadow-glow"></div>
+          <div className="relative rounded-3xl">
+            <div className="mx-auto max-w-3xl text-center mb-10 animate-fade-in">
+              <h2 className="text-3xl font-semibold">Upgrade to Pro</h2>
+              <p className="text-muted-foreground">Get unlimited access and more features.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="shadow-sm bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <CardHeader>
+                  <CardTitle>Free</CardTitle>
+                  <CardDescription>Great to try things out</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>5 uploads per day</span></li>
+                    <li className="flex items-start gap-2"><span className="mt-1 size-1.5 rounded-full bg-muted-foreground"></span><span>Basic AI tools</span></li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="shadow-glow border-none bg-[image:var(--gradient-pro)] text-primary-foreground overflow-hidden">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">Pro <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-background/20 ring-1 ring-primary/30">Best value</span></CardTitle>
+                  <CardDescription className="text-primary-foreground/80">Everything in Free, plus</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2"><CheckCircle2 className="size-4" aria-hidden="true" /><span>Unlimited uploads</span></li>
+                    <li className="flex items-start gap-2"><CheckCircle2 className="size-4" aria-hidden="true" /><span>Cloud storage</span></li>
+                    <li className="flex items-start gap-2"><CheckCircle2 className="size-4" aria-hidden="true" /><span>More AI features</span></li>
+                  </ul>
+                  <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
+                    <Rocket className="size-4" aria-hidden="true" /> Upgrade Now
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
 
