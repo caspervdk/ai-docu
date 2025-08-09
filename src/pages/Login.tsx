@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft } from "lucide-react";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -100,6 +101,11 @@ const Login = () => {
       <main>
         <section className="container py-16 md:py-24">
           <div className="mx-auto max-w-md">
+            <div className="mb-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" />Go back home</Link>
+              </Button>
+            </div>
             <h1 className="text-3xl font-semibold tracking-tight mb-6">Sign in or create an account</h1>
             <Card className="shadow-sm">
               <CardHeader>
