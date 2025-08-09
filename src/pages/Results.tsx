@@ -47,9 +47,18 @@ const Results = () => {
             <CardContent>
               <div className="space-y-4">
                 <div className="rounded-md border bg-muted/30 p-4">
-                  <p className="text-sm text-muted-foreground">
-                    Waiting for output from the AI workflow...
-                  </p>
+                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {`[
+{
+  "name": "First item",
+  "code": 1
+},
+{
+  "name": "Second item",
+  "code": 2
+}
+]`}
+                  </pre>
                 </div>
                 <div className="flex gap-3">
                   <Button asChild variant="secondary"><Link to="/">Go to Home</Link></Button>
