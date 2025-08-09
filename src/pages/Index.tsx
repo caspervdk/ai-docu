@@ -441,7 +441,13 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-6 w-full" onClick={() => document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try Free</Button>
+                  {p.name === 'Pro' ? (
+                    <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
+                      <Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro
+                    </Button>
+                  ) : (
+                    <Button className="mt-6 w-full" onClick={() => document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try Free</Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
