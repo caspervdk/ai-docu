@@ -89,7 +89,7 @@ const Index = () => {
             <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" fetchPriority="high" />
           </a>
           <div className="hidden md:flex items-center gap-4">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
             <a href="#use-cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Use Cases</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             {isAuthed ? (
