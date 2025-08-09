@@ -446,7 +446,7 @@ const Index = () => {
                       <Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro
                     </Button>
                   ) : (
-                    <Button className="mt-6 w-full" onClick={() => document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try Free</Button>
+                    <Button className="mt-6 w-full" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Contact us</Button>
                   )}
                 </CardContent>
               </Card>
