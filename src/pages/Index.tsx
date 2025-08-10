@@ -314,10 +314,12 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}>
                             Upload
                           </Button>
-                          <Button size="sm" variant="accent" disabled={startingAI}
-                            onClick={() => onStartAI('Summarize Long Documents')}>
-                            Start AI
-                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Summarize Long Documents')}>
+                              Start AI
+                            </Button>
+                          )}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -345,10 +347,12 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}>
                             Upload
                           </Button>
-                          <Button size="sm" variant="accent" disabled={startingAI}
-                            onClick={() => onStartAI('Make Content Searchable (OCR)')}>
-                            Start AI
-                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Make Content Searchable (OCR)')}>
+                              Start AI
+                            </Button>
+                          )}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -376,10 +380,12 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
                             Upload
                           </Button>
-                          <Button size="sm" variant="accent" disabled={startingAI}
-                            onClick={() => onStartAI('Translate & Localize')}>
-                            Start AI
-                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Translate & Localize')}>
+                              Start AI
+                            </Button>
+                          )}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -407,10 +413,12 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}>
                             Upload
                           </Button>
-                          <Button size="sm" variant="accent" disabled={startingAI}
-                            onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
-                            Start AI
-                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
+                              Start AI
+                            </Button>
+                          )}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -438,10 +446,12 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}>
                             Upload
                           </Button>
-                          <Button size="sm" variant="accent" disabled={startingAI}
-                            onClick={() => onStartAI('Smart Error Detection')}>
-                            Start AI
-                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Smart Error Detection')}>
+                              Start AI
+                            </Button>
+                          )}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
