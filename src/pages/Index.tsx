@@ -365,6 +365,18 @@ const onStartAI = async (overrideAction?: string) => {
                         <p className="text-sm text-muted-foreground">
                           Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
                         </p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Summarize Long Documents')}>
+                              Start AI
+                            </Button>
+                          )}
+                        </div>
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
@@ -382,14 +394,6 @@ const onStartAI = async (overrideAction?: string) => {
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
                           </div>
                         </div>
-                        {selectedFile && (
-                          <div className="mt-3">
-                            <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Summarize Long Documents')}>
-                              Start AI
-                            </Button>
-                          </div>
-                        )}
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -411,31 +415,35 @@ const onStartAI = async (overrideAction?: string) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
-                         <div
-                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                           onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}
-                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); } }}
-                           role="button"
-                           tabIndex={0}
-                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
-                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                           onDrop={(e) => { setSelectedAction('Make Content Searchable (OCR)'); setDragActive(false); onDrop(e); }}
-                           aria-label="Drag and drop a file here or click to upload"
-                         >
-                           <div className="flex items-center gap-3 text-muted-foreground">
-                             <Upload className="size-5 text-primary" />
-                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
-                           </div>
-                         </div>
-                         {selectedFile && (
-                           <div className="mt-3">
-                             <Button size="sm" variant="accent" disabled={startingAI}
-                               onClick={() => onStartAI('Make Content Searchable (OCR)')}>
-                               Start AI
-                             </Button>
-                           </div>
-                         )}
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Make Content Searchable (OCR)')}>
+                              Start AI
+                            </Button>
+                          )}
+                        </div>
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                          onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={(e) => { setSelectedAction('Make Content Searchable (OCR)'); setDragActive(false); onDrop(e); }}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
+                          <div className="flex items-center gap-3 text-muted-foreground">
+                            <Upload className="size-5 text-primary" />
+                            <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
+                          </div>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -457,6 +465,18 @@ const onStartAI = async (overrideAction?: string) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Translate & Localize')}>
+                              Start AI
+                            </Button>
+                          )}
+                        </div>
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}
@@ -474,14 +494,6 @@ const onStartAI = async (overrideAction?: string) => {
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
                           </div>
                         </div>
-                        {selectedFile && (
-                          <div className="mt-3">
-                            <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Translate & Localize')}>
-                              Start AI
-                            </Button>
-                          </div>
-                        )}
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -503,6 +515,18 @@ const onStartAI = async (overrideAction?: string) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
+                              Start AI
+                            </Button>
+                          )}
+                        </div>
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}
@@ -520,14 +544,6 @@ const onStartAI = async (overrideAction?: string) => {
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
                           </div>
                         </div>
-                        {selectedFile && (
-                          <div className="mt-3">
-                            <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
-                              Start AI
-                            </Button>
-                          </div>
-                        )}
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -549,6 +565,18 @@ const onStartAI = async (overrideAction?: string) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Smart Error Detection')}>
+                              Start AI
+                            </Button>
+                          )}
+                        </div>
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}
@@ -566,14 +594,6 @@ const onStartAI = async (overrideAction?: string) => {
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
                           </div>
                         </div>
-                        {selectedFile && (
-                          <div className="mt-3">
-                            <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Smart Error Detection')}>
-                              Start AI
-                            </Button>
-                          </div>
-                        )}
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
