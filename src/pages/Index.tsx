@@ -321,41 +321,16 @@ const onStartAI = async () => {
                     </div>
                   )}
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Button size="sm" onClick={() => document.getElementById('upload-input')?.click()} disabled={uploading}>
                     {uploading ? 'Uploading…' : previewUrl ? 'Change Document' : 'Upload Document'}
                   </Button>
-                  {(previewUrl || uploadedName) && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="sm">
-                          {selectedAction ? selectedAction : 'Choose AI Action'}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="z-50">
-                        <DropdownMenuLabel>Select an action</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => { setSelectedAction('Summarize Long Documents'); toast({ title: 'AI Action', description: 'Summarize Long Documents' }); }} className="flex items-center gap-2">
-                          <FileText className="size-4 text-primary" />
-                          <span>Summarize Long Documents</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); toast({ title: 'AI Action', description: 'Make Content Searchable (OCR)' }); }} className="flex items-center gap-2">
-                          <Upload className="size-4 text-primary" />
-                          <span>Make Content Searchable (OCR)</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setSelectedAction('Translate & Localize'); toast({ title: 'AI Action', description: 'Translate & Localize' }); }} className="flex items-center gap-2">
-                          <Languages className="size-4 text-primary" />
-                          <span>Translate & Localize</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); toast({ title: 'AI Action', description: 'Contract Analysis & Risk Detection' }); }} className="flex items-center gap-2">
-                          <ShieldCheck className="size-4 text-primary" />
-                          <span>Contract Analysis & Risk Detection</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setSelectedAction('Smart Error Detection'); toast({ title: 'AI Action', description: 'Smart Error Detection' }); }} className="flex items-center gap-2">
-                          <PenLine className="size-4 text-primary" />
-                          <span>Smart Error Detection</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  {selectedAction ? (
+                    <span className="inline-flex items-center rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 px-2.5 py-1 text-xs font-medium">
+                      {selectedAction}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Select an AI tool on the right</span>
                   )}
                   {selectedAction && (
                     <Button
@@ -427,7 +402,10 @@ code: (props) => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                        <button
+                          onClick={() => { setSelectedAction('Summarize Long Documents'); toast({ title: 'AI tool selected', description: 'Summarize Long Documents' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Summarize Long Documents' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <FileText className="size-4" />
                           </div>
@@ -447,7 +425,10 @@ code: (props) => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                        <button
+                          onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); toast({ title: 'AI tool selected', description: 'Make Content Searchable (OCR)' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Make Content Searchable (OCR)' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <Upload className="size-4" />
                           </div>
@@ -465,7 +446,10 @@ code: (props) => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                        <button
+                          onClick={() => { setSelectedAction('Translate & Localize'); toast({ title: 'AI tool selected', description: 'Translate & Localize' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Translate & Localize' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <Languages className="size-4" />
                           </div>
@@ -483,7 +467,10 @@ code: (props) => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                        <button
+                          onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); toast({ title: 'AI tool selected', description: 'Contract Analysis & Risk Detection' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Contract Analysis & Risk Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <ShieldCheck className="size-4" />
                           </div>
@@ -501,7 +488,10 @@ code: (props) => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45">
+                        <button
+                          onClick={() => { setSelectedAction('Smart Error Detection'); toast({ title: 'AI tool selected', description: 'Smart Error Detection' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Smart Error Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <PenLine className="size-4" />
                           </div>
