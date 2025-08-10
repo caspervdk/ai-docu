@@ -33,6 +33,7 @@ const Index = () => {
   const [webhookResponse, setWebhookResponse] = useState<string | null>(null);
   const [webhookError, setWebhookError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
   
 
   useEffect(() => {
@@ -217,6 +218,9 @@ const onStartAI = async (overrideAction?: string) => {
       fd.append('file_name', selectedFile.name);
       fd.append('mime_type', selectedFile.type || '');
       fd.append('message', `Action: ${action}`);
+      if (action === 'Translate & Localize') {
+        fd.append('target_language', selectedLanguage);
+      }
 
       const res = await fetch('https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b', {
         method: 'POST',
@@ -472,18 +476,33 @@ const onStartAI = async (overrideAction?: string) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
-                        <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
-                            Upload
-                          </Button>
-                          {selectedFile && (
-                            <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Translate & Localize')}>
-                              Start AI
-                            </Button>
-                          )}
-                        </div>
+                         <div className="mt-3 flex items-center gap-2">
+                           <Button size="sm" variant="secondary" disabled={uploading}
+                             onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
+                             Upload
+                           </Button>
+                           <DropdownMenu>
+                             <DropdownMenuTrigger asChild>
+                               <Button size="sm" variant="outline">Language: {selectedLanguage}</Button>
+                             </DropdownMenuTrigger>
+                             <DropdownMenuContent align="start" className="z-50 bg-background">
+                               <DropdownMenuLabel>Choose language</DropdownMenuLabel>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('English')}>English</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('Dutch')}>Dutch</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('German')}>German</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('French')}>French</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('Spanish')}>Spanish</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('Italian')}>Italian</DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => setSelectedLanguage('Portuguese')}>Portuguese</DropdownMenuItem>
+                             </DropdownMenuContent>
+                           </DropdownMenu>
+                           {selectedFile && (
+                             <Button size="sm" variant="accent" disabled={startingAI}
+                               onClick={() => onStartAI('Translate & Localize')}>
+                               Start AI
+                             </Button>
+                           )}
+                         </div>
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}
