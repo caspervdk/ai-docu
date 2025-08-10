@@ -65,7 +65,6 @@ const Index = () => {
       // Revoke previous preview URL to avoid memory leaks
       setPreviewText(null);
       setUploadedName(null);
-      setSelectedAction(null);
       setSelectedFile(null);
       setWebhookResponse(null);
       setWebhookError(null);
@@ -124,7 +123,7 @@ const Index = () => {
     try {
       setPreviewText(null);
       setUploadedName(null);
-      setSelectedAction(null);
+      
       setSelectedFile(null);
       setWebhookResponse(null);
       setWebhookError(null);
@@ -388,6 +387,11 @@ const onStartAI = async (overrideAction?: string) => {
                             </Button>
                           )}
                         </div>
+                        {selectedFile && selectedAction === 'Summarize Long Documents' && previewKind === 'image' && previewUrl && (
+                          <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                            <img src={previewUrl} alt="Uploaded image preview for Summarize Long Documents" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                          </div>
+                        )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
@@ -438,6 +442,11 @@ const onStartAI = async (overrideAction?: string) => {
                             </Button>
                           )}
                         </div>
+                        {selectedFile && selectedAction === 'Make Content Searchable (OCR)' && previewKind === 'image' && previewUrl && (
+                          <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                            <img src={previewUrl} alt="Uploaded image preview for Make Content Searchable (OCR)" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                          </div>
+                        )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}
@@ -502,7 +511,12 @@ const onStartAI = async (overrideAction?: string) => {
                                Start AI
                              </Button>
                            )}
-                         </div>
+                           </div>
+                           {selectedFile && selectedAction === 'Translate & Localize' && previewKind === 'image' && previewUrl && (
+                             <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                               <img src={previewUrl} alt="Uploaded image preview for Translate & Localize" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                             </div>
+                           )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}
@@ -552,7 +566,12 @@ const onStartAI = async (overrideAction?: string) => {
                               Start AI
                             </Button>
                           )}
-                        </div>
+                         </div>
+                         {selectedFile && selectedAction === 'Contract Analysis & Risk Detection' && previewKind === 'image' && previewUrl && (
+                           <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                             <img src={previewUrl} alt="Uploaded image preview for Contract Analysis & Risk Detection" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                           </div>
+                         )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}
@@ -602,7 +621,12 @@ const onStartAI = async (overrideAction?: string) => {
                               Start AI
                             </Button>
                           )}
-                        </div>
+                         </div>
+                         {selectedFile && selectedAction === 'Smart Error Detection' && previewKind === 'image' && previewUrl && (
+                           <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                             <img src={previewUrl} alt="Uploaded image preview for Smart Error Detection" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                           </div>
+                         )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                           onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}
