@@ -139,13 +139,15 @@ const isLikelyJSON = (t: string) => {
   }
 };
 
-const onStartAI = async () => {
+const onStartAI = async (overrideAction?: string) => {
     try {
       if (!selectedFile) {
         toast({ title: 'No file selected', description: 'Please upload a file first.', variant: 'destructive' });
         return;
       }
-      if (!selectedAction) {
+
+      const action = overrideAction ?? selectedAction;
+      if (!action) {
         toast({ title: 'No action selected', description: 'Please choose an AI action.', variant: 'destructive' });
         return;
       }
@@ -154,11 +156,11 @@ const onStartAI = async () => {
 
       const fd = new FormData();
       fd.append('file', selectedFile, selectedFile.name);
-      fd.append('action', selectedAction);
+      fd.append('action', action);
       fd.append('user_id', userId ?? 'anon');
       fd.append('file_name', selectedFile.name);
       fd.append('mime_type', selectedFile.type || '');
-      fd.append('message', `Action: ${selectedAction}`);
+      fd.append('message', `Action: ${action}`);
 
       const res = await fetch('https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b', {
         method: 'POST',
@@ -200,7 +202,7 @@ const onStartAI = async () => {
 
       setWebhookError(null);
       setWebhookResponse(display || 'Success (empty response body)');
-      toast({ title: 'AI responded', description: `Action: ${selectedAction}` });
+      toast({ title: 'AI responded', description: `Action: ${action}` });
     } catch (err: any) {
       toast({ title: 'Failed to start', description: err?.message ?? 'Could not send to AI.', variant: 'destructive' });
     } finally {
@@ -337,7 +339,7 @@ const onStartAI = async () => {
                       variant="accent"
                       size="sm"
                       disabled={startingAI}
-                      onClick={onStartAI}
+                      onClick={() => onStartAI()}
                     >
                       {startingAI ? 'Starting…' : 'Start AI'}
                     </Button>
@@ -419,6 +421,16 @@ code: (props) => {
                         <p className="text-sm text-muted-foreground">
                           Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
                         </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="accent" disabled={startingAI}
+                            onClick={() => onStartAI('Summarize Long Documents')}>
+                            Start AI
+                          </Button>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -440,6 +452,16 @@ code: (props) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="accent" disabled={startingAI}
+                            onClick={() => onStartAI('Make Content Searchable (OCR)')}>
+                            Start AI
+                          </Button>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -461,6 +483,16 @@ code: (props) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="accent" disabled={startingAI}
+                            onClick={() => onStartAI('Translate & Localize')}>
+                            Start AI
+                          </Button>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -482,6 +514,16 @@ code: (props) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="accent" disabled={startingAI}
+                            onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
+                            Start AI
+                          </Button>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
@@ -503,6 +545,16 @@ code: (props) => {
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}>
+                            Upload
+                          </Button>
+                          <Button size="sm" variant="accent" disabled={startingAI}
+                            onClick={() => onStartAI('Smart Error Detection')}>
+                            Start AI
+                          </Button>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </li>
