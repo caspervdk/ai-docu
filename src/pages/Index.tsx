@@ -366,8 +366,15 @@ const onStartAI = async (overrideAction?: string) => {
                           Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
                         </p>
                         <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={uploading}
+                            onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
+                            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                            onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDrop(e as any); }}
+                          >
                             Upload
                           </Button>
                           {selectedFile && (
