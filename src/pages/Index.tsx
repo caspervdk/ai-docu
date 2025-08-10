@@ -35,6 +35,46 @@ const Index = () => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
   
+  const ACTIONS = [
+    { id: 'summarize', label: 'Summarize Long Documents' },
+    { id: 'ocr', label: 'Make Content Searchable (OCR)' },
+    { id: 'translate', label: 'Translate & Localize' },
+    { id: 'contract', label: 'Contract Analysis & Risk Detection' },
+    { id: 'errors', label: 'Smart Error Detection' },
+  ] as const;
+
+  type UploadKind = 'image' | 'pdf' | 'text' | 'other';
+  type UploadInfo = {
+    file: File | null;
+    uploadedName: string | null;
+    previewUrl: string | null;
+    previewKind: UploadKind | null;
+    previewText: string | null;
+    uploading: boolean;
+  };
+
+  const [uploads, setUploads] = useState<Record<(typeof ACTIONS)[number]['id'], UploadInfo>>({
+    summarize: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    ocr: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    translate: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    contract: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    errors: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+  });
+
+  const [dragKey, setDragKey] = useState<string | null>(null);
+  const [pendingKey, setPendingKey] = useState<string | null>(null);
+
+  const labelToId = (label: string | null): (typeof ACTIONS)[number]['id'] | null => {
+    const m = ACTIONS.find(a => a.label === label);
+    return m ? m.id : null;
+  };
+
+  useEffect(() => {
+    return () => {
+      Object.values(uploads).forEach(u => { if (u.previewUrl) URL.revokeObjectURL(u.previewUrl); });
+    };
+  }, []);
+  
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -56,42 +96,53 @@ const Index = () => {
     };
   }, [previewUrl]);
 
-  const onFileSelected = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const makeOnFileSelected = (forcedId?: (typeof ACTIONS)[number]['id']) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Instant local preview
+    const id = forcedId ?? pendingKey ?? labelToId(selectedAction) ?? 'summarize';
     try {
-      // Revoke previous preview URL to avoid memory leaks
-      setPreviewText(null);
-      setUploadedName(null);
-      setSelectedFile(null);
-      setWebhookResponse(null);
-      setWebhookError(null);
-      setUploading(true);
-
-      setPreviewUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev);
-        return prev;
+      // reset and set uploading
+      setUploads((prev) => {
+        const prevUrl = prev[id].previewUrl;
+        if (prevUrl) URL.revokeObjectURL(prevUrl);
+        return {
+          ...prev,
+          [id]: { ...prev[id], uploading: true, previewText: null },
+        };
       });
 
       const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
-
       const mime = file.type;
-      let kind: 'image' | 'pdf' | 'text' | 'other' = 'other';
-      if (mime?.startsWith('image/')) kind = 'image';
-      else if (mime === 'application/pdf') kind = 'pdf';
-      else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
-      setPreviewKind(kind);
+      const kind: UploadKind = mime?.startsWith('image/')
+        ? 'image'
+        : mime === 'application/pdf'
+        ? 'pdf'
+        : mime?.startsWith('text/') || /\.txt$/i.test(file.name)
+        ? 'text'
+        : 'other';
 
-      setSelectedFile(file);
       if (kind === 'text') {
-        // Load text content (non-blocking)
-        file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
+        file
+          .text()
+          .then((t) =>
+            setUploads((prev) => ({ ...prev, [id]: { ...prev[id], previewText: t.slice(0, 5000) } }))
+          )
+          .catch(() => {});
       }
 
-      // Proceed with upload
+      setUploads((prev) => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          file,
+          uploadedName: file.name,
+          previewUrl: objectUrl,
+          previewKind: kind,
+        },
+      }));
+
+      // Proceed with upload to Supabase
       const targetBucket = userId ? 'documents' : 'public_uploads';
       const keyPrefix = userId ?? 'anon';
       const random = Math.random().toString(36).slice(2, 8);
@@ -102,7 +153,6 @@ const Index = () => {
         .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
 
       if (error) throw error;
-      setUploadedName(file.name);
       toast({
         title: 'Upload complete',
         description: userId
@@ -112,42 +162,43 @@ const Index = () => {
     } catch (err: any) {
       toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
-      setUploading(false);
+      setUploads((prev) => ({ ...prev, [id]: { ...prev[id], uploading: false } }));
+      setPendingKey(null);
     }
-  }, [userId]);
+  };
 
-  const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
+  const onDropFor = (id: (typeof ACTIONS)[number]['id']) => async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
     try {
-      setPreviewText(null);
-      setUploadedName(null);
-      
-      setSelectedFile(null);
-      setWebhookResponse(null);
-      setWebhookError(null);
-      setUploading(true);
-
-      setPreviewUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev);
-        return prev;
+      setUploads((prev) => {
+        const prevUrl = prev[id].previewUrl;
+        if (prevUrl) URL.revokeObjectURL(prevUrl);
+        return { ...prev, [id]: { ...prev[id], uploading: true, previewText: null } };
       });
 
       const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
-
       const mime = file.type;
-      let kind: 'image' | 'pdf' | 'text' | 'other' = 'other';
-      if (mime?.startsWith('image/')) kind = 'image';
-      else if (mime === 'application/pdf') kind = 'pdf';
-      else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
-      setPreviewKind(kind);
+      const kind: UploadKind = mime?.startsWith('image/')
+        ? 'image'
+        : mime === 'application/pdf'
+        ? 'pdf'
+        : mime?.startsWith('text/') || /\.txt$/i.test(file.name)
+        ? 'text'
+        : 'other';
 
-      setSelectedFile(file);
       if (kind === 'text') {
-        file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
+        file
+          .text()
+          .then((t) => setUploads((prev) => ({ ...prev, [id]: { ...prev[id], previewText: t.slice(0, 5000) } })))
+          .catch(() => {});
       }
+
+      setUploads((prev) => ({
+        ...prev,
+        [id]: { ...prev[id], file, uploadedName: file.name, previewUrl: objectUrl, previewKind: kind },
+      }));
 
       const targetBucket = userId ? 'documents' : 'public_uploads';
       const keyPrefix = userId ?? 'anon';
@@ -159,7 +210,6 @@ const Index = () => {
         .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
 
       if (error) throw error;
-      setUploadedName(file.name);
       toast({
         title: 'Upload complete',
         description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.',
@@ -167,9 +217,11 @@ const Index = () => {
     } catch (err: any) {
       toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
-      setUploading(false);
+      setUploads((prev) => ({ ...prev, [id]: { ...prev[id], uploading: false } }));
+      setDragKey(null);
+      setPendingKey(null);
     }
-  }, [userId]);
+  };
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -343,7 +395,7 @@ const onStartAI = async (overrideAction?: string) => {
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8">
               {/* Hidden upload input for per-tool buttons */}
-              <input id="upload-input" type="file" className="sr-only" aria-hidden="true" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onFileSelected} disabled={uploading} />
+              <input id="upload-input" type="file" className="sr-only" aria-hidden="true" accept=".pdf,.doc,.docx,.txt,image/*" onChange={makeOnFileSelected()} disabled={uploading} />
 
               {/* Right: Actions list */}
               <div className="space-y-3">
