@@ -32,6 +32,7 @@ const Index = () => {
   const [startingAI, setStartingAI] = useState(false);
   const [webhookResponse, setWebhookResponse] = useState<string | null>(null);
   const [webhookError, setWebhookError] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
   
 
   useEffect(() => {
@@ -107,6 +108,61 @@ const Index = () => {
         description: userId
           ? 'Your document was uploaded successfully.'
           : 'Uploaded anonymously. Anyone with the link can view.',
+      });
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  }, [userId]);
+
+  const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    try {
+      setPreviewText(null);
+      setUploadedName(null);
+      setSelectedAction(null);
+      setSelectedFile(null);
+      setWebhookResponse(null);
+      setWebhookError(null);
+      setUploading(true);
+
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return prev;
+      });
+
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+
+      const mime = file.type;
+      let kind: 'image' | 'pdf' | 'text' | 'other' = 'other';
+      if (mime?.startsWith('image/')) kind = 'image';
+      else if (mime === 'application/pdf') kind = 'pdf';
+      else if (mime?.startsWith('text/') || /\.txt$/i.test(file.name)) kind = 'text';
+      setPreviewKind(kind);
+
+      setSelectedFile(file);
+      if (kind === 'text') {
+        file.text().then((t) => setPreviewText(t.slice(0, 5000))).catch(() => setPreviewText(''));
+      }
+
+      const targetBucket = userId ? 'documents' : 'public_uploads';
+      const keyPrefix = userId ?? 'anon';
+      const random = Math.random().toString(36).slice(2, 8);
+      const filePath = `${keyPrefix}/${Date.now()}-${random}-${file.name}`;
+
+      const { error } = await supabase.storage
+        .from(targetBucket)
+        .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
+
+      if (error) throw error;
+      setUploadedName(file.name);
+      toast({
+        title: 'Upload complete',
+        description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.',
       });
     } catch (err: any) {
       toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
@@ -285,6 +341,24 @@ const onStartAI = async (overrideAction?: string) => {
             <CardContent className="grid gap-6 md:gap-8">
               {/* Hidden upload input for per-tool buttons */}
               <input id="upload-input" type="file" className="sr-only" aria-hidden="true" accept=".pdf,.doc,.docx,.txt,image/*" onChange={onFileSelected} disabled={uploading} />
+
+              <div
+                className={`flex items-center justify-center rounded-xl border border-dashed p-8 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                onClick={() => document.getElementById('upload-input')?.click()}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('upload-input')?.click(); } }}
+                role="button"
+                tabIndex={0}
+                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                onDrop={(e) => { setDragActive(false); onDrop(e); }}
+                aria-label="Drag and drop a file here or click to upload"
+              >
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <Upload className="size-5 text-primary" />
+                  <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
+                </div>
+              </div>
 
               {/* Right: Actions list */}
               <div className="space-y-3">
