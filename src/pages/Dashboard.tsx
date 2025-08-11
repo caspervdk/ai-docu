@@ -159,7 +159,12 @@ const Dashboard = () => {
       triggerFileDialog();
     }
   };
-  const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+const slugFileName = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/(^[.-]+|[.-]+$)/g, '');
   const saveOutput = async () => {
     if (!output.trim()) {
       toast({ title: "Nothing to save", description: "Run the tool to generate output first." });
@@ -171,13 +176,13 @@ const Dashboard = () => {
     }
     try {
       setIsSaving(true);
-      const base = slug(docName.trim());
+      const base = slugFileName(docName.trim());
       if (!base) {
         toast({ title: "Enter a file name", description: "Please provide a name before saving." });
         setIsSaving(false);
         return;
       }
-      const filename = `${base}.txt`;
+      const filename = base;
       const path = `${userId}/${filename}`;
       const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
       const { error } = await supabase.storage.from('documents').upload(path, blob, { contentType: 'text/plain', upsert: false });
