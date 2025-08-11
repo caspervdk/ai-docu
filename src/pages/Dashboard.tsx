@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2 } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Eye, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -143,6 +143,33 @@ const Dashboard = () => {
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
+  const shareDoc = async (name: string) => {
+    if (!userId) return;
+    const path = `${userId}/${name}`;
+    const { data, error } = await supabase.storage.from('documents').createSignedUrl(path, 3600);
+    if (error || !data?.signedUrl) {
+      toast({ title: 'Share failed', description: error?.message || 'Could not create link', variant: 'destructive' } as any);
+      return;
+    }
+    try { await navigator.clipboard.writeText(data.signedUrl); } catch {}
+    toast({ title: 'Link copied', description: 'Signed link copied to clipboard.' });
+  };
+
+  const deleteDoc = async (name: string) => {
+    if (!userId) return;
+    const confirmed = window.confirm('Delete this document?');
+    if (!confirmed) return;
+    const path = `${userId}/${name}`;
+    const { error } = await supabase.storage.from('documents').remove([path]);
+    if (error) {
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' } as any);
+      return;
+    }
+    setDocs((prev) => prev.filter((d) => d.name !== name));
+    if (previewDoc?.name === name) setPreviewDoc(null);
+    toast({ title: 'Deleted', description: name });
+  };
+
   const getPlaceholder = (title: string) => {
     switch (title) {
       case "Summarize Long Documents":
@@ -209,7 +236,11 @@ const Dashboard = () => {
                 {docs.slice(0, 5).map((d) => (
                   <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                     <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
-                    <Button variant="ghost" size="sm" onClick={() => setPreviewDoc(d)}>View</Button>
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => setPreviewDoc(d)} aria-label="View document"><Eye className="mr-1 h-4 w-4" />View</Button>
+                      <Button variant="ghost" size="sm" onClick={() => shareDoc(d.name)} aria-label="Share document"><Share2 className="mr-1 h-4 w-4" />Share</Button>
+                      <Button variant="ghost" size="sm" onClick={() => deleteDoc(d.name)} aria-label="Delete document"><Trash2 className="mr-1 h-4 w-4" />Delete</Button>
+                    </div>
                   </li>
                 ))}
               </ul>
