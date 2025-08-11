@@ -2,17 +2,16 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Mail, FileText, Mic, MessageSquare, Wand2, Brain, Save, Share2, User2 } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
 const tools = [
-  { icon: Mail, title: "Improve Emails", desc: "Enhance clarity, tone, and engagement." },
-  { icon: FileText, title: "Create Flyer", desc: "Design a flyer with layout and graphics." },
-  { icon: Mic, title: "Record to Text", desc: "Transcribe audio into editable text." },
-  { icon: MessageSquare, title: "Summarize", desc: "Condense long docs into key points." },
-  { icon: Wand2, title: "Enhance Writing", desc: "Refine and polish your content." },
-  { icon: Brain, title: "Brainstorm Ideas", desc: "Generate creative ideas and solutions." },
+  { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
+  { icon: Search, title: "Make Content Searchable (OCR)", desc: "Extract text and index scanned files." },
+  { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions." },
+  { icon: ShieldAlert, title: "Contract Analysis & Risk Detection", desc: "Spot risks and clauses at a glance." },
+  { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes." },
 ];
 
 const Dashboard = () => {
@@ -71,7 +70,7 @@ const Dashboard = () => {
                   <CardDescription>{t.desc}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" size="sm">Open</Button>
+                  <Button variant="outline" size="sm">Open AI tool</Button>
                 </CardContent>
               </Card>
             ))}
