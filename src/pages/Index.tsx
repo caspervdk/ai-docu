@@ -455,8 +455,16 @@ const onStartAI = async (overrideAction?: string) => {
 
           <Card className="mx-auto max-w-5xl shadow-sm animate-fade-in">
             <CardHeader className="pb-2 md:pb-4">
-              <CardTitle id="get-started" className="text-xl">Get started</CardTitle>
-              <CardDescription>Choose a tool below, then upload your document and Start AI.</CardDescription>
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <CardTitle id="get-started" className="text-xl">Get started</CardTitle>
+                  <CardDescription>Choose a tool below, then upload your document and Start AI.</CardDescription>
+                </div>
+                <Button size="sm" variant="pro">
+                  <Rocket className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Show All PRO AI Tools
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8">
               {!isAuthed && (
