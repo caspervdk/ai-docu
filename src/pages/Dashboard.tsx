@@ -343,7 +343,7 @@ const getPlaceholder = (title: string) => {
             ))}
           </section>
         <Dialog open={!!activeTool} onOpenChange={(open) => { if (!open) { handleClose(); } }}>
-          <DialogContent className="sm:max-w-xl">
+          <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{activeTool?.title}</DialogTitle>
               <DialogDescription>
