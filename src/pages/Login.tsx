@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -242,12 +243,12 @@ const Login = () => {
              </DialogContent>
             </Dialog>
             <Dialog open={termsOpen} onOpenChange={setTermsOpen}>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-2xl max-h-[80vh]">
                 <DialogHeader>
                   <DialogTitle>Terms of Service</DialogTitle>
                   <DialogDescription>Last updated: 2025</DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 text-sm leading-6">
+                <ScrollArea className="max-h-[60vh] pr-2"><div className="space-y-4 text-sm leading-6">
                   <section>
                     <h3 className="font-semibold">1. Scope & Applicability</h3>
                     <p>These terms apply to your use of AI-Docu’s services, including any AI-powered tools, document generation, and related features provided on www.ai-docu.com. They form an agreement between you and AI-Docu.</p>
@@ -292,7 +293,7 @@ const Login = () => {
                     <h3 className="font-semibold">8. Dispute Resolution: Arbitration & Class Action Waiver</h3>
                     <p>You agree that disputes will be resolved through arbitration and that participation in class actions is waived. You may opt out within 30 days of creating your account or after updates by submitting a form to AI-Docu.</p>
                   </section>
-                </div>
+                </div></ScrollArea>
                 <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => setTermsOpen(false)}>Close</Button>
                 </DialogFooter>
