@@ -41,6 +41,8 @@ const Dashboard = () => {
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
   const [translateLang, setTranslateLang] = useState("en->nl");
   const [isDragActive, setIsDragActive] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
 
   const handleClose = () => {
     setActiveTool(null);
@@ -509,7 +511,7 @@ const getPlaceholder = (title: string) => {
               <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
                 {isSaving ? "Saving..." : "Save to My documents"}
               </Button>
-              <div className="text-xs text-muted-foreground">Tell us what you think of this summary, your feedback makes us smarter!</div>
+              <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)}>Feedback</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -547,6 +549,31 @@ const getPlaceholder = (title: string) => {
                 <a href={previewDoc?.url} target="_blank" rel="noopener noreferrer">Open in new tab</a>
               </Button>
               <Button onClick={() => setPreviewDoc(null)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Send feedback</DialogTitle>
+              <DialogDescription>Tell us what you think of this summary.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Label htmlFor="feedback">Your feedback</Label>
+              <Textarea id="feedback" placeholder="Type your feedback..." value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setFeedbackOpen(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  if (!feedbackText.trim()) { toast({ title: 'Feedback is empty', description: 'Please add a comment.' }); return; }
+                  toast({ title: 'Thank you!', description: 'Your feedback helps us improve.' });
+                  setFeedbackText('');
+                  setFeedbackOpen(false);
+                }}
+              >
+                Submit
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
