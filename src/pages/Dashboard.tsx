@@ -12,7 +12,7 @@ import { useState } from "react";
 
 const tools = [
   { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
-  { icon: Search, title: "Make Content Searchable (OCR)", desc: "Extract text and index scanned files." },
+  { icon: Search, title: "Cross-Doc Linker", desc: "Find related documents and link supporting evidence." },
   { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions." },
   { icon: ShieldAlert, title: "Contract Analysis & Risk Detection", desc: "Spot risks and clauses at a glance." },
   { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes." },
@@ -42,8 +42,8 @@ const Dashboard = () => {
     switch (title) {
       case "Summarize Long Documents":
         return "Paste the document text or key sections to summarize...";
-      case "Make Content Searchable (OCR)":
-        return "Describe the image/PDF and paste any text to extract or index...";
+      case "Cross-Doc Linker":
+        return "Provide text or keywords to find and link related evidence across documents...";
       case "Translate & Localize":
         return "Enter text to translate and the target locale (e.g., en->nl)...";
       case "Contract Analysis & Risk Detection":
