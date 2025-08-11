@@ -89,12 +89,17 @@ const Dashboard = () => {
   }, [userId]);
   const summarizeWithAI = async (overrideFile?: File) => {
     const file = overrideFile ?? selectedFile;
-    if (!file) return;
+    if (!file && !input.trim()) {
+      setOutput("Please provide text or upload a document.");
+      return;
+    }
     try {
       setIsSending(true);
       setOutput("Sending to AI...");
       const fd = new FormData();
-      fd.append("file", file, file.name);
+      if (file) {
+        fd.append("file", file, file.name);
+      }
       if (activeTool?.title) fd.append("action", activeTool.title);
       if (input) fd.append("message", input);
       if (activeTool?.title === "Translate & Localize" && translateLang) fd.append("language", translateLang);
@@ -404,7 +409,7 @@ const getPlaceholder = (title: string) => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button onClick={() => summarizeWithAI()} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : "Summarize with AI"}</Button>
+                <Button onClick={() => summarizeWithAI()} disabled={isSending || (!selectedFile && !input.trim())}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : "Summarize with AI"}</Button>
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
               </div>
 
