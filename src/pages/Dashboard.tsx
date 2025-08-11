@@ -359,7 +359,7 @@ const getPlaceholder = (title: string) => {
           <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {tools.map((t) => (
               <Card key={t.title} className="hover:shadow-md transition-shadow">
-                <CardHeader>
+                <CardHeader className="relative">
                   <div className="size-12 rounded-full bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
                     <t.icon className="h-6 w-6 text-primary" />
                   </div>
@@ -371,7 +371,7 @@ const getPlaceholder = (title: string) => {
                         <Button
                           variant="pro"
                           size="sm"
-                          className="ml-auto inline-flex"
+                          className="absolute right-4 top-4 inline-flex"
                           onClick={() => navigate('/#pricing')}
                           aria-label="Upgrade to Pro"
                         >
