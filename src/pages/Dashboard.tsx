@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const tools = [
   { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
@@ -24,18 +24,50 @@ const Dashboard = () => {
   const [activeTool, setActiveTool] = useState<(typeof tools)[number] | null>(null);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleClose = () => {
     setActiveTool(null);
     setInput("");
     setOutput("");
+    setSelectedFile(null);
+    setIsSending(false);
   };
 
-  const handleRun = () => {
-    setOutput("Processing...");
-    setTimeout(() => {
-      setOutput(`Sample output for "${activeTool?.title}" based on your input.`);
-    }, 800);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] || null;
+    setSelectedFile(f);
+  };
+
+  const triggerFileDialog = () => {
+    fileInputRef.current?.click();
+  };
+
+  const summarizeWithAI = async () => {
+    if (!selectedFile) return;
+    try {
+      setIsSending(true);
+      setOutput("Sending to AI...");
+      const fd = new FormData();
+      fd.append("file", selectedFile, selectedFile.name);
+      if (activeTool?.title) fd.append("action", activeTool.title);
+      if (input) fd.append("message", input);
+
+      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b", {
+        method: "POST",
+        body: fd,
+      });
+
+      const text = await res.text().catch(() => "");
+      if (!res.ok) throw new Error(text || `Webhook responded with ${res.status}`);
+      setOutput(text || "Success (empty response)");
+    } catch (err: any) {
+      setOutput(err?.message || "Failed to send to AI.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const getPlaceholder = (title: string) => {
@@ -134,8 +166,23 @@ const Dashboard = () => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="tool-file">Document</Label>
+                <input
+                  id="tool-file"
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <div className="flex items-center gap-2">
+                  <Button variant="secondary" onClick={triggerFileDialog}>Upload</Button>
+                  <span className="text-sm text-muted-foreground">{selectedFile ? selectedFile.name : "No file selected"}</span>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
-                <Button onClick={handleRun}>Run</Button>
+                <Button onClick={summarizeWithAI} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : "Summarize with AI"}</Button>
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
               </div>
 
