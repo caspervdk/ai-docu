@@ -2,7 +2,8 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -14,7 +15,15 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 
-const tools = [
+type Tool = {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+  proOnly: boolean;
+  cta?: string;
+};
+
+const tools: readonly Tool[] = [
   { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points.", proOnly: false },
   { icon: Search, title: "Cross-Doc Linker", desc: "Find related documents and link supporting evidence.", proOnly: false },
   { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions.", proOnly: false },
@@ -22,6 +31,15 @@ const tools = [
   { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes.", proOnly: true },
   { icon: Files, title: "Merge documents", desc: "Combine multiple documents into a single file.", proOnly: true },
   { icon: BarChart3, title: "Analyze data from a file", desc: "Extract insights and metrics from your dataset.", proOnly: true },
+
+  // New PRO tools
+  { icon: EyeOff, title: "PII Redaction & Anonymization", desc: "Remove personal data and return a clean copy + audit log. Formats: PDF, DOCX, TXT, PNG/JPG (OCR)", proOnly: true, cta: "Redact my file" },
+  { icon: Table, title: "Table & Invoice Extraction", desc: "Detect tables and export structured CSV/JSON (invoice no., date, totals, VAT). Formats: PDF, PNG/JPG, DOCX", proOnly: true, cta: "Extract tables" },
+  { icon: FileDiff, title: "Version Diff & Change Summary", desc: "Compare two documents and generate a human-readable changelog. Formats: PDF, DOCX, TXT", proOnly: true, cta: "Compare versions" },
+  { icon: Presentation, title: "Doc-to-Slides Generator", desc: "Turn a long document into presentation slides with notes. Formats: DOCX, PDF, TXT → PPTX/Google Slides", proOnly: true, cta: "Create slides" },
+  { icon: MessageSquare, title: "Ask-Your-Docs Q&A", desc: "Chat with documents; answers include citations. Formats: PDF, DOCX, TXT, HTML", proOnly: true, cta: "Start Q&A" },
+  { icon: WandSparkles, title: "Data Cleaning & Normalization", desc: "Fix missing values, outliers, duplicates; standardize columns. Formats: CSV, XLS/XLSX", proOnly: true, cta: "Clean my data" },
+  { icon: FileSearch, title: "Clause Finder & Policy Checker", desc: "Locate key clauses and score against a checklist. Formats: PDF, DOCX, TXT", proOnly: true, cta: "Scan for clauses" },
 ] as const;
 
 const Dashboard = () => {
@@ -354,7 +372,7 @@ const getPlaceholder = (title: string) => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" size="sm" onClick={() => (t.proOnly ? setProPromptTool(t) : setActiveTool(t))}>Open AI tool</Button>
+                  <Button variant="outline" size="sm" onClick={() => (t.proOnly ? setProPromptTool(t) : setActiveTool(t))}>{t.cta ?? "Open AI tool"}</Button>
                 </CardContent>
               </Card>
             ))}
