@@ -125,7 +125,7 @@ const Dashboard = () => {
       if (input) fd.append("message", input);
       if (activeTool?.title === "Translate & Localize" && translateLang) fd.append("language", translateLang);
 
-      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook/analyze-doc", {
+      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
         method: "POST",
         body: fd,
       });
@@ -153,7 +153,7 @@ const Dashboard = () => {
       if (input) fd.append("message", input);
       if (translateLang) fd.append("language", translateLang);
 
-      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook/analyze-doc", {
+      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
         method: "POST",
         body: fd,
       });
