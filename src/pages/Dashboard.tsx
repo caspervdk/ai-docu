@@ -363,7 +363,9 @@ const getPlaceholder = (title: string) => {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="tool-input">{(activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents") ? "Document" : "Input"}</Label>
+                {activeTool?.title === "Cross-Doc Linker" ? null : (
+                  <Label htmlFor="tool-input">{(activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents") ? "Document" : "Input"}</Label>
+                )}
                 {(activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents") ? (
                   <div
                     role="button"
@@ -401,7 +403,7 @@ const getPlaceholder = (title: string) => {
                       <span className="text-muted-foreground">Drop your file here or click to upload</span>
                     )}
                   </div>
-                ) : (
+                ) : activeTool?.title === "Cross-Doc Linker" ? null : (
                   <Textarea
                     id="tool-input"
                     placeholder={activeTool ? getPlaceholder(activeTool.title) : ""}
@@ -485,7 +487,7 @@ const getPlaceholder = (title: string) => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button onClick={() => summarizeWithAI()} disabled={isSending || (!selectedFile && !input.trim())}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : "Summarize with AI"}</Button>
+                <Button onClick={() => summarizeWithAI()} disabled={isSending || (!selectedFile && !input.trim())}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : activeTool?.title === "Cross-Doc Linker" ? "Search-Doc with AI" : "Summarize with AI"}</Button>
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
               </div>
 
