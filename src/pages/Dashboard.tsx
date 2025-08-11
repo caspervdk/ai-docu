@@ -444,9 +444,41 @@ const getPlaceholder = (title: string) => {
                 {activeTool?.title !== "Translate & Localize" && activeTool?.title !== "Summarize Long Documents" && (
                   <>
                     <Label htmlFor="tool-file">Document</Label>
-                    <div className="flex items-center gap-2">
-                      <Button variant="secondary" onClick={handleUploadClick}>Upload</Button>
-                      <span className="text-sm text-muted-foreground">{selectedFile ? selectedFile.name : "No file selected"}</span>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={triggerFileDialog}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') triggerFileDialog(); }}
+                      onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                      onDragLeave={() => setIsDragActive(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setIsDragActive(false);
+                        const f = e.dataTransfer.files?.[0];
+                        if (f) setSelectedFile(f);
+                      }}
+                      className={`flex w-full items-center justify-center rounded-md border text-sm transition cursor-pointer ${isDragActive ? 'border-primary bg-primary/5' : selectedFile ? 'border-border bg-muted/10 py-3' : 'h-28 border-dashed'} hover-scale`}
+                      aria-label="Drop your file here or click to upload"
+                    >
+                      {selectedFile ? (
+                        <div className="w-full px-2 animate-fade-in">
+                          <div className="flex items-center gap-3 rounded-md border bg-muted/30 px-3 py-2">
+                            <div className="rounded-md bg-primary/10 p-2">
+                              <FileText className="h-4 w-4 text-primary" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">{selectedFile.name}</p>
+                              <p className="text-xs text-muted-foreground">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="outline" size="sm" onClick={triggerFileDialog}>Change</Button>
+                              <Button variant="ghost" size="sm" onClick={() => setSelectedFile(null)}>Remove</Button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">Drop your file here or click to upload</span>
+                      )}
                     </div>
                   </>
                 )}
