@@ -371,7 +371,7 @@ const getPlaceholder = (title: string) => {
                         <Button
                           variant="pro"
                           size="sm"
-                          className="ml-auto hidden md:inline-flex"
+                          className="ml-auto inline-flex"
                           onClick={() => navigate('/#pricing')}
                           aria-label="Upgrade to Pro"
                         >
