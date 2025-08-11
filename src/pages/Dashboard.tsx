@@ -465,9 +465,9 @@ const getPlaceholder = (title: string) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="doc-name">File name</Label>
-                <Input id="doc-name" placeholder="e.g., summary-q3" value={docName} onChange={(e) => setDocName(e.target.value)} />
-                <p className="text-xs text-muted-foreground">Will be saved as .txt in My documents.</p>
+                <Label htmlFor="doc-name">Document name</Label>
+                <Input id="doc-name" placeholder={'Type here "give your document a name"'} value={docName} onChange={(e) => setDocName(e.target.value)} />
+                <p className="text-xs text-muted-foreground">Will be saved in My documents.</p>
               </div>
             </div>
 
@@ -475,7 +475,7 @@ const getPlaceholder = (title: string) => {
               <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
                 {isSaving ? "Saving..." : "Save to My documents"}
               </Button>
-              <div className="text-xs text-muted-foreground">Note: Demo UI. Connect to your AI backend to enable live results.</div>
+              <div className="text-xs text-muted-foreground">Tell us what you think of this summary, your feedback makes us smarter!</div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
