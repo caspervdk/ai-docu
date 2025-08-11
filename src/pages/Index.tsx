@@ -430,7 +430,7 @@ const onStartAI = async (overrideAction?: string) => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
-              <Button size="lg" variant="pro"><Rocket className="size-4" aria-hidden="true" /> Upgrade to AI-Docu Pro</Button>
+              <Button size="lg" variant="pro" onClick={() => { setYearly(false); document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}><Rocket className="size-4" aria-hidden="true" /> Upgrade to AI-Docu Pro</Button>
             </div>
             <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
           </div>
