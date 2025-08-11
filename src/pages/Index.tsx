@@ -576,7 +576,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                             onClick={handleUploadClick('Cross-Doc Linker')}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Cross-Doc Linker'); document.getElementById('upload-input')?.click(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Cross-Doc Linker')(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
@@ -613,7 +613,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
                          <div className="mt-3 flex items-center gap-2">
                            <Button size="sm" variant="secondary" disabled={uploading}
-                             onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}>
+                             onClick={handleUploadClick('Translate & Localize')}>
                              Upload
                            </Button>
                            <DropdownMenu>
@@ -646,7 +646,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                               onClick={handleUploadClick('Translate & Localize')}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Translate & Localize')(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
@@ -683,7 +683,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
                         <div className="mt-3 flex items-center gap-2">
                           <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}>
+                            onClick={handleUploadClick('Contract Analysis & Risk Detection')}>
                             Upload
                           </Button>
                           {selectedFile && (
@@ -701,7 +701,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                              onClick={handleUploadClick('Contract Analysis & Risk Detection')}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Contract Analysis & Risk Detection')(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
@@ -738,7 +738,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
                         <div className="mt-3 flex items-center gap-2">
                           <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}>
+                            onClick={handleUploadClick('Smart Error Detection')}>
                             Upload
                           </Button>
                           {selectedFile && (
@@ -756,7 +756,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
                              onClick={handleUploadClick('Smart Error Detection')}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Smart Error Detection')(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
