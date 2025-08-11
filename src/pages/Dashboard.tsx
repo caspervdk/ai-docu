@@ -207,14 +207,48 @@ const slugFileName = (s: string) =>
         setIsSaving(false);
         return;
       }
-      const filename = base;
-      const path = `${userId}/${filename}`;
-      const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
-      const { error } = await supabase.storage.from('documents').upload(path, blob, { contentType: 'text/plain', upsert: false });
-      if (error) throw error;
-      const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-      setDocs((prev) => [{ name: filename, url: signed?.signedUrl || '#' }, ...prev]);
-      toast({ title: 'Saved to My documents', description: filename });
+
+      // 1) Save the generated output as a text file
+      const outputFilename = base;
+      const outputPath = `${userId}/${outputFilename}`;
+      const outputBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+      const { error: outputErr } = await supabase.storage
+        .from('documents')
+        .upload(outputPath, outputBlob, { contentType: 'text/plain', upsert: false });
+      if (outputErr) throw outputErr;
+      const { data: outputSigned } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(outputPath, 600);
+
+      const newEntries: { name: string; url: string }[] = [];
+
+      // 2) Also save the originally uploaded file (if any)
+      if (selectedFile) {
+        try {
+          const originalName = slugFileName(selectedFile.name);
+          const originalPath = `${userId}/${originalName}`;
+          const { error: originalErr } = await supabase.storage
+            .from('documents')
+            .upload(originalPath, selectedFile, { upsert: false });
+          if (originalErr) {
+            // If saving the original fails, we still keep the output saved
+            toast({ title: 'Original file not saved', description: originalErr.message, variant: 'destructive' } as any);
+          } else {
+            const { data: originalSigned } = await supabase.storage
+              .from('documents')
+              .createSignedUrl(originalPath, 600);
+            newEntries.push({ name: originalName, url: originalSigned?.signedUrl || '#' });
+          }
+        } catch (origErr: any) {
+          toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
+        }
+      }
+
+      // Add the output entry after the original file (so both appear at the top)
+      newEntries.push({ name: outputFilename, url: outputSigned?.signedUrl || '#' });
+      setDocs((prev) => [...newEntries, ...prev]);
+
+      toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       handleClose();
     } catch (e: any) {
       toast({ title: 'Save failed', description: e?.message || 'Could not save document.', variant: 'destructive' } as any);
