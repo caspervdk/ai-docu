@@ -232,7 +232,7 @@ const Dashboard = () => {
 const getPlaceholder = (title: string) => {
   switch (title) {
     case "Summarize Long Documents":
-      return "Paste the document text or key sections to summarize...";
+      return "Upload here your file you want to Summerize";
     case "Cross-Doc Linker":
       return "Provide text or keywords to find and link related evidence across documents...";
     case "Translate & Localize":
