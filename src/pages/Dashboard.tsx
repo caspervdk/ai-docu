@@ -363,8 +363,8 @@ const getPlaceholder = (title: string) => {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="tool-input">{activeTool?.title === "Translate & Localize" ? "Document" : "Input"}</Label>
-                {activeTool?.title === "Translate & Localize" ? (
+                <Label htmlFor="tool-input">{(activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents") ? "Document" : "Input"}</Label>
+                {(activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents") ? (
                   <div
                     role="button"
                     tabIndex={0}
@@ -427,7 +427,7 @@ const getPlaceholder = (title: string) => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                {activeTool?.title !== "Translate & Localize" && (
+                {activeTool?.title !== "Translate & Localize" && activeTool?.title !== "Summarize Long Documents" && (
                   <>
                     <Label htmlFor="tool-file">Document</Label>
                     <div className="flex items-center gap-2">
