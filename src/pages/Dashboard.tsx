@@ -36,22 +36,25 @@ const Dashboard = () => {
     setIsSending(false);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] || null;
     setSelectedFile(f);
+    if (f && activeTool?.title === "Cross-Doc Linker") {
+      await summarizeWithAI(f);
+    }
   };
-
   const triggerFileDialog = () => {
     fileInputRef.current?.click();
   };
 
-  const summarizeWithAI = async () => {
-    if (!selectedFile) return;
+  const summarizeWithAI = async (overrideFile?: File) => {
+    const file = overrideFile ?? selectedFile;
+    if (!file) return;
     try {
       setIsSending(true);
       setOutput("Sending to AI...");
       const fd = new FormData();
-      fd.append("file", selectedFile, selectedFile.name);
+      fd.append("file", file, file.name);
       if (activeTool?.title) fd.append("action", activeTool.title);
       if (input) fd.append("message", input);
 
@@ -69,7 +72,6 @@ const Dashboard = () => {
       setIsSending(false);
     }
   };
-
   const getPlaceholder = (title: string) => {
     switch (title) {
       case "Summarize Long Documents":
@@ -182,7 +184,7 @@ const Dashboard = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button onClick={summarizeWithAI} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : "Summarize with AI"}</Button>
+                <Button onClick={() => summarizeWithAI()} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : "Summarize with AI"}</Button>
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
               </div>
 
