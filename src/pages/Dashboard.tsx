@@ -125,7 +125,12 @@ const Dashboard = () => {
       if (input) fd.append("message", input);
       if (activeTool?.title === "Translate & Localize" && translateLang) fd.append("language", translateLang);
 
-      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
+      const webhookUrl =
+        activeTool?.title === "Cross-Doc Linker"
+          ? "https://caspervdk.app.n8n.cloud/webhook-test/6f485cb7-524e-47e6-9c27-77e2af2486b3"
+          : "https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc";
+
+      const res = await fetch(webhookUrl, {
         method: "POST",
         body: fd,
       });
