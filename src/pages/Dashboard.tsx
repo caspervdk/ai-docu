@@ -466,7 +466,7 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label htmlFor="doc-name">Document name</Label>
-                <Input id="doc-name" placeholder="give your document a name" value={docName} onChange={(e) => setDocName(e.target.value)} />
+                <Input id="doc-name" placeholder="Give your document a name" value={docName} onChange={(e) => setDocName(e.target.value)} />
                 <p className="text-xs text-muted-foreground">Will be saved in My documents.</p>
               </div>
             </div>
