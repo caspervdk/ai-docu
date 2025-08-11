@@ -38,7 +38,7 @@ const Index = () => {
   
   const ACTIONS = [
     { id: 'summarize', label: 'Summarize Long Documents' },
-    { id: 'ocr', label: 'Make Content Searchable (OCR)' },
+    { id: 'ocr', label: 'Cross-Doc Linker' },
     { id: 'translate', label: 'Translate & Localize' },
     { id: 'contract', label: 'Contract Analysis & Risk Detection' },
     { id: 'errors', label: 'Smart Error Detection' },
@@ -542,47 +542,47 @@ const onStartAI = async (overrideAction?: string) => {
                     <Collapsible>
                       <CollapsibleTrigger asChild>
                         <button
-                          onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); toast({ title: 'AI tool selected', description: 'Make Content Searchable (OCR)' }); }}
-                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Make Content Searchable (OCR)' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                          onClick={() => { setSelectedAction('Cross-Doc Linker'); toast({ title: 'AI tool selected', description: 'Cross-Doc Linker' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Cross-Doc Linker' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
                         >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <Upload className="size-4" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium">Make Content Searchable (OCR)</p>
+                            <p className="font-medium">Cross-Doc Linker</p>
                           </div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-                        <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
+                        <p className="text-sm text-muted-foreground">Find related documents and link supporting evidence.</p>
                         <div className="mt-3 flex items-center gap-2">
                           <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={handleUploadClick('Make Content Searchable (OCR)')}>
+                            onClick={handleUploadClick('Cross-Doc Linker')}>
                             Upload
                           </Button>
                           {selectedFile && (
                             <Button size="sm" variant="accent" disabled={startingAI}
-                              onClick={() => onStartAI('Make Content Searchable (OCR)')}>
+                              onClick={() => onStartAI('Cross-Doc Linker')}>
                               Start AI
                             </Button>
                           )}
                         </div>
-                        {selectedFile && selectedAction === 'Make Content Searchable (OCR)' && previewKind === 'image' && previewUrl && (
+                        {selectedFile && selectedAction === 'Cross-Doc Linker' && previewKind === 'image' && previewUrl && (
                           <div className="mt-3 rounded-lg border bg-muted/20 p-3">
-                            <img src={previewUrl} alt="Uploaded image preview for Make Content Searchable (OCR)" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
+                            <img src={previewUrl} alt="Uploaded image preview for Cross-Doc Linker" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
                           </div>
                         )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                             onClick={handleUploadClick('Make Content Searchable (OCR)')}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); } }}
+                            onClick={handleUploadClick('Cross-Doc Linker')}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Cross-Doc Linker'); document.getElementById('upload-input')?.click(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={onDropGuarded('ocr', 'Make Content Searchable (OCR)')}
+                          onDrop={onDropGuarded('ocr', 'Cross-Doc Linker')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
