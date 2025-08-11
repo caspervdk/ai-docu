@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
+  const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -252,7 +253,7 @@ const getPlaceholder = (title: string) => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" size="sm" onClick={() => setActiveTool(t)}>Open AI tool</Button>
+                  <Button variant="outline" size="sm" onClick={() => (t.proOnly ? setProPromptTool(t) : setActiveTool(t))}>Open AI tool</Button>
                 </CardContent>
               </Card>
             ))}
@@ -318,6 +319,20 @@ const getPlaceholder = (title: string) => {
               </Button>
               <div className="text-xs text-muted-foreground">Note: Demo UI. Connect to your AI backend to enable live results.</div>
             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={!!proPromptTool} onOpenChange={(open) => { if (!open) setProPromptTool(null); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Upgrade to Pro</DialogTitle>
+              <DialogDescription>
+                {proPromptTool ? `${proPromptTool.title} is a Pro feature.` : 'This is a Pro feature.'} Upgrade to use it.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => setProPromptTool(null)}>Maybe later</Button>
+              <Button variant="pro" onClick={() => navigate('/#pricing')}><Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro</Button>
+            </div>
           </DialogContent>
         </Dialog>
         <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) setPreviewDoc(null); }}>
