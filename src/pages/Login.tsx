@@ -9,10 +9,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const onLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -90,11 +94,39 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  const onResetSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setResetLoading(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = (formData.get("resetEmail") as string)?.trim() || resetEmail.trim();
+      if (!email) {
+        toast.error("Please enter your email address.");
+        return;
+      }
+      const redirectUrl = `${window.location.origin}/login`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Password reset email sent. Check your inbox.");
+        setResetOpen(false);
+      }
+    } catch (err) {
+      toast.error("Unexpected error sending reset email.");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <>
       <Helmet>
-        <title>Sign in or create an account – DocMind AI</title>
-        <meta name="description" content="Sign in or create an account to use DocMind AI." />
+        <title>Reset or sign in – DocMind AI</title>
+        <meta name="description" content="Reset your password or sign in to your DocMind AI account." />
         <link rel="canonical" href="/login" />
       </Helmet>
 
@@ -135,7 +167,7 @@ const Login = () => {
                         {loading ? "Signing in..." : "Sign in"}
                       </Button>
                       <div className="text-sm text-muted-foreground flex items-center justify-between">
-                        <a href="#" className="hover:text-foreground">Forgot your password?</a>
+                        <button type="button" className="hover:text-foreground underline" onClick={() => setResetOpen(true)}>Forgot your password?</button>
                       </div>
                     </form>
                   </TabsContent>
@@ -175,7 +207,40 @@ const Login = () => {
                 </Tabs>
               </CardContent>
             </Card>
-          </div>
+           <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+             <DialogContent>
+               <DialogHeader>
+                 <DialogTitle>Reset your password</DialogTitle>
+                 <DialogDescription>
+                   Enter your email address and we will send you a password reset link.
+                 </DialogDescription>
+               </DialogHeader>
+               <form onSubmit={onResetSubmit} className="space-y-4" aria-label="Password reset form">
+                 <div className="space-y-2">
+                   <Label htmlFor="reset-email">Email address</Label>
+                   <Input
+                     id="reset-email"
+                     name="resetEmail"
+                     type="email"
+                     placeholder="you@example.com"
+                     value={resetEmail}
+                     onChange={(e) => setResetEmail(e.target.value)}
+                     required
+                     autoComplete="email"
+                   />
+                 </div>
+                 <DialogFooter>
+                   <Button type="button" variant="outline" onClick={() => setResetOpen(false)}>
+                     Cancel
+                   </Button>
+                   <Button type="submit" disabled={resetLoading}>
+                     {resetLoading ? "Sending..." : "Send reset link"}
+                   </Button>
+                 </DialogFooter>
+               </form>
+             </DialogContent>
+           </Dialog>
+           </div>
         </section>
       </main>
     </>
