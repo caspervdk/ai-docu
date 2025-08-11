@@ -364,7 +364,7 @@ const getPlaceholder = (title: string) => {
             <DialogHeader>
               <DialogTitle>{activeTool?.title}</DialogTitle>
               <DialogDescription>
-                Use this AI tool to {activeTool?.desc?.toLowerCase()}
+                Use this AI tool to {activeTool?.desc?.toLowerCase()}. Note: Please import PDF files.
               </DialogDescription>
             </DialogHeader>
 
