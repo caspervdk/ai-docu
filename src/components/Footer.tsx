@@ -109,7 +109,7 @@ export default function Footer() {
           {/* Left brand + status + badges */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2" aria-label="DocMind AI home">
-              <span className="text-lg font-semibold tracking-tight">DocMind AI</span>
+              <img src="/lovable-uploads/a7b1bee9-2646-4fcd-81c2-e4eceadd26f0.png" alt="AI Docu logo" className="h-6 w-auto" loading="lazy" width={96} height={24} />
             </Link>
             <StatusPill />
             <ComplianceBadges />
