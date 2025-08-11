@@ -213,32 +213,8 @@ const slugFileName = (s: string) =>
       const { error } = await supabase.storage.from('documents').upload(path, blob, { contentType: 'text/plain', upsert: false });
       if (error) throw error;
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-
-      // Prepare list of newly saved docs starting with the AI output
-      let newDocs: { name: string; url: string }[] = [
-        { name: filename, url: signed?.signedUrl || '#' },
-      ];
-
-      // Also save the originally uploaded file (if any) so it appears in My documents
-      if (selectedFile) {
-        const originalExt = selectedFile.name.match(/\.[^./\s]+$/)?.[0] ?? '';
-        const inputFilename = originalExt ? `${base}${originalExt}` : slugFileName(selectedFile.name);
-        const inputPath = `${userId}/${inputFilename}`;
-        const { error: uploadInputErr } = await supabase.storage
-          .from('documents')
-          .upload(inputPath, selectedFile, { contentType: selectedFile.type || undefined, upsert: false });
-        if (!uploadInputErr) {
-          const { data: inputSigned } = await supabase.storage.from('documents').createSignedUrl(inputPath, 600);
-          newDocs = [
-            { name: inputFilename, url: inputSigned?.signedUrl || '#' },
-            ...newDocs,
-          ];
-        }
-      }
-
-      // Put both the source file (if any) and output at the top of My documents
-      setDocs((prev) => [...newDocs, ...prev]);
-      toast({ title: 'Saved to My documents', description: selectedFile ? `${filename} + source file` : filename });
+      setDocs((prev) => [{ name: filename, url: signed?.signedUrl || '#' }, ...prev]);
+      toast({ title: 'Saved to My documents', description: filename });
       handleClose();
     } catch (e: any) {
       toast({ title: 'Save failed', description: e?.message || 'Could not save document.', variant: 'destructive' } as any);
