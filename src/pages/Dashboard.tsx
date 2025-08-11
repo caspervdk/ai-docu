@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2 } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 
 const tools = [
@@ -193,6 +194,17 @@ const Dashboard = () => {
           <nav className="space-y-2">
             <Button variant="outline" className="w-full justify-start">Dashboard</Button>
           </nav>
+
+          <section aria-label="Upgrade to Pro" className="rounded-lg border p-4 bg-gradient-subtle">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-medium">Pro features</div>
+              <Badge variant="secondary">PRO</Badge>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">Unlock all tools and higher limits.</p>
+            <Button variant="pro" size="sm" className="w-full mt-3" onClick={() => navigate("/#pricing")}>
+              <Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro
+            </Button>
+          </section>
 
           <section aria-label="Storage usage" className="rounded-lg border p-4">
             <div className="text-sm font-medium mb-2">Storage</div>
