@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useState, useRef, useEffect } from "react";
 
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [docName, setDocName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
@@ -39,6 +41,7 @@ const Dashboard = () => {
     setOutput("");
     setSelectedFile(null);
     setIsSending(false);
+    setDocName("");
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +119,13 @@ const Dashboard = () => {
     }
     try {
       setIsSaving(true);
-      const filename = `${Date.now()}-${slug(activeTool?.title || 'result')}.txt`;
+      const base = slug(docName.trim());
+      if (!base) {
+        toast({ title: "Enter a file name", description: "Please provide a name before saving." });
+        setIsSaving(false);
+        return;
+      }
+      const filename = `${base}.txt`;
       const path = `${userId}/${filename}`;
       const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
       const { error } = await supabase.storage.from('documents').upload(path, blob, { contentType: 'text/plain', upsert: false });
@@ -272,10 +281,16 @@ const Dashboard = () => {
                   {output || "Results will appear here."}
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="doc-name">File name</Label>
+                <Input id="doc-name" placeholder="e.g., summary-q3" value={docName} onChange={(e) => setDocName(e.target.value)} />
+                <p className="text-xs text-muted-foreground">Will be saved as .txt in My documents.</p>
+              </div>
             </div>
 
             <DialogFooter className="flex items-center justify-between">
-              <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving}>
+              <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
                 {isSaving ? "Saving..." : "Save to My documents"}
               </Button>
               <div className="text-xs text-muted-foreground">Note: Demo UI. Connect to your AI backend to enable live results.</div>
