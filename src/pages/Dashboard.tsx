@@ -313,7 +313,7 @@ const getPlaceholder = (title: string) => {
           </div>
 
           <nav className="space-y-2">
-            <Button variant="outline" className="w-full justify-start">Dashboard</Button>
+            
           </nav>
 
           <section aria-label="Upgrade to Pro" className="rounded-xl border p-4 bg-gradient-subtle shadow-sm hover:shadow-md transition-shadow">
