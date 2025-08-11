@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 
 const tools = [
@@ -147,6 +148,41 @@ const Dashboard = () => {
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
+  const handleDocAction = async (
+    action: 'view' | 'share' | 'delete',
+    doc: { name: string; url: string }
+  ) => {
+    if (action === 'view') {
+      setPreviewDoc(doc);
+      return;
+    }
+    if (action === 'share') {
+      try {
+        await navigator.clipboard.writeText(doc.url);
+        toast({ title: 'Link copied', description: 'Signed link copied to clipboard.' });
+      } catch (e) {
+        window.open(doc.url, '_blank', 'noopener,noreferrer');
+      }
+      return;
+    }
+    if (action === 'delete') {
+      if (!userId) {
+        toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
+        return;
+      }
+      const confirmDelete = window.confirm(`Delete ${doc.name}?`);
+      if (!confirmDelete) return;
+      const path = `${userId}/${doc.name}`;
+      const { error } = await supabase.storage.from('documents').remove([path]);
+      if (error) {
+        toast({ title: 'Delete failed', description: error.message, variant: 'destructive' } as any);
+      } else {
+        setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+        toast({ title: 'Deleted', description: doc.name });
+      }
+    }
+  };
+
 const getPlaceholder = (title: string) => {
   switch (title) {
     case "Summarize Long Documents":
@@ -228,9 +264,19 @@ const getPlaceholder = (title: string) => {
                 {docs.slice(0, 5).map((d) => (
                   <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                     <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
-                    <Button variant="ghost" size="sm" onClick={() => setPreviewDoc(d)}>View</Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">Options</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="z-50">
+                        <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </li>
                 ))}
+
               </ul>
             )}
           </section>
