@@ -365,7 +365,21 @@ const getPlaceholder = (title: string) => {
                   </div>
                   <div className="mt-2 flex items-center gap-2">
                     <CardTitle className="text-lg">{t.title}</CardTitle>
-                    {t.proOnly && <Badge variant="secondary">PRO</Badge>}
+                    {t.proOnly && (
+                      <>
+                        <Badge variant="secondary">PRO</Badge>
+                        <Button
+                          variant="pro"
+                          size="sm"
+                          className="ml-auto hidden md:inline-flex"
+                          onClick={() => navigate('/#pricing')}
+                          aria-label="Upgrade to Pro"
+                        >
+                          <Rocket className="size-4 mr-2" aria-hidden="true" />
+                          Upgrade to Pro
+                        </Button>
+                      </>
+                    )}
                   </div>
                   <CardDescription>
                     {t.desc} {t.proOnly && <span className="ml-1">(Upgrade to Pro to use)</span>}
