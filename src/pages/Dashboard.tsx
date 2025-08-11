@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const tools = [
   { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
@@ -27,6 +27,8 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSending, setIsSending] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -47,6 +49,32 @@ const Dashboard = () => {
     fileInputRef.current?.click();
   };
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserId(session?.user?.id ?? null);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user?.id ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchDocs = async () => {
+      if (!userId) { setDocs([]); return; }
+      const { data: files, error } = await supabase.storage
+        .from('documents')
+        .list(userId, { limit: 20, sortBy: { column: 'name', order: 'desc' } });
+      if (error || !files) { setDocs([]); return; }
+      const items = await Promise.all(files.map(async (f) => {
+        const path = `${userId}/${f.name}`;
+        const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+        return { name: f.name, url: signed?.signedUrl || '#' };
+      }));
+      setDocs(items);
+    };
+    fetchDocs();
+  }, [userId]);
   const summarizeWithAI = async (overrideFile?: File) => {
     const file = overrideFile ?? selectedFile;
     if (!file) return;
@@ -127,6 +155,24 @@ const Dashboard = () => {
             <div className="text-sm font-medium mb-2">Storage</div>
             <Progress value={27} className="h-2" />
             <div className="mt-2 text-xs text-muted-foreground">Usage 27%</div>
+          </section>
+
+          <section aria-label="My documents" className="rounded-lg border p-4">
+            <div className="text-sm font-medium mb-2">My documents</div>
+            {docs.length === 0 ? (
+              <div className="text-xs text-muted-foreground">No documents yet.</div>
+            ) : (
+              <ul className="space-y-2">
+                {docs.slice(0, 5).map((d) => (
+                  <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                    <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={d.url} target="_blank" rel="noopener noreferrer">View</a>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         </aside>
 
