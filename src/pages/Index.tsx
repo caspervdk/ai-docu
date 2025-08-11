@@ -43,6 +43,23 @@ const Index = () => {
     { id: 'errors', label: 'Smart Error Detection' },
   ] as const;
 
+  const WEBHOOK_URL = 'https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b';
+  const postFileToWebhook = async (file: File, meta: Record<string, string> = {}) => {
+    const fd = new FormData();
+    fd.append('file', file, file.name);
+    Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
+    try {
+      const res = await fetch(WEBHOOK_URL, { method: 'POST', body: fd });
+      if (!res.ok) {
+        const t = await res.text().catch(() => '');
+        throw new Error(t || `Webhook responded with ${res.status}`);
+      }
+    } catch (e) {
+      console.error('Webhook upload failed', e);
+      throw e;
+    }
+  };
+
   type UploadKind = 'image' | 'pdf' | 'text' | 'other';
   type UploadInfo = {
     file: File | null;
@@ -159,6 +176,20 @@ const Index = () => {
           ? 'Your document was uploaded successfully.'
           : 'Uploaded anonymously. Anyone with the link can view.',
       });
+      try {
+        await postFileToWebhook(file, {
+          event: 'upload',
+          source: 'file_input',
+          action_id: id,
+          action_label: (ACTIONS.find(a => a.id === id)?.label) || String(id),
+          user_id: userId ?? 'anon',
+          file_name: file.name,
+          mime_type: file.type || '',
+        });
+      } catch (e: any) {
+        console.error('Webhook POST failed:', e);
+        toast({ title: 'Webhook error', description: e?.message ?? 'Could not notify webhook.', variant: 'destructive' });
+      }
     } catch (err: any) {
       toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
@@ -214,6 +245,20 @@ const Index = () => {
         title: 'Upload complete',
         description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.',
       });
+      try {
+        await postFileToWebhook(file, {
+          event: 'upload',
+          source: 'drag_drop',
+          action_id: id,
+          action_label: (ACTIONS.find(a => a.id === id)?.label) || String(id),
+          user_id: userId ?? 'anon',
+          file_name: file.name,
+          mime_type: file.type || '',
+        });
+      } catch (e: any) {
+        console.error('Webhook POST failed:', e);
+        toast({ title: 'Webhook error', description: e?.message ?? 'Could not notify webhook.', variant: 'destructive' });
+      }
     } catch (err: any) {
       toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
@@ -428,7 +473,7 @@ const onStartAI = async (overrideAction?: string) => {
                             onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
                             onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                             onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                            onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDrop(e as any); }}
+                            onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDropFor('summarize')(e as any); }}
                           >
                             Upload
                           </Button>
@@ -453,7 +498,7 @@ const onStartAI = async (overrideAction?: string) => {
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDrop(e); }}
+                          onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDropFor('summarize')(e); }}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -508,7 +553,7 @@ const onStartAI = async (overrideAction?: string) => {
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Make Content Searchable (OCR)'); setDragActive(false); onDrop(e); }}
+                          onDrop={(e) => { setSelectedAction('Make Content Searchable (OCR)'); setDragActive(false); onDropFor('ocr')(e); }}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -578,7 +623,7 @@ const onStartAI = async (overrideAction?: string) => {
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Translate & Localize'); setDragActive(false); onDrop(e); }}
+                          onDrop={(e) => { setSelectedAction('Translate & Localize'); setDragActive(false); onDropFor('translate')(e); }}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -633,7 +678,7 @@ const onStartAI = async (overrideAction?: string) => {
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Contract Analysis & Risk Detection'); setDragActive(false); onDrop(e); }}
+                          onDrop={(e) => { setSelectedAction('Contract Analysis & Risk Detection'); setDragActive(false); onDropFor('contract')(e); }}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -688,7 +733,7 @@ const onStartAI = async (overrideAction?: string) => {
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Smart Error Detection'); setDragActive(false); onDrop(e); }}
+                          onDrop={(e) => { setSelectedAction('Smart Error Detection'); setDragActive(false); onDropFor('errors')(e); }}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
