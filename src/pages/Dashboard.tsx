@@ -31,6 +31,7 @@ const Dashboard = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
+  const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -130,6 +131,9 @@ const Dashboard = () => {
     }
   };
 
+  const isPdf = (n: string) => /\.pdf$/i.test(n);
+  const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
+
   const getPlaceholder = (title: string) => {
     switch (title) {
       case "Summarize Long Documents":
@@ -196,9 +200,7 @@ const Dashboard = () => {
                 {docs.slice(0, 5).map((d) => (
                   <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                     <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
-                    <Button variant="ghost" size="sm" asChild>
-                      <a href={d.url} target="_blank" rel="noopener noreferrer">View</a>
-                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setPreviewDoc(d)}>View</Button>
                   </li>
                 ))}
               </ul>
@@ -277,6 +279,29 @@ const Dashboard = () => {
                 {isSaving ? "Saving..." : "Save to My documents"}
               </Button>
               <div className="text-xs text-muted-foreground">Note: Demo UI. Connect to your AI backend to enable live results.</div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) setPreviewDoc(null); }}>
+          <DialogContent className="sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>{previewDoc?.name}</DialogTitle>
+              <DialogDescription>Preview</DialogDescription>
+            </DialogHeader>
+            <div className="min-h-[60vh]">
+              {previewDoc && (
+                isPdf(previewDoc.name)
+                  ? <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
+                  : isImage(previewDoc.name)
+                    ? <img src={previewDoc.url} alt={previewDoc.name} className="max-h-[70vh] w-full object-contain rounded-md border" />
+                    : <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" asChild>
+                <a href={previewDoc?.url} target="_blank" rel="noopener noreferrer">Open in new tab</a>
+              </Button>
+              <Button onClick={() => setPreviewDoc(null)}>Close</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
