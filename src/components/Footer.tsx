@@ -7,7 +7,6 @@ import {
   Lock,
   Scale,
   Stethoscope,
-  Orbit,
   Twitter,
   Github,
   Instagram,
@@ -110,9 +109,12 @@ export default function Footer() {
           {/* Left brand + status + badges */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2" aria-label="DocMind AI home">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background">
-                <Orbit className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <img
+                src="/lovable-uploads/c2275549-4ec8-4da9-936d-f097862222b4.png"
+                alt="AI DOCU logo"
+                className="h-8 w-auto"
+                loading="lazy"
+              />
               <span className="text-lg font-semibold tracking-tight">DocMind AI</span>
             </Link>
             <StatusPill />
