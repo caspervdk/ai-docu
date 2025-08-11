@@ -1,84 +1,100 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  ShieldCheck,
-  BadgeCheck,
-  Lock,
-  Scale,
-  Stethoscope,
-  Twitter,
-  Github,
-  Instagram,
-  MessageSquare,
-} from "lucide-react";
+import { ShieldCheck, BadgeCheck, Lock, Scale, Stethoscope, Orbit, Twitter, Github, Instagram, MessageSquare } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-const columns: { title: string; links: { label: string; href: string }[] }[] = [
-  {
-    title: "Use Cases",
-    links: [
-      { label: "Sales", href: "#" },
-      { label: "Support", href: "#" },
-      { label: "Consulting", href: "#" },
-      { label: "Recruiting", href: "#" },
-    ],
-  },
-  {
-    title: "Enterprise",
-    links: [
-      { label: "DocMind for Enterprise", href: "#" },
-      { label: "Enterprise Security", href: "#" },
-      { label: "Vendor Profile", href: "#" },
-      { label: "ROI Calculator", href: "#" },
-      { label: "Book A Demo", href: "#" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Pricing", href: "#pricing" },
-      { label: "Manifesto", href: "#" },
-      { label: "Press", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Bug Bounty", href: "#" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Help Center", href: "#" },
-      { label: "Contact Us", href: "#contact" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Marketing", href: "#" },
-      { label: "Data Transfer Agreement", href: "#" },
-    ],
-  },
-];
-
+const columns: {
+  title: string;
+  links: {
+    label: string;
+    href: string;
+  }[];
+}[] = [{
+  title: "Use Cases",
+  links: [{
+    label: "Sales",
+    href: "#"
+  }, {
+    label: "Support",
+    href: "#"
+  }, {
+    label: "Consulting",
+    href: "#"
+  }, {
+    label: "Recruiting",
+    href: "#"
+  }]
+}, {
+  title: "Enterprise",
+  links: [{
+    label: "DocMind for Enterprise",
+    href: "#"
+  }, {
+    label: "Enterprise Security",
+    href: "#"
+  }, {
+    label: "Vendor Profile",
+    href: "#"
+  }, {
+    label: "ROI Calculator",
+    href: "#"
+  }, {
+    label: "Book A Demo",
+    href: "#"
+  }]
+}, {
+  title: "Resources",
+  links: [{
+    label: "Pricing",
+    href: "#pricing"
+  }, {
+    label: "Manifesto",
+    href: "#"
+  }, {
+    label: "Press",
+    href: "#"
+  }, {
+    label: "Careers",
+    href: "#"
+  }, {
+    label: "Bug Bounty",
+    href: "#"
+  }]
+}, {
+  title: "Support",
+  links: [{
+    label: "Help Center",
+    href: "#"
+  }, {
+    label: "Contact Us",
+    href: "#contact"
+  }]
+}, {
+  title: "Legal",
+  links: [{
+    label: "Privacy Policy",
+    href: "#"
+  }, {
+    label: "Terms of Service",
+    href: "#"
+  }, {
+    label: "Marketing",
+    href: "#"
+  }, {
+    label: "Data Transfer Agreement",
+    href: "#"
+  }]
+}];
 function StatusPill() {
-  return (
-    <span
-      className="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-xs text-foreground/80 bg-background"
-      aria-live="polite"
-    >
+  return <span className="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-xs text-foreground/80 bg-background" aria-live="polite">
       <span className="h-2 w-2 rounded-full bg-[hsl(var(--success))]" aria-hidden="true" />
       All systems operational
-    </span>
-  );
+    </span>;
 }
-
 function ComplianceBadges() {
   const badgeClass = "bg-secondary text-secondary-foreground border";
-  return (
-    <div className="mt-6 flex flex-wrap items-center gap-2">
+  return <div className="mt-6 flex flex-wrap items-center gap-2">
       <Badge className={cn(badgeClass)}>
         <ShieldCheck className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> SOC 2 Type I
       </Badge>
@@ -97,40 +113,31 @@ function ComplianceBadges() {
       <Badge className={cn(badgeClass)}>
         <Stethoscope className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> HIPAA
       </Badge>
-    </div>
-  );
+    </div>;
 }
-
 export default function Footer() {
-  return (
-    <footer className="border-t bg-muted/40">
+  return <footer className="border-t bg-muted/40">
       <div className="container py-12">
         <div className="grid gap-10 md:grid-cols-12">
           {/* Left brand + status + badges */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2" aria-label="DocMind AI home">
-              <img
-                src="/lovable-uploads/c2275549-4ec8-4da9-936d-f097862222b4.png"
-                alt="AI DOCU logo"
-                className="h-8 w-auto"
-                loading="lazy"
-              />
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background">
+                <Orbit className="h-5 w-5" aria-hidden="true" />
+              </span>
               <span className="text-lg font-semibold tracking-tight">DocMind AI</span>
             </Link>
             <StatusPill />
-            <ComplianceBadges />
+            
           </div>
 
           {/* Link columns */}
           <nav className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8" aria-label="Footer navigation">
-            {columns.map((col) => (
-              <div key={col.title}>
+            {columns.map(col => <div key={col.title}>
                 <h3 className="text-sm font-semibold mb-3">{col.title}</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      {link.label === "Terms of Service" ? (
-                        <Dialog>
+                  {col.links.map(link => <li key={link.label}>
+                      {link.label === "Terms of Service" ? <Dialog>
                           <DialogTrigger asChild>
                             <button type="button" className="hover:text-foreground">
                               {link.label}
@@ -190,17 +197,12 @@ export default function Footer() {
                               </article>
                             </ScrollArea>
                           </DialogContent>
-                        </Dialog>
-                      ) : (
-                        <a href={link.href} className="hover:text-foreground">
+                        </Dialog> : <a href={link.href} className="hover:text-foreground">
                           {link.label}
-                        </a>
-                      )}
-                    </li>
-                  ))}
+                        </a>}
+                    </li>)}
                 </ul>
-              </div>
-            ))}
+              </div>)}
           </nav>
         </div>
 
@@ -224,6 +226,5 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 }
