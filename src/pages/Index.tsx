@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket, CheckCircle2 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 
@@ -673,9 +674,12 @@ const onStartAI = async (overrideAction?: string) => {
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <ShieldCheck className="size-4" />
                           </div>
-                          <div className="flex-1">
-                            <p className="font-medium">Contract Analysis & Risk Detection</p>
-                          </div>
+<div className="flex-1">
+  <div className="flex items-center gap-2">
+    <p className="font-medium">Contract Analysis & Risk Detection</p>
+    <Badge variant="secondary">PRO</Badge>
+  </div>
+</div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
@@ -728,9 +732,12 @@ const onStartAI = async (overrideAction?: string) => {
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <PenLine className="size-4" />
                           </div>
-                          <div className="flex-1">
-                            <p className="font-medium">Smart Error Detection</p>
-                          </div>
+<div className="flex-1">
+  <div className="flex items-center gap-2">
+    <p className="font-medium">Smart Error Detection</p>
+    <Badge variant="secondary">PRO</Badge>
+  </div>
+</div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
