@@ -8,14 +8,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, Languages, ShieldCheck, PenLine, Users, GraduationCap, Star, Plus, Rocket, CheckCircle2 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 import Footer from "@/components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+
 const Index = () => {
   const [yearly, setYearly] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
@@ -32,32 +36,22 @@ const Index = () => {
   const [webhookError, setWebhookError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
-  const ACTIONS = [{
-    id: 'summarize',
-    label: 'Summarize Long Documents'
-  }, {
-    id: 'ocr',
-    label: 'Cross-Doc Linker'
-  }, {
-    id: 'translate',
-    label: 'Translate & Localize'
-  }, {
-    id: 'contract',
-    label: 'Contract Analysis & Risk Detection'
-  }, {
-    id: 'errors',
-    label: 'Smart Error Detection'
-  }] as const;
+  
+  const ACTIONS = [
+    { id: 'summarize', label: 'Summarize Long Documents' },
+    { id: 'ocr', label: 'Cross-Doc Linker' },
+    { id: 'translate', label: 'Translate & Localize' },
+    { id: 'contract', label: 'Contract Analysis & Risk Detection' },
+    { id: 'errors', label: 'Smart Error Detection' },
+  ] as const;
+
   const WEBHOOK_URL = 'https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b';
   const postFileToWebhook = async (file: File, meta: Record<string, string> = {}) => {
     const fd = new FormData();
     fd.append('file', file, file.name);
     Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
     try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        body: fd
-      });
+      const res = await fetch(WEBHOOK_URL, { method: 'POST', body: fd });
       if (!res.ok) {
         const t = await res.text().catch(() => '');
         throw new Error(t || `Webhook responded with ${res.status}`);
@@ -67,6 +61,7 @@ const Index = () => {
       throw e;
     }
   };
+
   type UploadKind = 'image' | 'pdf' | 'text' | 'other';
   type UploadInfo = {
     file: File | null;
@@ -76,80 +71,42 @@ const Index = () => {
     previewText: string | null;
     uploading: boolean;
   };
+
   const [uploads, setUploads] = useState<Record<(typeof ACTIONS)[number]['id'], UploadInfo>>({
-    summarize: {
-      file: null,
-      uploadedName: null,
-      previewUrl: null,
-      previewKind: null,
-      previewText: null,
-      uploading: false
-    },
-    ocr: {
-      file: null,
-      uploadedName: null,
-      previewUrl: null,
-      previewKind: null,
-      previewText: null,
-      uploading: false
-    },
-    translate: {
-      file: null,
-      uploadedName: null,
-      previewUrl: null,
-      previewKind: null,
-      previewText: null,
-      uploading: false
-    },
-    contract: {
-      file: null,
-      uploadedName: null,
-      previewUrl: null,
-      previewKind: null,
-      previewText: null,
-      uploading: false
-    },
-    errors: {
-      file: null,
-      uploadedName: null,
-      previewUrl: null,
-      previewKind: null,
-      previewText: null,
-      uploading: false
-    }
+    summarize: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    ocr: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    translate: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    contract: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
+    errors: { file: null, uploadedName: null, previewUrl: null, previewKind: null, previewText: null, uploading: false },
   });
+
   const [dragKey, setDragKey] = useState<string | null>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
+
   const labelToId = (label: string | null): (typeof ACTIONS)[number]['id'] | null => {
     const m = ACTIONS.find(a => a.label === label);
     return m ? m.id : null;
   };
+
   useEffect(() => {
     return () => {
-      Object.values(uploads).forEach(u => {
-        if (u.previewUrl) URL.revokeObjectURL(u.previewUrl);
-      });
+      Object.values(uploads).forEach(u => { if (u.previewUrl) URL.revokeObjectURL(u.previewUrl); });
     };
   }, []);
+  
+
   useEffect(() => {
-    const {
-      data: {
-        subscription
-      }
-    } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsAuthed(!!session);
       setUserId(session?.user?.id ?? null);
     });
-    supabase.auth.getSession().then(({
-      data: {
-        session
-      }
-    }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthed(!!session);
       setUserId(session?.user?.id ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
+
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -157,45 +114,51 @@ const Index = () => {
       }
     };
   }, [previewUrl]);
+
   const makeOnFileSelected = (forcedId?: (typeof ACTIONS)[number]['id']) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const id = forcedId ?? pendingKey ?? labelToId(selectedAction) ?? 'summarize';
     try {
       // reset and set uploading
-      setUploads(prev => {
+      setUploads((prev) => {
         const prevUrl = prev[id].previewUrl;
         if (prevUrl) URL.revokeObjectURL(prevUrl);
         return {
           ...prev,
-          [id]: {
-            ...prev[id],
-            uploading: true,
-            previewText: null
-          }
+          [id]: { ...prev[id], uploading: true, previewText: null },
         };
       });
+
       const objectUrl = URL.createObjectURL(file);
       const mime = file.type;
-      const kind: UploadKind = mime?.startsWith('image/') ? 'image' : mime === 'application/pdf' ? 'pdf' : mime?.startsWith('text/') || /\.txt$/i.test(file.name) ? 'text' : 'other';
+      const kind: UploadKind = mime?.startsWith('image/')
+        ? 'image'
+        : mime === 'application/pdf'
+        ? 'pdf'
+        : mime?.startsWith('text/') || /\.txt$/i.test(file.name)
+        ? 'text'
+        : 'other';
+
       if (kind === 'text') {
-        file.text().then(t => setUploads(prev => ({
-          ...prev,
-          [id]: {
-            ...prev[id],
-            previewText: t.slice(0, 5000)
-          }
-        }))).catch(() => {});
+        file
+          .text()
+          .then((t) =>
+            setUploads((prev) => ({ ...prev, [id]: { ...prev[id], previewText: t.slice(0, 5000) } }))
+          )
+          .catch(() => {});
       }
-      setUploads(prev => ({
+
+      setUploads((prev) => ({
         ...prev,
         [id]: {
           ...prev[id],
           file,
           uploadedName: file.name,
           previewUrl: objectUrl,
-          previewKind: kind
-        }
+          previewKind: kind,
+        },
       }));
 
       // Proceed with upload to Supabase
@@ -203,219 +166,167 @@ const Index = () => {
       const keyPrefix = userId ?? 'anon';
       const random = Math.random().toString(36).slice(2, 8);
       const filePath = `${keyPrefix}/${Date.now()}-${random}-${file.name}`;
-      const {
-        error
-      } = await supabase.storage.from(targetBucket).upload(filePath, file, {
-        upsert: Boolean(userId),
-        contentType: file.type
-      });
+
+      const { error } = await supabase.storage
+        .from(targetBucket)
+        .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
+
       if (error) throw error;
       toast({
         title: 'Upload complete',
-        description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.'
+        description: userId
+          ? 'Your document was uploaded successfully.'
+          : 'Uploaded anonymously. Anyone with the link can view.',
       });
       try {
         await postFileToWebhook(file, {
           event: 'upload',
           source: 'file_input',
           action_id: id,
-          action_label: ACTIONS.find(a => a.id === id)?.label || String(id),
+          action_label: (ACTIONS.find(a => a.id === id)?.label) || String(id),
           user_id: userId ?? 'anon',
           file_name: file.name,
-          mime_type: file.type || ''
+          mime_type: file.type || '',
         });
       } catch (e: any) {
         console.error('Webhook POST failed:', e);
-        toast({
-          title: 'Webhook error',
-          description: e?.message ?? 'Could not notify webhook.',
-          variant: 'destructive'
-        });
+        toast({ title: 'Webhook error', description: e?.message ?? 'Could not notify webhook.', variant: 'destructive' });
       }
     } catch (err: any) {
-      toast({
-        title: 'Upload failed',
-        description: err?.message ?? 'Something went wrong',
-        variant: 'destructive'
-      });
+      toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
-      setUploads(prev => ({
-        ...prev,
-        [id]: {
-          ...prev[id],
-          uploading: false
-        }
-      }));
+      setUploads((prev) => ({ ...prev, [id]: { ...prev[id], uploading: false } }));
       setPendingKey(null);
     }
   };
+
   const onDropFor = (id: (typeof ACTIONS)[number]['id']) => async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
     try {
-      setUploads(prev => {
+      setUploads((prev) => {
         const prevUrl = prev[id].previewUrl;
         if (prevUrl) URL.revokeObjectURL(prevUrl);
-        return {
-          ...prev,
-          [id]: {
-            ...prev[id],
-            uploading: true,
-            previewText: null
-          }
-        };
+        return { ...prev, [id]: { ...prev[id], uploading: true, previewText: null } };
       });
+
       const objectUrl = URL.createObjectURL(file);
       const mime = file.type;
-      const kind: UploadKind = mime?.startsWith('image/') ? 'image' : mime === 'application/pdf' ? 'pdf' : mime?.startsWith('text/') || /\.txt$/i.test(file.name) ? 'text' : 'other';
+      const kind: UploadKind = mime?.startsWith('image/')
+        ? 'image'
+        : mime === 'application/pdf'
+        ? 'pdf'
+        : mime?.startsWith('text/') || /\.txt$/i.test(file.name)
+        ? 'text'
+        : 'other';
+
       if (kind === 'text') {
-        file.text().then(t => setUploads(prev => ({
-          ...prev,
-          [id]: {
-            ...prev[id],
-            previewText: t.slice(0, 5000)
-          }
-        }))).catch(() => {});
+        file
+          .text()
+          .then((t) => setUploads((prev) => ({ ...prev, [id]: { ...prev[id], previewText: t.slice(0, 5000) } })))
+          .catch(() => {});
       }
-      setUploads(prev => ({
+
+      setUploads((prev) => ({
         ...prev,
-        [id]: {
-          ...prev[id],
-          file,
-          uploadedName: file.name,
-          previewUrl: objectUrl,
-          previewKind: kind
-        }
+        [id]: { ...prev[id], file, uploadedName: file.name, previewUrl: objectUrl, previewKind: kind },
       }));
+
       const targetBucket = userId ? 'documents' : 'public_uploads';
       const keyPrefix = userId ?? 'anon';
       const random = Math.random().toString(36).slice(2, 8);
       const filePath = `${keyPrefix}/${Date.now()}-${random}-${file.name}`;
-      const {
-        error
-      } = await supabase.storage.from(targetBucket).upload(filePath, file, {
-        upsert: Boolean(userId),
-        contentType: file.type
-      });
+
+      const { error } = await supabase.storage
+        .from(targetBucket)
+        .upload(filePath, file, { upsert: Boolean(userId), contentType: file.type });
+
       if (error) throw error;
       toast({
         title: 'Upload complete',
-        description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.'
+        description: userId ? 'Your document was uploaded successfully.' : 'Uploaded anonymously. Anyone with the link can view.',
       });
       try {
         await postFileToWebhook(file, {
           event: 'upload',
           source: 'drag_drop',
           action_id: id,
-          action_label: ACTIONS.find(a => a.id === id)?.label || String(id),
+          action_label: (ACTIONS.find(a => a.id === id)?.label) || String(id),
           user_id: userId ?? 'anon',
           file_name: file.name,
-          mime_type: file.type || ''
+          mime_type: file.type || '',
         });
       } catch (e: any) {
         console.error('Webhook POST failed:', e);
-        toast({
-          title: 'Webhook error',
-          description: e?.message ?? 'Could not notify webhook.',
-          variant: 'destructive'
-        });
+        toast({ title: 'Webhook error', description: e?.message ?? 'Could not notify webhook.', variant: 'destructive' });
       }
     } catch (err: any) {
-      toast({
-        title: 'Upload failed',
-        description: err?.message ?? 'Something went wrong',
-        variant: 'destructive'
-      });
+      toast({ title: 'Upload failed', description: err?.message ?? 'Something went wrong', variant: 'destructive' });
     } finally {
-      setUploads(prev => ({
-        ...prev,
-        [id]: {
-          ...prev[id],
-          uploading: false
-        }
-      }));
+      setUploads((prev) => ({ ...prev, [id]: { ...prev[id], uploading: false } }));
       setDragKey(null);
       setPendingKey(null);
     }
   };
+
   const loginRequiredToast = () => {
-    toast({
-      title: 'Log in required',
-      description: 'Please log in to upload and use the AI tools.'
-    });
+    toast({ title: 'Log in required', description: 'Please log in to upload and use the AI tools.' });
   };
+
   const handleUploadClick = (actionLabel: string) => () => {
     setSelectedAction(actionLabel);
-    if (!isAuthed) {
-      loginRequiredToast();
-      return;
-    }
+    if (!isAuthed) { loginRequiredToast(); return; }
     document.getElementById('upload-input')?.click();
   };
+
   const onDropGuarded = (id: (typeof ACTIONS)[number]['id'], actionLabel: string) => (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setSelectedAction(actionLabel);
     setDragActive(false);
-    if (!isAuthed) {
-      loginRequiredToast();
-      return;
-    }
+    if (!isAuthed) { loginRequiredToast(); return; }
     onDropFor(id)(e as any);
   };
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "DocMind AI",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    offers: [{
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      name: "Free"
-    }, {
-      "@type": "Offer",
-      price: yearly ? "144" : "15",
-      priceCurrency: "USD",
-      name: "Pro"
-    }, {
-      "@type": "Offer",
-      price: yearly ? "468" : "49",
-      priceCurrency: "USD",
-      name: "Team"
-    }]
+    offers: [
+      { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
+      { "@type": "Offer", price: yearly ? "144" : "15", priceCurrency: "USD", name: "Pro" },
+      { "@type": "Offer", price: yearly ? "468" : "49", priceCurrency: "USD", name: "Team" }
+    ]
   };
-  const isLikelyJSON = (t: string) => {
-    const s = t.trim();
-    if (!(s.startsWith("{") || s.startsWith("["))) return false;
-    try {
-      JSON.parse(s);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  const onStartAI = async (overrideAction?: string) => {
+
+const isLikelyJSON = (t: string) => {
+  const s = t.trim();
+  if (!(s.startsWith("{") || s.startsWith("["))) return false;
+  try {
+    JSON.parse(s);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const onStartAI = async (overrideAction?: string) => {
     try {
       if (!selectedFile) {
-        toast({
-          title: 'No file selected',
-          description: 'Please upload a file first.',
-          variant: 'destructive'
-        });
+        toast({ title: 'No file selected', description: 'Please upload a file first.', variant: 'destructive' });
         return;
       }
+
       const action = overrideAction ?? selectedAction;
       if (!action) {
-        toast({
-          title: 'No action selected',
-          description: 'Please choose an AI action.',
-          variant: 'destructive'
-        });
+        toast({ title: 'No action selected', description: 'Please choose an AI action.', variant: 'destructive' });
         return;
       }
+
       setStartingAI(true);
+
       const fd = new FormData();
       fd.append('file', selectedFile, selectedFile.name);
       fd.append('action', action);
@@ -426,10 +337,12 @@ const Index = () => {
       if (action === 'Translate & Localize') {
         fd.append('target_language', selectedLanguage);
       }
+
       const res = await fetch('https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b', {
         method: 'POST',
-        body: fd
+        body: fd,
       });
+
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(text || `Webhook responded with ${res.status}`);
@@ -449,7 +362,7 @@ const Index = () => {
         try {
           const parsed = JSON.parse(bodyText);
           const pickField = (obj: any): string | null => {
-            const keys = ['output', 'result', 'message', 'content', 'text'];
+            const keys = ['output','result','message','content','text'];
             for (const k of keys) if (typeof obj?.[k] === 'string') return obj[k];
             return null;
           };
@@ -462,31 +375,25 @@ const Index = () => {
           display = trimmed;
         }
       }
+
       setWebhookError(null);
       setWebhookResponse(display || 'Success (empty response body)');
-      toast({
-        title: 'AI responded',
-        description: `Action: ${action}`
-      });
+      toast({ title: 'AI responded', description: `Action: ${action}` });
     } catch (err: any) {
-      toast({
-        title: 'Failed to start',
-        description: err?.message ?? 'Could not send to AI.',
-        variant: 'destructive'
-      });
+      toast({ title: 'Failed to start', description: err?.message ?? 'Could not send to AI.', variant: 'destructive' });
     } finally {
       setStartingAI(false);
     }
   };
+
   const onContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: 'Message sent',
-      description: 'We’ll get back to you soon.'
-    });
+    toast({ title: 'Message sent', description: 'We’ll get back to you soon.' });
     (e.currentTarget as HTMLFormElement).reset();
   };
-  return <>
+
+  return (
+    <>
       <Helmet>
         <title>AI Document Assistant – Smarter Documents</title>
         <meta name="description" content="Upload contracts, reports, or notes — let our AI read, analyze, summarize, translate, and improve your documents." />
@@ -503,7 +410,11 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
             <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            {isAuthed ? <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button> : <Button variant="outline" asChild><a href="/login">Log in</a></Button>}
+            {isAuthed ? (
+              <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
+            ) : (
+              <Button variant="outline" asChild><a href="/login">Log in</a></Button>
+            )}
           </div>
         </nav>
       </header>
@@ -519,22 +430,18 @@ const Index = () => {
               Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            })}>Try for Free</Button>
-              <Button size="lg" variant="pro" onClick={() => {
-              setYearly(false);
-              document.getElementById('pricing')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              });
-            }}><Rocket className="size-4" aria-hidden="true" /> Upgrade to AI-Docu Pro</Button>
+              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
+              <Button size="lg" variant="pro" onClick={() => { setYearly(false); document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}><Rocket className="size-4" aria-hidden="true" /> Upgrade to AI-Docu Pro</Button>
             </div>
             <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
           </div>
           <div className="relative">
-            <img src="/lovable-uploads/8e6290ce-6740-43f8-9480-ee864f724a65.png" alt="DocMind AI document analysis illustration" loading="lazy" className="w-[70%] mx-auto rounded-lg border shadow-sm" />
+            <img
+              src="/lovable-uploads/8e6290ce-6740-43f8-9480-ee864f724a65.png"
+              alt="DocMind AI document analysis illustration"
+              loading="lazy"
+              className="w-[70%] mx-auto rounded-lg border shadow-sm"
+            />
           </div>
         </section>
 
@@ -560,7 +467,8 @@ const Index = () => {
               </div>
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8">
-              {!isAuthed && <Alert className="border-dashed">
+              {!isAuthed && (
+                <Alert className="border-dashed">
                   <AlertTitle>Log in required</AlertTitle>
                   <AlertDescription>
                     You must log in to use the AI tools.
@@ -568,7 +476,8 @@ const Index = () => {
                       <a href="/login">Log in</a>
                     </Button>
                   </AlertDescription>
-                </Alert>}
+                </Alert>
+              )}
               {/* Hidden upload input for per-tool buttons */}
               <input id="upload-input" type="file" className="sr-only" aria-hidden="true" accept=".pdf,.doc,.docx,.txt,image/*" onChange={makeOnFileSelected()} disabled={uploading} />
 
@@ -578,13 +487,10 @@ const Index = () => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button onClick={() => {
-                        setSelectedAction('Summarize Long Documents');
-                        toast({
-                          title: 'AI tool selected',
-                          description: 'Summarize Long Documents'
-                        });
-                      }} className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Summarize Long Documents' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}>
+                        <button
+                          onClick={() => { setSelectedAction('Summarize Long Documents'); toast({ title: 'AI tool selected', description: 'Summarize Long Documents' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Summarize Long Documents' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <FileText className="size-4" />
                           </div>
@@ -599,37 +505,40 @@ const Index = () => {
                           Condense lengthy reports or contracts into key points so you can quickly grasp the essentials.
                         </p>
                         <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading} onClick={handleUploadClick('Summarize Long Documents')} onDragOver={e => {
-                          e.preventDefault();
-                          setDragActive(true);
-                        }} onDragLeave={e => {
-                          e.preventDefault();
-                          setDragActive(false);
-                        }}>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={uploading}
+                             onClick={handleUploadClick('Summarize Long Documents')}
+                            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          >
                             Upload
                           </Button>
-                          {selectedFile && <Button size="sm" variant="accent" disabled={startingAI} onClick={() => onStartAI('Summarize Long Documents')}>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Summarize Long Documents')}>
                               Start AI
-                            </Button>}
+                            </Button>
+                          )}
                         </div>
-                        {selectedFile && selectedAction === 'Summarize Long Documents' && previewKind === 'image' && previewUrl && <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                        {selectedFile && selectedAction === 'Summarize Long Documents' && previewKind === 'image' && previewUrl && (
+                          <div className="mt-3 rounded-lg border bg-muted/20 p-3">
                             <img src={previewUrl} alt="Uploaded image preview for Summarize Long Documents" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
-                          </div>}
-                        <div className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`} onClick={handleUploadClick('Summarize Long Documents')} onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleUploadClick('Summarize Long Documents')();
-                        }
-                      }} role="button" tabIndex={0} onDragOver={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragEnter={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragLeave={e => {
-                        e.preventDefault();
-                        setDragActive(false);
-                      }} onDrop={onDropGuarded('summarize', 'Summarize Long Documents')} aria-label="Drag and drop a file here or click to upload">
+                          </div>
+                        )}
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                           onClick={handleUploadClick('Summarize Long Documents')}
+                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Summarize Long Documents')(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={onDropGuarded('summarize', 'Summarize Long Documents')}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <Upload className="size-5 text-primary" />
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
@@ -641,13 +550,10 @@ const Index = () => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button onClick={() => {
-                        setSelectedAction('Cross-Doc Linker');
-                        toast({
-                          title: 'AI tool selected',
-                          description: 'Cross-Doc Linker'
-                        });
-                      }} className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Cross-Doc Linker' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}>
+                        <button
+                          onClick={() => { setSelectedAction('Cross-Doc Linker'); toast({ title: 'AI tool selected', description: 'Cross-Doc Linker' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Cross-Doc Linker' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <Upload className="size-4" />
                           </div>
@@ -660,31 +566,34 @@ const Index = () => {
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Find related documents and link supporting evidence.</p>
                         <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading} onClick={handleUploadClick('Cross-Doc Linker')}>
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={handleUploadClick('Cross-Doc Linker')}>
                             Upload
                           </Button>
-                          {selectedFile && <Button size="sm" variant="accent" disabled={startingAI} onClick={() => onStartAI('Cross-Doc Linker')}>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Cross-Doc Linker')}>
                               Start AI
-                            </Button>}
+                            </Button>
+                          )}
                         </div>
-                        {selectedFile && selectedAction === 'Cross-Doc Linker' && previewKind === 'image' && previewUrl && <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                        {selectedFile && selectedAction === 'Cross-Doc Linker' && previewKind === 'image' && previewUrl && (
+                          <div className="mt-3 rounded-lg border bg-muted/20 p-3">
                             <img src={previewUrl} alt="Uploaded image preview for Cross-Doc Linker" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
-                          </div>}
-                        <div className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`} onClick={handleUploadClick('Cross-Doc Linker')} onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleUploadClick('Cross-Doc Linker')();
-                        }
-                      }} role="button" tabIndex={0} onDragOver={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragEnter={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragLeave={e => {
-                        e.preventDefault();
-                        setDragActive(false);
-                      }} onDrop={onDropGuarded('ocr', 'Cross-Doc Linker')} aria-label="Drag and drop a file here or click to upload">
+                          </div>
+                        )}
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                            onClick={handleUploadClick('Cross-Doc Linker')}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Cross-Doc Linker')(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={onDropGuarded('ocr', 'Cross-Doc Linker')}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <Upload className="size-5 text-primary" />
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
@@ -696,13 +605,10 @@ const Index = () => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button onClick={() => {
-                        setSelectedAction('Translate & Localize');
-                        toast({
-                          title: 'AI tool selected',
-                          description: 'Translate & Localize'
-                        });
-                      }} className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Translate & Localize' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}>
+                        <button
+                          onClick={() => { setSelectedAction('Translate & Localize'); toast({ title: 'AI tool selected', description: 'Translate & Localize' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Translate & Localize' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <Languages className="size-4" />
                           </div>
@@ -715,7 +621,8 @@ const Index = () => {
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Automatically translate documents into multiple languages while preserving layout and formatting.</p>
                          <div className="mt-3 flex items-center gap-2">
-                           <Button size="sm" variant="secondary" disabled={uploading} onClick={handleUploadClick('Translate & Localize')}>
+                           <Button size="sm" variant="secondary" disabled={uploading}
+                             onClick={handleUploadClick('Translate & Localize')}>
                              Upload
                            </Button>
                            <DropdownMenu>
@@ -733,28 +640,30 @@ const Index = () => {
                                <DropdownMenuItem onClick={() => setSelectedLanguage('Portuguese')}>Portuguese</DropdownMenuItem>
                              </DropdownMenuContent>
                            </DropdownMenu>
-                           {selectedFile && <Button size="sm" variant="accent" disabled={startingAI} onClick={() => onStartAI('Translate & Localize')}>
+                           {selectedFile && (
+                             <Button size="sm" variant="accent" disabled={startingAI}
+                               onClick={() => onStartAI('Translate & Localize')}>
                                Start AI
-                             </Button>}
+                             </Button>
+                           )}
                            </div>
-                           {selectedFile && selectedAction === 'Translate & Localize' && previewKind === 'image' && previewUrl && <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                           {selectedFile && selectedAction === 'Translate & Localize' && previewKind === 'image' && previewUrl && (
+                             <div className="mt-3 rounded-lg border bg-muted/20 p-3">
                                <img src={previewUrl} alt="Uploaded image preview for Translate & Localize" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
-                             </div>}
-                        <div className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`} onClick={handleUploadClick('Translate & Localize')} onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleUploadClick('Translate & Localize')();
-                        }
-                      }} role="button" tabIndex={0} onDragOver={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragEnter={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragLeave={e => {
-                        e.preventDefault();
-                        setDragActive(false);
-                      }} onDrop={onDropGuarded('translate', 'Translate & Localize')} aria-label="Drag and drop a file here or click to upload">
+                             </div>
+                           )}
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                              onClick={handleUploadClick('Translate & Localize')}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Translate & Localize')(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={onDropGuarded('translate', 'Translate & Localize')}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <Upload className="size-5 text-primary" />
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
@@ -766,53 +675,53 @@ const Index = () => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button onClick={() => {
-                        setSelectedAction('Contract Analysis & Risk Detection');
-                        toast({
-                          title: 'AI tool selected',
-                          description: 'Contract Analysis & Risk Detection'
-                        });
-                      }} className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Contract Analysis & Risk Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}>
+                        <button
+                          onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); toast({ title: 'AI tool selected', description: 'Contract Analysis & Risk Detection' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Contract Analysis & Risk Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <ShieldCheck className="size-4" />
                           </div>
-                        <div className="flex-1">
+<div className="flex-1">
   <div className="flex items-center gap-2">
     <p className="font-medium">Contract Analysis & Risk Detection</p>
     <Badge variant="secondary">PRO</Badge>
   </div>
-                        </div>
+</div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Scan legal documents to identify clauses, obligations, and potential risks.</p>
                         <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading} onClick={handleUploadClick('Contract Analysis & Risk Detection')}>
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={handleUploadClick('Contract Analysis & Risk Detection')}>
                             Upload
                           </Button>
-                          {selectedFile && <Button size="sm" variant="accent" disabled={startingAI} onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Contract Analysis & Risk Detection')}>
                               Start AI
-                            </Button>}
+                            </Button>
+                          )}
                          </div>
-                         {selectedFile && selectedAction === 'Contract Analysis & Risk Detection' && previewKind === 'image' && previewUrl && <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                         {selectedFile && selectedAction === 'Contract Analysis & Risk Detection' && previewKind === 'image' && previewUrl && (
+                           <div className="mt-3 rounded-lg border bg-muted/20 p-3">
                              <img src={previewUrl} alt="Uploaded image preview for Contract Analysis & Risk Detection" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
-                           </div>}
-                        <div className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`} onClick={handleUploadClick('Contract Analysis & Risk Detection')} onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleUploadClick('Contract Analysis & Risk Detection')();
-                        }
-                      }} role="button" tabIndex={0} onDragOver={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragEnter={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragLeave={e => {
-                        e.preventDefault();
-                        setDragActive(false);
-                      }} onDrop={onDropGuarded('contract', 'Contract Analysis & Risk Detection')} aria-label="Drag and drop a file here or click to upload">
+                           </div>
+                         )}
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                             onClick={handleUploadClick('Contract Analysis & Risk Detection')}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Contract Analysis & Risk Detection')(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={onDropGuarded('contract', 'Contract Analysis & Risk Detection')}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <Upload className="size-5 text-primary" />
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
@@ -824,53 +733,53 @@ const Index = () => {
                   <li className="p-0">
                     <Collapsible>
                       <CollapsibleTrigger asChild>
-                        <button onClick={() => {
-                        setSelectedAction('Smart Error Detection');
-                        toast({
-                          title: 'AI tool selected',
-                          description: 'Smart Error Detection'
-                        });
-                      }} className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Smart Error Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}>
+                        <button
+                          onClick={() => { setSelectedAction('Smart Error Detection'); toast({ title: 'AI tool selected', description: 'Smart Error Detection' }); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-md hover:bg-muted/30 transition-colors text-left [&[data-state=open]>svg]:rotate-45 ${selectedAction === 'Smart Error Detection' ? 'bg-primary/5 ring-1 ring-primary/30' : ''}`}
+                        >
                           <div className="size-9 rounded-md bg-primary/10 text-primary ring-1 ring-primary/20 flex items-center justify-center shrink-0">
                             <PenLine className="size-4" />
                           </div>
-                        <div className="flex-1">
+<div className="flex-1">
   <div className="flex items-center gap-2">
     <p className="font-medium">Smart Error Detection</p>
     <Badge variant="secondary">PRO</Badge>
   </div>
-                        </div>
+</div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="px-3 pb-3 overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <p className="text-sm text-muted-foreground">Spot spelling, grammar, and numerical inconsistencies and suggest corrections.</p>
                         <div className="mt-3 flex items-center gap-2">
-                          <Button size="sm" variant="secondary" disabled={uploading} onClick={handleUploadClick('Smart Error Detection')}>
+                          <Button size="sm" variant="secondary" disabled={uploading}
+                            onClick={handleUploadClick('Smart Error Detection')}>
                             Upload
                           </Button>
-                          {selectedFile && <Button size="sm" variant="accent" disabled={startingAI} onClick={() => onStartAI('Smart Error Detection')}>
+                          {selectedFile && (
+                            <Button size="sm" variant="accent" disabled={startingAI}
+                              onClick={() => onStartAI('Smart Error Detection')}>
                               Start AI
-                            </Button>}
+                            </Button>
+                          )}
                          </div>
-                         {selectedFile && selectedAction === 'Smart Error Detection' && previewKind === 'image' && previewUrl && <div className="mt-3 rounded-lg border bg-muted/20 p-3">
+                         {selectedFile && selectedAction === 'Smart Error Detection' && previewKind === 'image' && previewUrl && (
+                           <div className="mt-3 rounded-lg border bg-muted/20 p-3">
                              <img src={previewUrl} alt="Uploaded image preview for Smart Error Detection" loading="lazy" className="max-h-48 w-full object-contain rounded-md" />
-                           </div>}
-                        <div className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`} onClick={handleUploadClick('Smart Error Detection')} onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleUploadClick('Smart Error Detection')();
-                        }
-                      }} role="button" tabIndex={0} onDragOver={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragEnter={e => {
-                        e.preventDefault();
-                        setDragActive(true);
-                      }} onDragLeave={e => {
-                        e.preventDefault();
-                        setDragActive(false);
-                      }} onDrop={onDropGuarded('errors', 'Smart Error Detection')} aria-label="Drag and drop a file here or click to upload">
+                           </div>
+                         )}
+                        <div
+                          className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
+                             onClick={handleUploadClick('Smart Error Detection')}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Smart Error Detection')(); } }}
+                          role="button"
+                          tabIndex={0}
+                          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+                          onDrop={onDropGuarded('errors', 'Smart Error Detection')}
+                          aria-label="Drag and drop a file here or click to upload"
+                        >
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <Upload className="size-5 text-primary" />
                             <span className="text-sm">{uploading ? 'Uploading…' : uploadedName ? `Selected: ${uploadedName}` : 'Drag & drop a file or click to upload'}</span>
@@ -940,23 +849,12 @@ const Index = () => {
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {[{
-            name: 'Free',
-            price: yearly ? 0 : 0,
-            period: yearly ? '/yr' : '/mo',
-            features: ['1 doc/month', 'Basic analysis']
-          }, {
-            name: 'Pro',
-            price: yearly ? 144 : 15,
-            period: yearly ? '/yr' : '/mo',
-            features: ['20 docs', 'All features', 'Priority support'],
-            highlight: true
-          }, {
-            name: 'Team',
-            price: yearly ? 468 : 49,
-            period: yearly ? '/yr' : '/mo',
-            features: ['Unlimited docs', 'Collaboration tools', 'SSO']
-          }].map((p, i) => <Card key={i} className={`flex flex-col ${p.highlight ? 'border-primary' : ''}`}>
+            {[
+              { name: 'Free', price: yearly ? 0 : 0, period: yearly ? '/yr' : '/mo', features: ['1 doc/month', 'Basic analysis'] },
+              { name: 'Pro', price: yearly ? 144 : 15, period: yearly ? '/yr' : '/mo', features: ['20 docs', 'All features', 'Priority support'], highlight: true },
+              { name: 'Team', price: yearly ? 468 : 49, period: yearly ? '/yr' : '/mo', features: ['Unlimited docs', 'Collaboration tools', 'SSO'] }
+            ].map((p, i) => (
+              <Card key={i} className={`flex flex-col ${p.highlight ? 'border-primary' : ''}`}>
                 <CardHeader>
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <CardDescription>For growing teams</CardDescription>
@@ -964,21 +862,23 @@ const Index = () => {
                 <CardContent className="flex-1">
                   <div className="text-4xl font-bold">${p.price}<span className="text-base font-normal text-muted-foreground">{p.period}</span></div>
                   <ul className="mt-4 space-y-2 text-sm">
-                    {p.features.map((f, idx) => <li key={idx} className="flex items-start gap-2">
+                    {p.features.map((f, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
                         <span className="mt-1 size-1.5 rounded-full bg-primary"></span>
                         <span>{f}</span>
-                      </li>)}
+                      </li>
+                    ))}
                   </ul>
-                  {p.name === 'Pro' ? <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({
-                behavior: 'smooth'
-              })}>
+                  {p.name === 'Pro' ? (
+                    <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
                       <Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro
-                    </Button> : <Button variant="secondary" className="mt-6 w-full" onClick={() => document.getElementById('contact')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              })}>Contact us</Button>}
+                    </Button>
+                  ) : (
+                    <Button variant="secondary" className="mt-6 w-full" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Contact us</Button>
+                  )}
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
         </section>
 
@@ -1014,9 +914,7 @@ const Index = () => {
                     <li className="flex items-start gap-2"><CheckCircle2 className="size-4" aria-hidden="true" /><span>Cloud storage</span></li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="size-4" aria-hidden="true" /><span>More AI features</span></li>
                   </ul>
-                  <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({
-                  behavior: 'smooth'
-                })}>
+                  <Button variant="pro" size="lg" className="mt-6 w-full hover-scale" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
                     <Rocket className="size-4" aria-hidden="true" /> Upgrade Now
                   </Button>
                 </CardContent>
@@ -1033,7 +931,7 @@ const Index = () => {
               <h2 className="text-3xl font-semibold">Contact our team</h2>
               <p className="text-sm text-muted-foreground">Questions about pricing, features, or onboarding? Send us a message and we’ll reply within 1 business day.</p>
               <div className="text-sm text-muted-foreground">
-                
+                <p>Email: hello@docmind.ai</p>
               </div>
             </div>
             <Card className="shadow-sm">
@@ -1066,6 +964,8 @@ const Index = () => {
       </main>
 
       <Footer />
-    </>;
+    </>
+  );
 };
+
 export default Index;
