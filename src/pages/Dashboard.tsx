@@ -97,7 +97,7 @@ const Dashboard = () => {
       if (activeTool?.title) fd.append("action", activeTool.title);
       if (input) fd.append("message", input);
 
-      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/90b5f2e5-a5d8-4afe-abeb-fb259f01b25b", {
+      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
         method: "POST",
         body: fd,
       });
