@@ -127,7 +127,7 @@ const Dashboard = () => {
 
       const webhookUrl =
         activeTool?.title === "Cross-Doc Linker"
-          ? "https://caspervdk.app.n8n.cloud/webhook-test/6f485cb7-524e-47e6-9c27-77e2af2486b3"
+          ? "https://caspervdk.app.n8n.cloud/webhook/6f485cb7-524e-47e6-9c27-77e2af2486b3"
           : "https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc";
 
       const res = await fetch(webhookUrl, {
