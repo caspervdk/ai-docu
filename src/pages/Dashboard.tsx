@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -19,6 +19,8 @@ const tools = [
   { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions." },
   { icon: ShieldAlert, title: "Contract Analysis & Risk Detection", desc: "Spot risks and clauses at a glance." },
   { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes." },
+  { icon: Files, title: "Merge documents", desc: "Combine multiple documents into a single file." },
+  { icon: BarChart3, title: "Analyze data from a file", desc: "Extract insights and metrics from your dataset." },
 ];
 
 const Dashboard = () => {
@@ -144,22 +146,26 @@ const Dashboard = () => {
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
-  const getPlaceholder = (title: string) => {
-    switch (title) {
-      case "Summarize Long Documents":
-        return "Paste the document text or key sections to summarize...";
-      case "Cross-Doc Linker":
-        return "Provide text or keywords to find and link related evidence across documents...";
-      case "Translate & Localize":
-        return "Enter text to translate and the target locale (e.g., en->nl)...";
-      case "Contract Analysis & Risk Detection":
-        return "Paste clauses or contract excerpts to analyze risks...";
-      case "Smart Error Detection":
-        return "Paste content to scan for issues and suggestions...";
-      default:
-        return "Enter your text...";
-    }
-  };
+const getPlaceholder = (title: string) => {
+  switch (title) {
+    case "Summarize Long Documents":
+      return "Paste the document text or key sections to summarize...";
+    case "Cross-Doc Linker":
+      return "Provide text or keywords to find and link related evidence across documents...";
+    case "Translate & Localize":
+      return "Enter text to translate and the target locale (e.g., en->nl)...";
+    case "Contract Analysis & Risk Detection":
+      return "Paste clauses or contract excerpts to analyze risks...";
+    case "Smart Error Detection":
+      return "Paste content to scan for issues and suggestions...";
+    case "Merge documents":
+      return "Upload documents to merge and specify the desired order or rules...";
+    case "Analyze data from a file":
+      return "Upload a CSV/Excel file and describe what you want analyzed...";
+    default:
+      return "Enter your text...";
+  }
+};
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
