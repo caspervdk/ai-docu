@@ -355,7 +355,7 @@ const getPlaceholder = (title: string) => {
             ))}
           </section>
         <Dialog open={!!activeTool} onOpenChange={(open) => { if (!open) { handleClose(); } }}>
-          <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto relative pb-16">
             <DialogHeader>
               <DialogTitle>{activeTool?.title}</DialogTitle>
               <DialogDescription>
@@ -507,7 +507,7 @@ const getPlaceholder = (title: string) => {
               </div>
             </div>
 
-            <DialogFooter className="flex items-center justify-between">
+            <DialogFooter className="flex items-center justify-between absolute bottom-0 left-0 right-0 border-t bg-background px-4 py-3">
               <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
                 {isSaving ? "Saving..." : "Save to My documents"}
               </Button>
