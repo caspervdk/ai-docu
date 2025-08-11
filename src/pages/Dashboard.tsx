@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -309,14 +309,24 @@ const getPlaceholder = (title: string) => {
             <Button variant="outline" className="w-full justify-start">Dashboard</Button>
           </nav>
 
-          <section aria-label="Upgrade to Pro" className="rounded-lg border p-4 bg-gradient-subtle">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-medium">Pro features</div>
-              <Badge variant="secondary">PRO</Badge>
+          <section aria-label="Upgrade to Pro" className="rounded-xl border p-4 bg-gradient-subtle shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="inline-flex items-center justify-center rounded-md bg-primary/10 p-2 ring-1 ring-primary/20">
+                  <Rocket className="h-4 w-4 text-primary" />
+                </div>
+                <div className="text-sm font-medium">Pro features</div>
+                <Badge variant="secondary">PRO</Badge>
+              </div>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Unlock all tools and higher limits.</p>
+            <p className="mt-2 text-xs text-muted-foreground">Unlock all tools and higher limits.</p>
+            <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
+              <li className="flex items-center gap-2"><Check className="h-3 w-3 text-primary" />All PRO tools</li>
+              <li className="flex items-center gap-2"><Check className="h-3 w-3 text-primary" />Higher limits & faster processing</li>
+              <li className="flex items-center gap-2"><Check className="h-3 w-3 text-primary" />Priority support</li>
+            </ul>
             <Button variant="pro" size="sm" className="w-full mt-3" onClick={() => navigate("/#pricing")}>
-              <Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro
+              <Rocket className="size-4 mr-2" aria-hidden="true" /> Upgrade to Pro
             </Button>
           </section>
 
