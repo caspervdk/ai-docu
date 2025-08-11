@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3 } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -266,7 +266,9 @@ const getPlaceholder = (title: string) => {
                     <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">Options</Button>
+                        <Button variant="ghost" size="icon" aria-label="Options">
+                          <Menu className="h-4 w-4" aria-hidden="true" />
+                        </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="z-50">
                         <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
