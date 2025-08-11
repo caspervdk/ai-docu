@@ -14,14 +14,14 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 
 const tools = [
-  { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
-  { icon: Search, title: "Cross-Doc Linker", desc: "Find related documents and link supporting evidence." },
-  { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions." },
-  { icon: ShieldAlert, title: "Contract Analysis & Risk Detection", desc: "Spot risks and clauses at a glance." },
-  { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes." },
-  { icon: Files, title: "Merge documents", desc: "Combine multiple documents into a single file." },
-  { icon: BarChart3, title: "Analyze data from a file", desc: "Extract insights and metrics from your dataset." },
-];
+  { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points.", proOnly: false },
+  { icon: Search, title: "Cross-Doc Linker", desc: "Find related documents and link supporting evidence.", proOnly: false },
+  { icon: Languages, title: "Translate & Localize", desc: "Translate content and adapt for regions.", proOnly: false },
+  { icon: ShieldAlert, title: "Contract Analysis & Risk Detection", desc: "Spot risks and clauses at a glance.", proOnly: true },
+  { icon: Bug, title: "Smart Error Detection", desc: "Identify issues and suggest fixes.", proOnly: true },
+  { icon: Files, title: "Merge documents", desc: "Combine multiple documents into a single file.", proOnly: true },
+  { icon: BarChart3, title: "Analyze data from a file", desc: "Extract insights and metrics from your dataset.", proOnly: true },
+] as const;
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -243,8 +243,13 @@ const getPlaceholder = (title: string) => {
                   <div className="size-12 rounded-full bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
                     <t.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-lg mt-2">{t.title}</CardTitle>
-                  <CardDescription>{t.desc}</CardDescription>
+                  <div className="mt-2 flex items-center gap-2">
+                    <CardTitle className="text-lg">{t.title}</CardTitle>
+                    {t.proOnly && <Badge variant="secondary">PRO</Badge>}
+                  </div>
+                  <CardDescription>
+                    {t.desc} {t.proOnly && <span className="ml-1">(Upgrade to Pro to use)</span>}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button variant="outline" size="sm" onClick={() => setActiveTool(t)}>Open AI tool</Button>
