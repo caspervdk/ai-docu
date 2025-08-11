@@ -40,6 +40,7 @@ const Dashboard = () => {
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
   const [translateLang, setTranslateLang] = useState("en->nl");
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -362,14 +363,39 @@ const getPlaceholder = (title: string) => {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="tool-input">Input</Label>
-                <Textarea
-                  id="tool-input"
-                  placeholder={activeTool ? getPlaceholder(activeTool.title) : ""}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  rows={6}
-                />
+                <Label htmlFor="tool-input">{activeTool?.title === "Translate & Localize" ? "Document" : "Input"}</Label>
+                {activeTool?.title === "Translate & Localize" ? (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={triggerFileDialog}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') triggerFileDialog(); }}
+                    onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                    onDragLeave={() => setIsDragActive(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragActive(false);
+                      const f = e.dataTransfer.files?.[0];
+                      if (f) setSelectedFile(f);
+                    }}
+                    className={`flex h-28 w-full items-center justify-center rounded-md border text-sm transition ${isDragActive ? 'border-primary bg-primary/5' : 'border-dashed'} cursor-pointer`}
+                    aria-label="Drop your file here or click to upload"
+                  >
+                    {selectedFile ? (
+                      <span className="text-muted-foreground">Selected: {selectedFile.name}</span>
+                    ) : (
+                      <span className="text-muted-foreground">Drop your file here or click to upload</span>
+                    )}
+                  </div>
+                ) : (
+                  <Textarea
+                    id="tool-input"
+                    placeholder={activeTool ? getPlaceholder(activeTool.title) : ""}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    rows={6}
+                  />
+                )}
               </div>
 
               {activeTool?.title === "Translate & Localize" && (
@@ -390,12 +416,10 @@ const getPlaceholder = (title: string) => {
                       <DropdownMenuItem onClick={() => setTranslateLang("fr->en")}>French → English</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <p className="text-xs text-muted-foreground">Choose the target language for translation.</p>
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="tool-file">Document</Label>
                 <input
                   id="tool-file"
                   ref={fileInputRef}
@@ -403,10 +427,15 @@ const getPlaceholder = (title: string) => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <div className="flex items-center gap-2">
-                  <Button variant="secondary" onClick={handleUploadClick}>Upload</Button>
-                  <span className="text-sm text-muted-foreground">{selectedFile ? selectedFile.name : "No file selected"}</span>
-                </div>
+                {activeTool?.title !== "Translate & Localize" && (
+                  <>
+                    <Label htmlFor="tool-file">Document</Label>
+                    <div className="flex items-center gap-2">
+                      <Button variant="secondary" onClick={handleUploadClick}>Upload</Button>
+                      <span className="text-sm text-muted-foreground">{selectedFile ? selectedFile.name : "No file selected"}</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
