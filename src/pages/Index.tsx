@@ -12,7 +12,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-
+import Footer from "@/components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -963,41 +963,7 @@ const onStartAI = async (overrideAction?: string) => {
         </section>
       </main>
 
-      <footer className="border-t bg-muted/30">
-        <div className="container py-12 grid md:grid-cols-2 gap-8">
-          <div>
-            <div className="flex items-center gap-2">
-              <img src="/lovable-uploads/0a2fcf98-0bdf-4d5f-b111-c4aeb1ff03ba.png" alt="DocMind AI logo" className="h-8 w-auto" loading="lazy" />
-            </div>
-            <p className="mt-3 text-sm text-muted-foreground max-w-sm">AI-powered document assistant to read, analyze, summarize, translate, and improve your documents.</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Product</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#features" className="hover:text-foreground">Features</a></li>
-                <li><a href="#pricing" className="hover:text-foreground">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground">Watch Demo</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Support</a></li>
-                <li><a href="#" className="hover:text-foreground">Terms</a></li>
-                <li><a href="#" className="hover:text-foreground">Privacy</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Stay in touch</h3>
-              <p className="text-sm text-muted-foreground">hello@docmind.ai</p>
-            </div>
-          </div>
-        </div>
-        <div className="border-t">
-          <div className="container py-6 text-xs text-muted-foreground">© {new Date().getFullYear()} DocMind AI. All rights reserved.</div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 };
