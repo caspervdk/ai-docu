@@ -5,6 +5,10 @@ import { Progress } from "@/components/ui/progress";
 import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 const tools = [
   { icon: FileText, title: "Summarize Long Documents", desc: "Condense long docs into key points." },
@@ -16,6 +20,40 @@ const tools = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const [activeTool, setActiveTool] = useState<(typeof tools)[number] | null>(null);
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+
+  const handleClose = () => {
+    setActiveTool(null);
+    setInput("");
+    setOutput("");
+  };
+
+  const handleRun = () => {
+    setOutput("Processing...");
+    setTimeout(() => {
+      setOutput(`Sample output for "${activeTool?.title}" based on your input.`);
+    }, 800);
+  };
+
+  const getPlaceholder = (title: string) => {
+    switch (title) {
+      case "Summarize Long Documents":
+        return "Paste the document text or key sections to summarize...";
+      case "Make Content Searchable (OCR)":
+        return "Describe the image/PDF and paste any text to extract or index...";
+      case "Translate & Localize":
+        return "Enter text to translate and the target locale (e.g., en->nl)...";
+      case "Contract Analysis & Risk Detection":
+        return "Paste clauses or contract excerpts to analyze risks...";
+      case "Smart Error Detection":
+        return "Paste content to scan for issues and suggestions...";
+      default:
+        return "Enter your text...";
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -70,11 +108,52 @@ const Dashboard = () => {
                   <CardDescription>{t.desc}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" size="sm">Open AI tool</Button>
+                  <Button variant="outline" size="sm" onClick={() => setActiveTool(t)}>Open AI tool</Button>
                 </CardContent>
               </Card>
             ))}
           </section>
+        <Dialog open={!!activeTool} onOpenChange={(open) => { if (!open) { handleClose(); } }}>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>{activeTool?.title}</DialogTitle>
+              <DialogDescription>
+                Use this AI tool to {activeTool?.desc?.toLowerCase()}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="tool-input">Input</Label>
+                <Textarea
+                  id="tool-input"
+                  placeholder={activeTool ? getPlaceholder(activeTool.title) : ""}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  rows={6}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button onClick={handleRun}>Run</Button>
+                <Button variant="outline" onClick={handleClose}>Cancel</Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Output</Label>
+                <div className="min-h-24 rounded-md border p-3 text-sm text-muted-foreground whitespace-pre-wrap">
+                  {output || "Results will appear here."}
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <div className="text-xs text-muted-foreground">
+                Note: Demo UI. Connect to your AI backend to enable live results.
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         </main>
       </div>
     </>
