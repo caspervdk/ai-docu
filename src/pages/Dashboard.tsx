@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/use-toast";
 import { useState, useRef, useEffect } from "react";
 
 const tools = [
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const [output, setOutput] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
@@ -100,6 +102,34 @@ const Dashboard = () => {
       setIsSending(false);
     }
   };
+
+  const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  const saveOutput = async () => {
+    if (!output.trim()) {
+      toast({ title: "Nothing to save", description: "Run the tool to generate output first." });
+      return;
+    }
+    if (!userId) {
+      toast({ title: "Log in required", description: "Please log in to save documents." });
+      return;
+    }
+    try {
+      setIsSaving(true);
+      const filename = `${Date.now()}-${slug(activeTool?.title || 'result')}.txt`;
+      const path = `${userId}/${filename}`;
+      const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+      const { error } = await supabase.storage.from('documents').upload(path, blob, { contentType: 'text/plain', upsert: false });
+      if (error) throw error;
+      const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+      setDocs((prev) => [{ name: filename, url: signed?.signedUrl || '#' }, ...prev]);
+      toast({ title: 'Saved to My documents', description: filename });
+    } catch (e: any) {
+      toast({ title: 'Save failed', description: e?.message || 'Could not save document.', variant: 'destructive' } as any);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const getPlaceholder = (title: string) => {
     switch (title) {
       case "Summarize Long Documents":
@@ -242,10 +272,11 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <DialogFooter>
-              <div className="text-xs text-muted-foreground">
-                Note: Demo UI. Connect to your AI backend to enable live results.
-              </div>
+            <DialogFooter className="flex items-center justify-between">
+              <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving}>
+                {isSaving ? "Saving..." : "Save to My documents"}
+              </Button>
+              <div className="text-xs text-muted-foreground">Note: Demo UI. Connect to your AI backend to enable live results.</div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
