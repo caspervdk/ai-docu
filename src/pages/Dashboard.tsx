@@ -112,6 +112,42 @@ const Dashboard = () => {
     }
   };
 
+  // Send uploaded document to the Translate & Localize webhook and put response into Output
+  const analyzeDocWithWebhook = async () => {
+    const file = selectedFile;
+    if (!file) { setOutput("Please select a file to upload."); return; }
+    try {
+      setIsSending(true);
+      setOutput("Uploading for translation/localization...");
+      const fd = new FormData();
+      fd.append("file", file, file.name);
+      fd.append("action", "Translate & Localize");
+      if (input) fd.append("message", input);
+
+      const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
+        method: "POST",
+        body: fd,
+      });
+
+      const text = await res.text().catch(() => "");
+      if (!res.ok) throw new Error(text || `Webhook responded with ${res.status}`);
+      setOutput(text || "Success (empty response)");
+    } catch (err: any) {
+      setOutput(err?.message || "Failed to send to AI.");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // When on Translate & Localize: if a file is selected, send it; otherwise open the picker
+  const handleUploadClick = async () => {
+    if (activeTool?.title === "Translate & Localize") {
+      if (!selectedFile) { triggerFileDialog(); return; }
+      await analyzeDocWithWebhook();
+    } else {
+      triggerFileDialog();
+    }
+  };
   const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   const saveOutput = async () => {
     if (!output.trim()) {
@@ -337,7 +373,7 @@ const getPlaceholder = (title: string) => {
                   onChange={handleFileChange}
                 />
                 <div className="flex items-center gap-2">
-                  <Button variant="secondary" onClick={triggerFileDialog}>Upload</Button>
+                  <Button variant="secondary" onClick={handleUploadClick}>Upload</Button>
                   <span className="text-sm text-muted-foreground">{selectedFile ? selectedFile.name : "No file selected"}</span>
                 </div>
               </div>
