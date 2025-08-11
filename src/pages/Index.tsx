@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
   const [yearly, setYearly] = useState(false);
@@ -439,6 +440,17 @@ const onStartAI = async (overrideAction?: string) => {
               <CardDescription>Choose a tool below, then upload your document and Start AI.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8">
+              {!isAuthed && (
+                <Alert className="border-dashed">
+                  <AlertTitle>Log in required</AlertTitle>
+                  <AlertDescription>
+                    You must log in to use the AI tools.
+                    <Button size="sm" className="ml-2" asChild>
+                      <a href="/login">Log in</a>
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
               {/* Hidden upload input for per-tool buttons */}
               <input id="upload-input" type="file" className="sr-only" aria-hidden="true" accept=".pdf,.doc,.docx,.txt,image/*" onChange={makeOnFileSelected()} disabled={uploading} />
 
