@@ -269,6 +269,24 @@ const Index = () => {
     }
   };
 
+  const loginRequiredToast = () => {
+    toast({ title: 'Log in required', description: 'Please log in to upload and use the AI tools.' });
+  };
+
+  const handleUploadClick = (actionLabel: string) => () => {
+    setSelectedAction(actionLabel);
+    if (!isAuthed) { loginRequiredToast(); return; }
+    document.getElementById('upload-input')?.click();
+  };
+
+  const onDropGuarded = (id: (typeof ACTIONS)[number]['id'], actionLabel: string) => (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setSelectedAction(actionLabel);
+    setDragActive(false);
+    if (!isAuthed) { loginRequiredToast(); return; }
+    onDropFor(id)(e as any);
+  };
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -482,10 +500,9 @@ const onStartAI = async (overrideAction?: string) => {
                             size="sm"
                             variant="secondary"
                             disabled={uploading}
-                            onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
+                             onClick={handleUploadClick('Summarize Long Documents')}
                             onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                             onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                            onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDropFor('summarize')(e as any); }}
                           >
                             Upload
                           </Button>
@@ -503,14 +520,14 @@ const onStartAI = async (overrideAction?: string) => {
                         )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                          onClick={() => { setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); }}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Summarize Long Documents'); document.getElementById('upload-input')?.click(); } }}
+                           onClick={handleUploadClick('Summarize Long Documents')}
+                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleUploadClick('Summarize Long Documents')(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Summarize Long Documents'); setDragActive(false); onDropFor('summarize')(e); }}
+                          onDrop={onDropGuarded('summarize', 'Summarize Long Documents')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -541,7 +558,7 @@ const onStartAI = async (overrideAction?: string) => {
                         <p className="text-sm text-muted-foreground">Extract text from scanned PDFs or images and make it keyword-searchable.</p>
                         <div className="mt-3 flex items-center gap-2">
                           <Button size="sm" variant="secondary" disabled={uploading}
-                            onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}>
+                            onClick={handleUploadClick('Make Content Searchable (OCR)')}>
                             Upload
                           </Button>
                           {selectedFile && (
@@ -558,14 +575,14 @@ const onStartAI = async (overrideAction?: string) => {
                         )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                          onClick={() => { setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); }}
+                             onClick={handleUploadClick('Make Content Searchable (OCR)')}
                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Make Content Searchable (OCR)'); document.getElementById('upload-input')?.click(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Make Content Searchable (OCR)'); setDragActive(false); onDropFor('ocr')(e); }}
+                          onDrop={onDropGuarded('ocr', 'Make Content Searchable (OCR)')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -628,14 +645,14 @@ const onStartAI = async (overrideAction?: string) => {
                            )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                          onClick={() => { setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); }}
+                              onClick={handleUploadClick('Translate & Localize')}
                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Translate & Localize'); document.getElementById('upload-input')?.click(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Translate & Localize'); setDragActive(false); onDropFor('translate')(e); }}
+                          onDrop={onDropGuarded('translate', 'Translate & Localize')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -683,14 +700,14 @@ const onStartAI = async (overrideAction?: string) => {
                          )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                          onClick={() => { setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); }}
+                             onClick={handleUploadClick('Contract Analysis & Risk Detection')}
                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Contract Analysis & Risk Detection'); document.getElementById('upload-input')?.click(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Contract Analysis & Risk Detection'); setDragActive(false); onDropFor('contract')(e); }}
+                          onDrop={onDropGuarded('contract', 'Contract Analysis & Risk Detection')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
@@ -738,14 +755,14 @@ const onStartAI = async (overrideAction?: string) => {
                          )}
                         <div
                           className={`mt-3 flex items-center justify-center rounded-xl border border-dashed p-6 transition-colors ${dragActive ? 'bg-primary/5 ring-1 ring-primary/30' : 'bg-muted/30 hover:bg-muted/40'}`}
-                          onClick={() => { setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); }}
+                             onClick={handleUploadClick('Smart Error Detection')}
                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAction('Smart Error Detection'); document.getElementById('upload-input')?.click(); } }}
                           role="button"
                           tabIndex={0}
                           onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
                           onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-                          onDrop={(e) => { setSelectedAction('Smart Error Detection'); setDragActive(false); onDropFor('errors')(e); }}
+                          onDrop={onDropGuarded('errors', 'Smart Error Detection')}
                           aria-label="Drag and drop a file here or click to upload"
                         >
                           <div className="flex items-center gap-3 text-muted-foreground">
