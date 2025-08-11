@@ -61,6 +61,7 @@ const Dashboard = () => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
+  const [lastUploadedDoc, setLastUploadedDoc] = useState<{ name: string; url: string } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -238,6 +239,7 @@ const slugFileName = (s: string) =>
               .from('documents')
               .createSignedUrl(originalPath, 600);
             newEntries.push({ name: originalName, url: originalSigned?.signedUrl || '#' });
+            setLastUploadedDoc({ name: originalName, url: originalSigned?.signedUrl || '#' });
           }
         } catch (origErr: any) {
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
@@ -667,6 +669,29 @@ const getPlaceholder = (title: string) => {
         </Dialog>
         </main>
       </div>
+      {lastUploadedDoc && (
+        <div className="fixed bottom-4 left-4 z-50">
+          <Card className="shadow-md border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <CardContent className="p-3 flex items-center gap-3">
+              <div className="rounded-md bg-primary/10 p-2">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium" title={lastUploadedDoc.name}>{lastUploadedDoc.name}</p>
+                <p className="text-xs text-muted-foreground">Uploaded file</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <a href={lastUploadedDoc.url} target="_blank" rel="noopener noreferrer">Open</a>
+                </Button>
+                <Button variant="ghost" size="icon" aria-label="Dismiss" onClick={() => setLastUploadedDoc(null)}>
+                  ✕
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </>
   );
 };
