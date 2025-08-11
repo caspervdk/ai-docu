@@ -182,6 +182,7 @@ const Dashboard = () => {
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
       setDocs((prev) => [{ name: filename, url: signed?.signedUrl || '#' }, ...prev]);
       toast({ title: 'Saved to My documents', description: filename });
+      handleClose();
     } catch (e: any) {
       toast({ title: 'Save failed', description: e?.message || 'Could not save document.', variant: 'destructive' } as any);
     } finally {
