@@ -39,6 +39,7 @@ const Dashboard = () => {
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
+  const [translateLang, setTranslateLang] = useState("en->nl");
 
   const handleClose = () => {
     setActiveTool(null);
@@ -96,6 +97,7 @@ const Dashboard = () => {
       fd.append("file", file, file.name);
       if (activeTool?.title) fd.append("action", activeTool.title);
       if (input) fd.append("message", input);
+      if (activeTool?.title === "Translate & Localize" && translateLang) fd.append("language", translateLang);
 
       const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
         method: "POST",
@@ -123,6 +125,7 @@ const Dashboard = () => {
       fd.append("file", file, file.name);
       fd.append("action", "Translate & Localize");
       if (input) fd.append("message", input);
+      if (translateLang) fd.append("language", translateLang);
 
       const res = await fetch("https://caspervdk.app.n8n.cloud/webhook-test/analyze-doc", {
         method: "POST",
@@ -363,6 +366,28 @@ const getPlaceholder = (title: string) => {
                 />
               </div>
 
+              {activeTool?.title === "Translate & Localize" && (
+                <div className="space-y-2">
+                  <Label>Language</Label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" aria-label="Select target language">
+                        {translateLang}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => setTranslateLang("en->nl")}>English → Dutch</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTranslateLang("en->de")}>English → German</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTranslateLang("en->fr")}>English → French</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTranslateLang("nl->en")}>Dutch → English</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTranslateLang("de->en")}>German → English</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTranslateLang("fr->en")}>French → English</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <p className="text-xs text-muted-foreground">Choose the target language for translation.</p>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="tool-file">Document</Label>
                 <input
@@ -379,7 +404,7 @@ const getPlaceholder = (title: string) => {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button onClick={() => summarizeWithAI()} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : "Summarize with AI"}</Button>
+                <Button onClick={() => summarizeWithAI()} disabled={!selectedFile || isSending}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : "Summarize with AI"}</Button>
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
               </div>
 
