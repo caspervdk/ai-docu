@@ -104,12 +104,14 @@ const Dashboard = () => {
         .from('documents')
         .list(userId, { limit: 20, sortBy: { column: 'updated_at', order: 'desc' } });
       if (error || !files) { setDocs([]); return; }
-      const items = await Promise.all(files.map(async (f: any) => {
+      const visible = (files || []).filter((f: any) => f.name && f.name !== 'trash' && !f.name.endsWith('/'));
+      const items = await Promise.all(visible.map(async (f: any) => {
         const path = `${userId}/${f.name}`;
         const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
         return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
       }));
       setDocs(items);
+
     };
     fetchDocs();
   }, [userId]);
