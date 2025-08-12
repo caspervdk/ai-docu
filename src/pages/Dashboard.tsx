@@ -557,8 +557,8 @@ const getPlaceholder = (title: string) => {
               </div>
               <Accordion type="multiple" className="w-full">
                 <AccordionItem value="my-documents" id="my-documents">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Folder className="mr-2 h-4 w-4" /> My documents</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="My documents">
+                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span className="hidden md:inline">My documents</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
                     Access all files you’ve saved to My documents.
@@ -566,8 +566,8 @@ const getPlaceholder = (title: string) => {
                 </AccordionItem>
 
                 <AccordionItem value="shared-with-me" id="shared-with-me">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Users className="mr-2 h-4 w-4" /> Shared with me</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Shared with me">
+                    <span className="inline-flex items-center" aria-hidden="false"><Users className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Shared with me</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
                     Files others have shared with you.
@@ -575,8 +575,8 @@ const getPlaceholder = (title: string) => {
                 </AccordionItem>
 
                 <AccordionItem value="recent" id="recent">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Clock className="mr-2 h-4 w-4" /> Recent</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Recent">
+                    <span className="inline-flex items-center" aria-hidden="false"><Clock className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Recent</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     {docs.length === 0 ? (
@@ -613,8 +613,8 @@ const getPlaceholder = (title: string) => {
                 </AccordionItem>
 
                 <AccordionItem value="starred" id="starred">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Star className="mr-2 h-4 w-4" /> Starred</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Starred">
+                    <span className="inline-flex items-center" aria-hidden="false"><Star className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Starred</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
                     Your favorites in one place.
@@ -622,8 +622,8 @@ const getPlaceholder = (title: string) => {
                 </AccordionItem>
 
                 <AccordionItem value="trash" id="trash">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Trash2 className="mr-2 h-4 w-4" /> Trash</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Trash">
+                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Trash</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     {trashDocs.length === 0 ? (
@@ -660,8 +660,8 @@ const getPlaceholder = (title: string) => {
                 </AccordionItem>
 
                 <AccordionItem value="tags" id="tags">
-                  <AccordionTrigger className="justify-start gap-2">
-                    <span className="inline-flex items-center"><Tags className="mr-2 h-4 w-4" /> Tags</span>
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Tags">
+                    <span className="inline-flex items-center" aria-hidden="false"><Tags className="mr-2 h-4 w-4" /> <span className="hidden md:inline">Tags</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
                     Organize and filter files with tags.
