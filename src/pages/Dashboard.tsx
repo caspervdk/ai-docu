@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 type Tool = {
   icon: LucideIcon;
@@ -212,23 +213,69 @@ const slugFileName = (s: string) =>
 
       let originalEntry: { name: string; url: string } | undefined;
       let outputEntry: { name: string; url: string } | undefined;
-
-      // 1) Save the generated output as a text file
-      const outputFilename = base;
-      const outputPath = `${userId}/${outputFilename}`;
-      const outputBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
-      const { error: outputErr } = await supabase.storage
-        .from('documents')
-        .upload(outputPath, outputBlob, { contentType: 'text/plain', upsert: false });
-      if (outputErr) throw outputErr;
-      const { data: outputSigned } = await supabase.storage
-        .from('documents')
-        .createSignedUrl(outputPath, 600);
-
       const newEntries: { name: string; url: string }[] = [];
 
-      // 2) Also save the originally uploaded file (if any)
-      if (selectedFile) {
+      const isPdfUpload = selectedFile && /\.pdf$/i.test(selectedFile.name);
+
+      if (selectedFile && isPdfUpload) {
+        // Create a single merged PDF: original + Appendix with AI output
+        const origBytes = await selectedFile.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(origBytes);
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        const fontSize = 12;
+        const left = 50;
+        const topPad = 50;
+        const bottomPad = 50;
+        const lineHeight = 16;
+        const maxWidth = 500; // approx usable width on A4/Letter
+
+        const wrapText = (txt: string) => {
+          const words = txt.split(/\s+/);
+          const lines: string[] = [];
+          let line = "";
+          for (const w of words) {
+            const test = line ? `${line} ${w}` : w;
+            if (font.widthOfTextAtSize(test, fontSize) <= maxWidth) {
+              line = test;
+            } else {
+              if (line) lines.push(line);
+              line = w;
+            }
+          }
+          if (line) lines.push(line);
+          return lines;
+        };
+
+        const appendixHeader = "Appendix: AI Output";
+        const appendixText = `${appendixHeader}\n\n${output}`;
+        const lines = appendixText.split(/\n/).flatMap((l) => wrapText(l || " "));
+
+        let i = 0;
+        while (i < lines.length) {
+          const page = pdfDoc.addPage();
+          const { height } = page.getSize();
+          let y = height - topPad;
+          while (i < lines.length && y > bottomPad) {
+            page.drawText(lines[i], { x: left, y, size: fontSize, font, color: rgb(0, 0, 0) });
+            y -= lineHeight;
+            i++;
+          }
+        }
+
+        const mergedBytes = await pdfDoc.save();
+        const mergedBlob = new Blob([mergedBytes], { type: 'application/pdf' });
+        const outputFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
+        const outputPath = `${userId}/${outputFilename}`;
+        const { error: outputErr } = await supabase.storage
+          .from('documents')
+          .upload(outputPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
+        if (outputErr) throw outputErr;
+        const { data: outputSigned } = await supabase.storage
+          .from('documents')
+          .createSignedUrl(outputPath, 600);
+
+        // Also save the original upload as-is for reference
         try {
           const originalName = slugFileName(selectedFile.name);
           const originalPath = `${userId}/${originalName}`;
@@ -236,7 +283,6 @@ const slugFileName = (s: string) =>
             .from('documents')
             .upload(originalPath, selectedFile, { upsert: false });
           if (originalErr) {
-            // If saving the original fails, we still keep the output saved
             toast({ title: 'Original file not saved', description: originalErr.message, variant: 'destructive' } as any);
           } else {
             const { data: originalSigned } = await supabase.storage
@@ -248,14 +294,50 @@ const slugFileName = (s: string) =>
         } catch (origErr: any) {
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
         }
+
+        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+        newEntries.push(outputEntry);
+      } else {
+        // Fallback: save AI output as a text file and optionally the original non-PDF
+        const outputFilename = base.endsWith('.txt') ? base : `${base}.txt`;
+        const outputPath = `${userId}/${outputFilename}`;
+        const outputBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+        const { error: outputErr } = await supabase.storage
+          .from('documents')
+          .upload(outputPath, outputBlob, { contentType: 'text/plain', upsert: false });
+        if (outputErr) throw outputErr;
+        const { data: outputSigned } = await supabase.storage
+          .from('documents')
+          .createSignedUrl(outputPath, 600);
+
+        // Save original if present
+        if (selectedFile) {
+          try {
+            const originalName = slugFileName(selectedFile.name);
+            const originalPath = `${userId}/${originalName}`;
+            const { error: originalErr } = await supabase.storage
+              .from('documents')
+              .upload(originalPath, selectedFile, { upsert: false });
+            if (originalErr) {
+              toast({ title: 'Original file not saved', description: originalErr.message, variant: 'destructive' } as any);
+            } else {
+              const { data: originalSigned } = await supabase.storage
+                .from('documents')
+                .createSignedUrl(originalPath, 600);
+              originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#' };
+              newEntries.push(originalEntry);
+            }
+          } catch (origErr: any) {
+            toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
+          }
+        }
+
+        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+        newEntries.push(outputEntry);
       }
 
-      // Add the output entry after the original file (so both appear at the top)
-      outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
-      newEntries.push(outputEntry);
       setDocs((prev) => [...newEntries, ...prev]);
       setLastSavedPair({ original: originalEntry, output: outputEntry });
-
       toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       handleClose();
     } catch (e: any) {
@@ -264,7 +346,6 @@ const slugFileName = (s: string) =>
       setIsSaving(false);
     }
   };
-
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
