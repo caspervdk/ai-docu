@@ -470,6 +470,14 @@ const getPlaceholder = (title: string) => {
             </div>
             <Progress value={usagePct} className="h-2" />
             <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
+            {DOC_QUOTA - docs.length <= 0 && (
+              <div className="mt-3 flex items-center justify-between rounded-md border bg-background/70 px-3 py-2">
+                <span className="text-xs text-muted-foreground">Limit reached. Upgrade to add more documents.</span>
+                <Button variant="pro" size="sm" onClick={() => navigate('/#pricing')}>
+                  <Rocket className="size-4 mr-1" aria-hidden="true" /> Upgrade
+                </Button>
+              </div>
+            )}
           </section>
 
           <section aria-label="My documents" className="rounded-lg border p-4">
