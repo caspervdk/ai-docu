@@ -55,6 +55,7 @@ const Dashboard = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
+  const [showAllDocs, setShowAllDocs] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
   const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
@@ -389,26 +390,34 @@ const getPlaceholder = (title: string) => {
             {docs.length === 0 ? (
               <div className="text-xs text-muted-foreground">No documents yet.</div>
             ) : (
-              <ul className="space-y-2">
-                {docs.slice(0, 5).map((d) => (
-                  <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
-                    <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Options">
-                          <Menu className="h-4 w-4" aria-hidden="true" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="z-50">
-                        <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </li>
-                ))}
-
-              </ul>
+              <>
+                <ul className="space-y-2">
+                  {(showAllDocs ? docs : docs.slice(0, 5)).map((d) => (
+                    <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                      <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" aria-label="Options">
+                            <Menu className="h-4 w-4" aria-hidden="true" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="z-50">
+                          <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </li>
+                  ))}
+                </ul>
+                {docs.length > 5 && (
+                  <div className="pt-2">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => setShowAllDocs((s) => !s)}>
+                      {showAllDocs ? "Show less" : "Show all documents"}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         </aside>
