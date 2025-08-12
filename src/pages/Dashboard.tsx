@@ -56,6 +56,7 @@ const Dashboard = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
+  const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
   const [translateLang, setTranslateLang] = useState("en->nl");
   const [isDragActive, setIsDragActive] = useState(false);
@@ -208,6 +209,9 @@ const slugFileName = (s: string) =>
         return;
       }
 
+      let originalEntry: { name: string; url: string } | undefined;
+      let outputEntry: { name: string; url: string } | undefined;
+
       // 1) Save the generated output as a text file
       const outputFilename = base;
       const outputPath = `${userId}/${outputFilename}`;
@@ -237,7 +241,8 @@ const slugFileName = (s: string) =>
             const { data: originalSigned } = await supabase.storage
               .from('documents')
               .createSignedUrl(originalPath, 600);
-            newEntries.push({ name: originalName, url: originalSigned?.signedUrl || '#' });
+            originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#' };
+            newEntries.push(originalEntry);
           }
         } catch (origErr: any) {
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
@@ -245,8 +250,10 @@ const slugFileName = (s: string) =>
       }
 
       // Add the output entry after the original file (so both appear at the top)
-      newEntries.push({ name: outputFilename, url: outputSigned?.signedUrl || '#' });
+      outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+      newEntries.push(outputEntry);
       setDocs((prev) => [...newEntries, ...prev]);
+      setLastSavedPair({ original: originalEntry, output: outputEntry });
 
       toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       handleClose();
@@ -623,13 +630,31 @@ const getPlaceholder = (title: string) => {
               <DialogTitle>{previewDoc?.name}</DialogTitle>
               <DialogDescription>Preview</DialogDescription>
             </DialogHeader>
-            <div className="min-h-[60vh]">
+            <div className="min-h-[60vh] relative">
               {previewDoc && (
                 isPdf(previewDoc.name)
                   ? <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
                   : isImage(previewDoc.name)
                     ? <img src={previewDoc.url} alt={previewDoc.name} className="max-h-[70vh] w-full object-contain rounded-md border" />
                     : <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
+              )}
+
+              {previewDoc && lastSavedPair && (
+                (() => {
+                  const isPrevOrig = lastSavedPair.original && previewDoc.name === lastSavedPair.original.name;
+                  const isPrevOut = lastSavedPair.output && previewDoc.name === lastSavedPair.output.name;
+                  const related = isPrevOrig ? lastSavedPair.output : isPrevOut ? lastSavedPair.original : null;
+                  return related ? (
+                    <div className="absolute left-4 bottom-4 rounded-md border bg-background/80 backdrop-blur px-3 py-2 shadow-sm max-w-[95%]">
+                      <div className="text-xs text-muted-foreground mb-1">Related document</div>
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-sm truncate max-w-[220px]" title={related.name}>{related.name}</span>
+                        <Button variant="outline" size="sm" onClick={() => setPreviewDoc(related as { name: string; url: string })}>Open</Button>
+                      </div>
+                    </div>
+                  ) : null;
+                })()
               )}
             </div>
             <DialogFooter>
