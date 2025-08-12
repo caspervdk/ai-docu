@@ -372,15 +372,16 @@ const slugFileName = (s: string) =>
         toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
         return;
       }
-      const confirmDelete = window.confirm(`Delete ${doc.name}?`);
+      const confirmDelete = window.confirm(`Move ${doc.name} to Trash?`);
       if (!confirmDelete) return;
-      const path = `${userId}/${doc.name}`;
-      const { error } = await supabase.storage.from('documents').remove([path]);
-      if (error) {
-        toast({ title: 'Delete failed', description: error.message, variant: 'destructive' } as any);
+      const fromPath = `${userId}/${doc.name}`;
+      const toPath = `${userId}/trash/${doc.name}`;
+      const { error: moveError } = await supabase.storage.from('documents').move(fromPath, toPath);
+      if (moveError) {
+        toast({ title: 'Could not move to Trash', description: moveError.message, variant: 'destructive' } as any);
       } else {
         setDocs((prev) => prev.filter((d) => d.name !== doc.name));
-        toast({ title: 'Deleted', description: doc.name });
+        toast({ title: 'Moved to Trash', description: doc.name });
       }
     }
   };
