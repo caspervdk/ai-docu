@@ -7,25 +7,41 @@ type OutputPanelProps = {
   emptyText?: string;
 };
 
-export function OutputPanel({ title = "AI Analysis", content, emptyText = "Results will appear here." }: OutputPanelProps) {
-  const value = (content || "").trim();
-  const isEmpty = value.length === 0;
+export function OutputPanel({ title = "AI summary", content, emptyText = "Results will appear here." }: OutputPanelProps) {
+  const raw = (content || "").trim();
+  let isEmpty = raw.length === 0;
 
-  // Try JSON pretty print
+  let displayValue = raw;
   let jsonPretty: string | null = null;
-  if (!isEmpty && (value.startsWith("{") || value.startsWith("["))) {
+
+  // Try to parse JSON and extract useful content
+  if (!isEmpty && (raw.startsWith("{") || raw.startsWith("["))) {
     try {
-      jsonPretty = JSON.stringify(JSON.parse(value), null, 2);
+      const parsed = JSON.parse(raw);
+      const extracted = parsed && !Array.isArray(parsed) && typeof parsed === "object" && ("output" in parsed)
+        ? (parsed as any).output
+        : parsed;
+      if (typeof extracted === "string") {
+        displayValue = extracted.trim();
+      } else {
+        jsonPretty = JSON.stringify(extracted, null, 2);
+      }
     } catch {
-      jsonPretty = null;
+      // fall back to non-JSON handling below
     }
   }
 
+  // Remove the word "output" from any text content (case-insensitive)
+  if (!jsonPretty) {
+    displayValue = displayValue.replace(/\boutput\b/gi, "").trim();
+    isEmpty = displayValue.length === 0;
+  }
+
   // Fallback to line list
-  const lines = !isEmpty && !jsonPretty ? value.split(/\n+/).map((l) => l.trim()).filter(Boolean) : [];
+  const lines = !isEmpty && !jsonPretty ? displayValue.split(/\n+/).map((l) => l.trim()).filter(Boolean) : [];
 
   return (
-    <section aria-label="AI output" className="animate-fade-in">
+    <section aria-label="AI summary" className="animate-fade-in">
       <div className="rounded-2xl border border-primary/20 bg-gradient-subtle p-4 sm:p-6 shadow-sm">
         <header className="mb-3 flex items-center gap-2 text-primary">
           <div className="rounded-full border border-primary/30 p-1">
@@ -48,7 +64,7 @@ export function OutputPanel({ title = "AI Analysis", content, emptyText = "Resul
               ))}
             </ol>
           ) : (
-            <p className="text-sm leading-7 text-foreground whitespace-pre-wrap">{value}</p>
+            <p className="text-sm leading-7 text-foreground whitespace-pre-wrap">{displayValue}</p>
           )}
         </div>
       </div>

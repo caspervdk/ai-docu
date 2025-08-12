@@ -1066,7 +1066,7 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <OutputPanel title="AI Analysis" content={output} emptyText="Results will appear here." />
+                <OutputPanel title="AI summary" content={output} emptyText="Results will appear here." />
               </div>
 
               <div className="space-y-2">
