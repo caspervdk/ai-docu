@@ -577,12 +577,7 @@ const getPlaceholder = (title: string) => {
   };
 
   const handleMyAccount = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      toast({ title: 'My account', description: user?.email ?? 'Signed in' });
-    } catch (e: any) {
-      toast({ title: 'My account', description: 'Unable to fetch account details.' });
-    }
+    navigate("/account");
   };
 
   const DOC_QUOTA = 15;
