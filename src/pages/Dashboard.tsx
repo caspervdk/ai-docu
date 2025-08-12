@@ -17,6 +17,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { formatDistanceToNow } from "date-fns";
+import { OutputPanel } from "@/components/OutputPanel";
 
 type Tool = {
   icon: LucideIcon;
@@ -1065,9 +1066,7 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <div className="min-h-24 rounded-md border p-3 text-sm text-muted-foreground whitespace-pre-wrap">
-                  {output || "Results will appear here."}
-                </div>
+                <OutputPanel title="AI Analysis" content={output} emptyText="Results will appear here." />
               </div>
 
               <div className="space-y-2">
