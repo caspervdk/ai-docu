@@ -15,8 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 type Tool = {
   icon: LucideIcon;
@@ -267,32 +265,15 @@ const slugFileName = (s: string) =>
 
         const mergedBytes = await pdfDoc.save();
         const mergedBlob = new Blob([mergedBytes], { type: 'application/pdf' });
-        const outputPdfFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
-        const outputPdfPath = `${userId}/${outputPdfFilename}`;
-        const { error: outputPdfErr } = await supabase.storage
+        const outputFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
+        const outputPath = `${userId}/${outputFilename}`;
+        const { error: outputErr } = await supabase.storage
           .from('documents')
-          .upload(outputPdfPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
-        if (outputPdfErr) throw outputPdfErr;
-        const { data: outputPdfSigned } = await supabase.storage
+          .upload(outputPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
+        if (outputErr) throw outputErr;
+        const { data: outputSigned } = await supabase.storage
           .from('documents')
-          .createSignedUrl(outputPdfPath, 600);
-
-        // Save the AI output separately as a text file for easy preview/search
-        try {
-          const baseName = outputPdfFilename.replace(/\.pdf$/i, '');
-          const outputTextFilename = `${baseName}-output.txt`;
-          const outputTextPath = `${userId}/${outputTextFilename}`;
-          const outputTxtBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
-          const { error: outputTxtErr } = await supabase.storage
-            .from('documents')
-            .upload(outputTextPath, outputTxtBlob, { contentType: 'text/plain', upsert: false });
-          if (!outputTxtErr) {
-            const { data: outputTxtSigned } = await supabase.storage
-              .from('documents')
-              .createSignedUrl(outputTextPath, 600);
-            newEntries.push({ name: outputTextFilename, url: outputTxtSigned?.signedUrl || '#' });
-          }
-        } catch (_) { /* optional */ }
+          .createSignedUrl(outputPath, 600);
 
         // Also save the original upload as-is for reference
         try {
@@ -314,7 +295,7 @@ const slugFileName = (s: string) =>
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
         }
 
-        outputEntry = { name: outputPdfFilename, url: outputPdfSigned?.signedUrl || '#' };
+        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
         newEntries.push(outputEntry);
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
@@ -489,14 +470,6 @@ const getPlaceholder = (title: string) => {
             </div>
             <Progress value={usagePct} className="h-2" />
             <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
-            {DOC_QUOTA - docs.length <= 0 && (
-              <div className="mt-3 flex items-center justify-between rounded-md border bg-background/70 px-3 py-2">
-                <span className="text-xs text-muted-foreground">Limit reached. Upgrade to add more documents.</span>
-                <Button variant="pro" size="sm" onClick={() => navigate('/#pricing')}>
-                  <Rocket className="size-4 mr-1" aria-hidden="true" /> Upgrade
-                </Button>
-              </div>
-            )}
           </section>
 
           <section aria-label="My documents" className="rounded-lg border p-4">
@@ -713,31 +686,9 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                {output ? (
-                  <div className="min-h-24 max-h-[50vh] overflow-y-auto rounded-lg border bg-muted/20 p-4 shadow-sm">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        h1: (props) => <h2 className="mt-0 text-lg font-semibold tracking-tight" {...props} />,
-                        h2: (props) => <h3 className="mt-4 text-base font-semibold" {...props} />,
-                        p: (props) => <p className="text-sm leading-relaxed text-foreground/80" {...props} />,
-                        li: (props) => <li className="list-disc ml-5 text-sm leading-relaxed" {...props} />,
-                        code: (props) => <code className="rounded bg-muted px-1.5 py-0.5 text-[0.85em]" {...props} />,
-                        pre: (props) => <pre className="rounded-md bg-muted p-3 overflow-x-auto text-xs" {...props} />,
-                        a: (props) => <a className="text-primary underline" target="_blank" rel="noreferrer" {...props} />,
-                        hr: (props) => <hr className="my-4 border-border/60" {...props} />,
-                        blockquote: (props) => <blockquote className="border-l-2 border-primary/40 pl-3 italic text-foreground/80" {...props} />,
-                      }}
-                    >
-                      {output}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  <div className="min-h-24 rounded-lg border bg-muted/10 p-4 text-sm text-muted-foreground">
-                    Results will appear here.
-                  </div>
-                )}
-
+                <div className="min-h-24 rounded-md border p-3 text-sm text-muted-foreground whitespace-pre-wrap">
+                  {output || "Results will appear here."}
+                </div>
               </div>
 
               <div className="space-y-2">
