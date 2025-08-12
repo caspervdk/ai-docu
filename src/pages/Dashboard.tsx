@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -509,8 +509,6 @@ const getPlaceholder = (title: string) => {
           </div>
             <div className="flex items-center gap-2">
               {/* Desktop actions */}
-              <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
-              <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
               <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />Log out</Button>
 
@@ -522,14 +520,6 @@ const getPlaceholder = (title: string) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50 w-44">
-                  <DropdownMenuItem disabled>
-                    <Save className="mr-2 h-4 w-4" />
-                    <span>Save</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <Share2 className="mr-2 h-4 w-4" />
-                    <span>Share</span>
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleMyAccount}>
                     <User2 className="mr-2 h-4 w-4" />
                     <span>My account</span>
