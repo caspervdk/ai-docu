@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Tool = {
   icon: LucideIcon;
@@ -694,9 +696,31 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <div className="min-h-24 rounded-md border p-3 text-sm text-muted-foreground whitespace-pre-wrap">
-                  {output || "Results will appear here."}
-                </div>
+                {output ? (
+                  <div className="min-h-24 max-h-[50vh] overflow-y-auto rounded-lg border bg-muted/20 p-4 shadow-sm">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h1: (props) => <h2 className="mt-0 text-lg font-semibold tracking-tight" {...props} />,
+                        h2: (props) => <h3 className="mt-4 text-base font-semibold" {...props} />,
+                        p: (props) => <p className="text-sm leading-relaxed text-foreground/80" {...props} />,
+                        li: (props) => <li className="list-disc ml-5 text-sm leading-relaxed" {...props} />,
+                        code: (props) => <code className="rounded bg-muted px-1.5 py-0.5 text-[0.85em]" {...props} />,
+                        pre: (props) => <pre className="rounded-md bg-muted p-3 overflow-x-auto text-xs" {...props} />,
+                        a: (props) => <a className="text-primary underline" target="_blank" rel="noreferrer" {...props} />,
+                        hr: (props) => <hr className="my-4 border-border/60" {...props} />,
+                        blockquote: (props) => <blockquote className="border-l-2 border-primary/40 pl-3 italic text-foreground/80" {...props} />,
+                      }}
+                    >
+                      {output}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="min-h-24 rounded-lg border bg-muted/10 p-4 text-sm text-muted-foreground">
+                    Results will appear here.
+                  </div>
+                )}
+
               </div>
 
               <div className="space-y-2">
