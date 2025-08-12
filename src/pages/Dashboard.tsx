@@ -59,6 +59,7 @@ const Dashboard = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
+  const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
   const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
@@ -99,19 +100,31 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchDocs = async () => {
-      if (!userId) { setDocs([]); return; }
+      if (!userId) { setDocs([]); setTrashDocs([]); return; }
+      // Root (Recent)
       const { data: files, error } = await supabase.storage
         .from('documents')
-        .list(userId, { limit: 20, sortBy: { column: 'updated_at', order: 'desc' } });
-      if (error || !files) { setDocs([]); return; }
-      const visible = (files || []).filter((f: any) => f.name && f.name !== 'trash' && !f.name.endsWith('/'));
-      const items = await Promise.all(visible.map(async (f: any) => {
-        const path = `${userId}/${f.name}`;
+        .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+      if (error || !files) { setDocs([]); } else {
+        const visible = (files || []).filter((f: any) => f.name && f.name !== 'trash' && !f.name.endsWith('/'));
+        const items = await Promise.all(visible.map(async (f: any) => {
+          const path = `${userId}/${f.name}`;
+          const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+          return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+        }));
+        setDocs(items);
+      }
+
+      // Trash
+      const { data: tFiles } = await supabase.storage
+        .from('documents')
+        .list(`${userId}/trash`, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+      const tItems = await Promise.all((tFiles || []).map(async (f: any) => {
+        const path = `${userId}/trash/${f.name}`;
         const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
         return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
       }));
-      setDocs(items);
-
+      setTrashDocs(tItems);
     };
     fetchDocs();
   }, [userId]);
@@ -408,6 +421,10 @@ const slugFileName = (s: string) =>
       }
 
       setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+      const { data: trashSigned } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(`${userId}/trash/${toName}`, 600);
+      setTrashDocs((prev) => [{ name: toName, url: trashSigned?.signedUrl || '#', updatedAt: new Date().toISOString() }, ...prev]);
       toast({ title: 'Moved to Trash', description: toName });
     }
   };
@@ -539,8 +556,36 @@ const getPlaceholder = (title: string) => {
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Trash2 className="mr-2 h-4 w-4" /> Trash</span>
                   </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Recently deleted items are kept here temporarily.
+                  <AccordionContent className="animate-fade-in">
+                    {trashDocs.length === 0 ? (
+                      <div className="text-xs text-muted-foreground">No items in Trash.</div>
+                    ) : (
+                      <ul className="space-y-2">
+                        {trashDocs.slice(0, 10).map((d) => (
+                          <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                            <div className="min-w-0 flex-1">
+                              <span className="block truncate" title={d.name}>{d.name}</span>
+                              {d.updatedAt && (
+                                <span className="block text-[11px] text-muted-foreground">
+                                  {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
+                                </span>
+                              )}
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" aria-label="Options">
+                                  <Menu className="h-4 w-4" aria-hidden="true" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="z-50">
+                                <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
 
