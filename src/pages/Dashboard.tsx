@@ -494,7 +494,10 @@ const getPlaceholder = (title: string) => {
 
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container flex items-center justify-between py-4">
-          <h1 className="text-xl font-semibold">AI Tools</h1>
+          <div className="flex items-center gap-2">
+            <img src="/lovable-uploads/aeb94335-ceda-46db-bf06-7e2f0a5d17c8.png" alt="AI-DOCU logo" className="h-7 w-auto" />
+            <h1 className="text-xl font-semibold">AI Tools</h1>
+          </div>
             <div className="flex items-center gap-2">
               {/* Desktop actions */}
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
