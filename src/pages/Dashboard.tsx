@@ -481,6 +481,15 @@ const getPlaceholder = (title: string) => {
     navigate("/login");
   };
 
+  const handleMyAccount = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      toast({ title: 'My account', description: user?.email ?? 'Signed in' });
+    } catch (e: any) {
+      toast({ title: 'My account', description: 'Unable to fetch account details.' });
+    }
+  };
+
   const DOC_QUOTA = 15;
   const usagePct = Math.min(100, Math.round((docs.length / DOC_QUOTA) * 100));
 
@@ -502,6 +511,7 @@ const getPlaceholder = (title: string) => {
               {/* Desktop actions */}
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
+              <Button variant="outline" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />Log out</Button>
 
               {/* Mobile dropdown */}
@@ -519,6 +529,10 @@ const getPlaceholder = (title: string) => {
                   <DropdownMenuItem disabled>
                     <Share2 className="mr-2 h-4 w-4" />
                     <span>Share</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleMyAccount}>
+                    <User2 className="mr-2 h-4 w-4" />
+                    <span>My account</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <User2 className="mr-2 h-4 w-4" />
