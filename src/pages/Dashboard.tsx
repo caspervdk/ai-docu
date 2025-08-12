@@ -367,8 +367,9 @@ const slugFileName = (s: string) =>
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
   const handleDocAction = async (
-    action: 'view' | 'share' | 'delete',
-    doc: { name: string; url: string; updatedAt?: string }
+    action: 'view' | 'share' | 'delete' | 'delete-forever',
+    doc: { name: string; url: string; updatedAt?: string },
+    isTrash?: boolean
   ) => {
     if (action === 'view') {
       setPreviewDoc(doc);
@@ -383,6 +384,31 @@ const slugFileName = (s: string) =>
       }
       return;
     }
+
+    if (action === 'delete-forever') {
+      if (!userId) {
+        toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
+        return;
+      }
+      const confirmPermanent = window.confirm(`Permanently delete ${doc.name}? This cannot be undone.`);
+      if (!confirmPermanent) return;
+
+      const path = isTrash ? `${userId}/trash/${doc.name}` : `${userId}/${doc.name}`;
+      const { error: removeError } = await supabase.storage.from('documents').remove([path]);
+      if (removeError) {
+        toast({ title: 'Could not delete', description: (removeError as any).message || 'Unknown error', variant: 'destructive' } as any);
+        return;
+      }
+
+      if (isTrash) {
+        setTrashDocs((prev) => prev.filter((d) => d.name !== doc.name));
+      } else {
+        setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+      }
+      toast({ title: 'Deleted forever', description: doc.name });
+      return;
+    }
+
     if (action === 'delete') {
       if (!userId) {
         toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
@@ -580,6 +606,7 @@ const getPlaceholder = (title: string) => {
                               <DropdownMenuContent align="end" className="z-50">
                                 <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('delete-forever', d, true)}>Delete forever</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </li>
