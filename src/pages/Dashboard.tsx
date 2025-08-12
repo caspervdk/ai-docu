@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -439,7 +439,35 @@ const getPlaceholder = (title: string) => {
           </div>
 
           <nav className="space-y-2">
-            
+            <section aria-label="My Drive" className="rounded-lg border p-4">
+              <div className="text-sm font-medium mb-2">My Drive</div>
+              <div className="grid gap-1">
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Folder className="mr-2 h-4 w-4" />
+                  My documents
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Users className="mr-2 h-4 w-4" />
+                  Shared with me
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Clock className="mr-2 h-4 w-4" />
+                  Recent
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Star className="mr-2 h-4 w-4" />
+                  Starred
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Trash
+                </Button>
+                <Button variant="ghost" size="sm" className="w-full justify-start">
+                  <Tags className="mr-2 h-4 w-4" />
+                  Tags
+                </Button>
+              </div>
+            </section>
           </nav>
 
           <section aria-label="Upgrade to Pro" className="rounded-xl border p-4 bg-gradient-subtle shadow-sm hover:shadow-md transition-shadow">
