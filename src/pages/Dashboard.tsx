@@ -329,6 +329,9 @@ const getPlaceholder = (title: string) => {
     navigate("/login");
   };
 
+  const DOC_QUOTA = 15;
+  const usagePct = Math.min(100, Math.round((docs.length / DOC_QUOTA) * 100));
+
   return (
     <>
       <Helmet>
@@ -379,10 +382,13 @@ const getPlaceholder = (title: string) => {
             </Button>
           </section>
 
-          <section aria-label="Storage usage" className="rounded-lg border p-4">
-            <div className="text-sm font-medium mb-2">Storage</div>
-            <Progress value={27} className="h-2" />
-            <div className="mt-2 text-xs text-muted-foreground">Usage 27%</div>
+          <section aria-label="Storage usage" className="rounded-xl border p-4 bg-gradient-subtle shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-sm font-medium">Storage</div>
+              <Badge variant="secondary">{docs.length}/{DOC_QUOTA}</Badge>
+            </div>
+            <Progress value={usagePct} className="h-2" />
+            <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
           </section>
 
           <section aria-label="My documents" className="rounded-lg border p-4">
