@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, Save, Share2, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -512,7 +512,7 @@ const getPlaceholder = (title: string) => {
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
               <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />Log out</Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />Log out</Button>
 
               {/* Mobile dropdown */}
               <DropdownMenu>
@@ -535,7 +535,7 @@ const getPlaceholder = (title: string) => {
                     <span>My account</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
-                    <User2 className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
