@@ -67,6 +67,12 @@ const Dashboard = () => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
+  // New File dialog state
+  const [newOpen, setNewOpen] = useState(false);
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [newFileName, setNewFileName] = useState("");
+  const newFileInputRef = useRef<HTMLInputElement>(null);
+  const [newSaving, setNewSaving] = useState(false);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -363,6 +369,63 @@ const slugFileName = (s: string) =>
       setIsSaving(false);
     }
   };
+
+  // New File dialog helpers
+  const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] || null;
+    setNewFile(f);
+    if (f) {
+      const dot = f.name.lastIndexOf('.')
+      const base = dot >= 0 ? f.name.slice(0, dot) : f.name
+      setNewFileName(slugFileName(base));
+    } else {
+      setNewFileName("");
+    }
+  };
+
+  const saveNewUpload = async () => {
+    if (!userId) { toast({ title: 'Log in required', description: 'Please log in to upload.' }); return; }
+    if (!newFile) { toast({ title: 'No file selected', description: 'Choose a file to upload.' }); return; }
+    const dot = newFile.name.lastIndexOf('.')
+    const ext = dot >= 0 ? newFile.name.slice(dot) : ''
+    let finalName = slugFileName(newFileName.trim());
+    if (!finalName) { toast({ title: 'Name required', description: 'Enter a file name.' }); return; }
+    if (ext && !finalName.endsWith(ext)) finalName += ext;
+
+    const pathBase = `${userId}/${finalName}`;
+    try {
+      setNewSaving(true);
+      let { error: upErr } = await supabase.storage.from('documents').upload(pathBase, newFile, { upsert: false });
+      let savedName = finalName;
+      if (upErr) {
+        const msg = String((upErr as any).message || '').toLowerCase();
+        if (msg.includes('exists')) {
+          const dot2 = finalName.lastIndexOf('.');
+          const base2 = dot2 >= 0 ? finalName.slice(0, dot2) : finalName;
+          const ext2 = dot2 >= 0 ? finalName.slice(dot2) : '';
+          savedName = `${base2} (${Date.now()})${ext2}`;
+          const altPath = `${userId}/${savedName}`;
+          const { error: upErr2 } = await supabase.storage.from('documents').upload(altPath, newFile, { upsert: false });
+          if (upErr2) throw upErr2;
+        } else {
+          throw upErr;
+        }
+      }
+      const finalPath = `${userId}/${savedName}`;
+      const { data: signed } = await supabase.storage.from('documents').createSignedUrl(finalPath, 600);
+      const entry = { name: savedName, url: signed?.signedUrl || '#', updatedAt: new Date().toISOString() };
+      setDocs((prev) => [entry, ...prev]);
+      toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
+      setNewOpen(false);
+      setNewFile(null);
+      setNewFileName('');
+    } catch (e: any) {
+      toast({ title: 'Upload failed', description: e?.message || 'Could not upload.', variant: 'destructive' } as any);
+    } finally {
+      setNewSaving(false);
+    }
+  }; 
+
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
 
@@ -537,7 +600,7 @@ const getPlaceholder = (title: string) => {
       <div className="container grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 py-6">
         <aside className="space-y-6">
           <div>
-            <Button className="w-full">+ New File</Button>
+            <Button className="w-full" onClick={() => setNewOpen(true)}>+ New File</Button>
           </div>
 
           <nav className="space-y-2">
@@ -788,7 +851,36 @@ const getPlaceholder = (title: string) => {
               </Card>
             ))}
           </section>
-        <Dialog open={!!activeTool} onOpenChange={(open) => { if (!open) { handleClose(); } }}>
+
+          {/* New File upload dialog */}
+          <Dialog open={newOpen} onOpenChange={(open) => { setNewOpen(open); if (!open) { setNewFile(null); setNewFileName(''); } }}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Upload new file</DialogTitle>
+                <DialogDescription>Upload a file to My documents. It will also appear in Recent.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                <input ref={newFileInputRef} type="file" className="hidden" onChange={handleNewFileChange} />
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" onClick={() => newFileInputRef.current?.click()}>Choose file</Button>
+                  {newFile && (
+                    <span className="text-sm text-muted-foreground truncate">{newFile.name}</span>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new-name">File name</Label>
+                  <Input id="new-name" placeholder="Enter file name" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
+                  <p className="text-xs text-muted-foreground">We’ll keep the original extension.</p>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setNewOpen(false)}>Cancel</Button>
+                <Button onClick={saveNewUpload} disabled={!newFile || !userId || newSaving || !newFileName.trim()}>{newSaving ? "Saving..." : "Save to My documents"}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+         <Dialog open={!!activeTool} onOpenChange={(open) => { if (!open) { handleClose(); } }}>
           <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{activeTool?.title}</DialogTitle>
