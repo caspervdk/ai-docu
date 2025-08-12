@@ -511,7 +511,7 @@ const getPlaceholder = (title: string) => {
               {/* Desktop actions */}
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
               <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
-              <Button variant="outline" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
+              <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />Log out</Button>
 
               {/* Mobile dropdown */}
