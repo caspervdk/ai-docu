@@ -73,6 +73,9 @@ const Dashboard = () => {
   const [newFileName, setNewFileName] = useState("");
   const newFileInputRef = useRef<HTMLInputElement>(null);
   const [newSaving, setNewSaving] = useState(false);
+  // Create folder state
+  const [newFolderName, setNewFolderName] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -426,9 +429,37 @@ const slugFileName = (s: string) =>
     }
   }; 
 
+  const createFolder = async () => {
+    if (!userId) { toast({ title: 'Log in required', description: 'Please log in to create folders.' }); return; }
+    const base = slugFileName(newFolderName.trim());
+    if (!base) { toast({ title: 'Folder name required', description: 'Please enter a folder name.' }); return; }
+    try {
+      setCreatingFolder(true);
+      let folder = base;
+      let path = `${userId}/${folder}/.keep`;
+      let { error } = await supabase.storage.from('documents').upload(path, new Blob([], { type: 'text/plain' }), { upsert: false });
+      if (error) {
+        const msg = String((error as any).message || '').toLowerCase();
+        if (msg.includes('exists')) {
+          folder = `${base}-${Date.now()}`;
+          path = `${userId}/${folder}/.keep`;
+          const { error: err2 } = await supabase.storage.from('documents').upload(path, new Blob([], { type: 'text/plain' }), { upsert: false });
+          if (err2) throw err2;
+        } else {
+          throw error;
+        }
+      }
+      toast({ title: 'Folder created', description: `Folder "${folder}" is ready in My documents.` });
+      setNewFolderName('');
+    } catch (e: any) {
+      toast({ title: 'Create folder failed', description: e?.message || 'Could not create folder.', variant: 'destructive' } as any);
+    } finally {
+      setCreatingFolder(false);
+    }
+  };
+
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
-
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete' | 'delete-forever',
     doc: { name: string; url: string; updatedAt?: string },
@@ -733,8 +764,21 @@ const getPlaceholder = (title: string) => {
                   <AccordionTrigger className="justify-start gap-2" aria-label="Tags">
                     <span className="inline-flex items-center" aria-hidden="false"><Tags className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Tags</span></span>
                   </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Organize and filter files with tags.
+                  <AccordionContent className="animate-fade-in text-sm">
+                    <div className="space-y-2">
+                      <div className="text-muted-foreground">Organize and filter files with tags, or create your own folders.</div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          placeholder="New folder name"
+                          value={newFolderName}
+                          onChange={(e) => setNewFolderName(e.target.value)}
+                        />
+                        <Button size="sm" onClick={createFolder} disabled={!userId || creatingFolder || !newFolderName.trim()}>
+                          {creatingFolder ? 'Creating...' : 'Create folder'}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Folders appear in My documents; you can use them later to organize files.</p>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
