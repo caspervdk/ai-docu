@@ -536,8 +536,27 @@ const getPlaceholder = (title: string) => {
           <nav className="space-y-2">
             <section aria-label="My Drive" className="rounded-lg border p-4">
               <div className="text-sm font-medium mb-2">My Drive</div>
+              {/* Mobile dropdown for My Drive */}
+              <div className="md:hidden mb-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-full" aria-label="Open My Drive menu">
+                      My Drive
+                      <Menu className="ml-2 h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="z-50 w-56">
+                    <DropdownMenuItem onClick={() => document.getElementById('my-documents')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>My documents</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('shared-with-me')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Shared with me</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('recent')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Recent</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('starred')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Starred</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('trash')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Trash</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('tags')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Tags</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
               <Accordion type="multiple" className="w-full">
-                <AccordionItem value="my-documents">
+                <AccordionItem value="my-documents" id="my-documents">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Folder className="mr-2 h-4 w-4" /> My documents</span>
                   </AccordionTrigger>
@@ -546,7 +565,7 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="shared-with-me">
+                <AccordionItem value="shared-with-me" id="shared-with-me">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Users className="mr-2 h-4 w-4" /> Shared with me</span>
                   </AccordionTrigger>
@@ -555,7 +574,7 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="recent">
+                <AccordionItem value="recent" id="recent">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Clock className="mr-2 h-4 w-4" /> Recent</span>
                   </AccordionTrigger>
@@ -593,7 +612,7 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="starred">
+                <AccordionItem value="starred" id="starred">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Star className="mr-2 h-4 w-4" /> Starred</span>
                   </AccordionTrigger>
@@ -602,7 +621,7 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="trash">
+                <AccordionItem value="trash" id="trash">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Trash2 className="mr-2 h-4 w-4" /> Trash</span>
                   </AccordionTrigger>
@@ -640,7 +659,7 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="tags">
+                <AccordionItem value="tags" id="tags">
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Tags className="mr-2 h-4 w-4" /> Tags</span>
                   </AccordionTrigger>
