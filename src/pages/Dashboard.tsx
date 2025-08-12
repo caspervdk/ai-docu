@@ -495,11 +495,35 @@ const getPlaceholder = (title: string) => {
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container flex items-center justify-between py-4">
           <h1 className="text-xl font-semibold">AI Tools</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
-            <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}><User2 className="mr-2 h-4 w-4" />Log out</Button>
-          </div>
+            <div className="flex items-center gap-2">
+              {/* Desktop actions */}
+              <Button variant="outline" size="sm" className="hidden md:inline-flex"><Save className="mr-2 h-4 w-4" />Save</Button>
+              <Button variant="outline" size="sm" className="hidden md:inline-flex"><Share2 className="mr-2 h-4 w-4" />Share</Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />Log out</Button>
+
+              {/* Mobile dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+                    <Menu className="h-5 w-5" aria-hidden="true" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-50 w-44">
+                  <DropdownMenuItem disabled>
+                    <Save className="mr-2 h-4 w-4" />
+                    <span>Save</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    <span>Share</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <User2 className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
         </nav>
       </header>
 
