@@ -534,7 +534,7 @@ const getPlaceholder = (title: string) => {
           </div>
 
           <nav className="space-y-2">
-            <section aria-label="My Drive" className="rounded-lg border p-4">
+            <section aria-label="My Drive" className="md:rounded-lg md:border md:p-4">
               <div className="text-sm font-medium mb-2">My Drive</div>
               {/* Mobile dropdown for My Drive */}
               <div className="md:hidden mb-2">
@@ -555,7 +555,7 @@ const getPlaceholder = (title: string) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <Accordion type="multiple" className="w-full">
+              <Accordion type="multiple" className="w-full hidden md:block">
                 <AccordionItem value="my-documents" id="my-documents">
                   <AccordionTrigger className="justify-start gap-2" aria-label="My documents">
                     <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">My documents</span></span>
