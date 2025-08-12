@@ -378,14 +378,37 @@ const slugFileName = (s: string) =>
       const confirmDelete = window.confirm(`Move ${doc.name} to Trash?`);
       if (!confirmDelete) return;
       const fromPath = `${userId}/${doc.name}`;
-      const toPath = `${userId}/trash/${doc.name}`;
-      const { error: moveError } = await supabase.storage.from('documents').move(fromPath, toPath);
+      let toName = doc.name;
+      let toPath = `${userId}/trash/${toName}`;
+
+      const tryMove = async (dst: string) => {
+        return await supabase.storage.from('documents').move(fromPath, dst);
+      };
+
+      let { error: moveError } = await tryMove(toPath);
       if (moveError) {
-        toast({ title: 'Could not move to Trash', description: moveError.message, variant: 'destructive' } as any);
-      } else {
-        setDocs((prev) => prev.filter((d) => d.name !== doc.name));
-        toast({ title: 'Moved to Trash', description: doc.name });
+        const msg = String((moveError as any).message || '').toLowerCase();
+        if (msg.includes('exists')) {
+          const dot = toName.lastIndexOf('.');
+          const base = dot >= 0 ? toName.slice(0, dot) : toName;
+          const ext = dot >= 0 ? toName.slice(dot) : '';
+          const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+          toName = `${base} (deleted ${stamp})${ext}`;
+          toPath = `${userId}/trash/${toName}`;
+
+          const { error: moveError2 } = await tryMove(toPath);
+          if (moveError2) {
+            toast({ title: 'Could not move to Trash', description: (moveError2 as any).message || 'Unknown error', variant: 'destructive' } as any);
+            return;
+          }
+        } else {
+          toast({ title: 'Could not move to Trash', description: (moveError as any).message || 'Unknown error', variant: 'destructive' } as any);
+          return;
+        }
       }
+
+      setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+      toast({ title: 'Moved to Trash', description: toName });
     }
   };
 
