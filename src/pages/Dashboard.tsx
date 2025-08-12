@@ -267,15 +267,32 @@ const slugFileName = (s: string) =>
 
         const mergedBytes = await pdfDoc.save();
         const mergedBlob = new Blob([mergedBytes], { type: 'application/pdf' });
-        const outputFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
-        const outputPath = `${userId}/${outputFilename}`;
-        const { error: outputErr } = await supabase.storage
+        const outputPdfFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
+        const outputPdfPath = `${userId}/${outputPdfFilename}`;
+        const { error: outputPdfErr } = await supabase.storage
           .from('documents')
-          .upload(outputPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
-        if (outputErr) throw outputErr;
-        const { data: outputSigned } = await supabase.storage
+          .upload(outputPdfPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
+        if (outputPdfErr) throw outputPdfErr;
+        const { data: outputPdfSigned } = await supabase.storage
           .from('documents')
-          .createSignedUrl(outputPath, 600);
+          .createSignedUrl(outputPdfPath, 600);
+
+        // Save the AI output separately as a text file for easy preview/search
+        try {
+          const baseName = outputPdfFilename.replace(/\.pdf$/i, '');
+          const outputTextFilename = `${baseName}-output.txt`;
+          const outputTextPath = `${userId}/${outputTextFilename}`;
+          const outputTxtBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+          const { error: outputTxtErr } = await supabase.storage
+            .from('documents')
+            .upload(outputTextPath, outputTxtBlob, { contentType: 'text/plain', upsert: false });
+          if (!outputTxtErr) {
+            const { data: outputTxtSigned } = await supabase.storage
+              .from('documents')
+              .createSignedUrl(outputTextPath, 600);
+            newEntries.push({ name: outputTextFilename, url: outputTxtSigned?.signedUrl || '#' });
+          }
+        } catch (_) { /* optional */ }
 
         // Also save the original upload as-is for reference
         try {
@@ -297,7 +314,7 @@ const slugFileName = (s: string) =>
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
         }
 
-        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+        outputEntry = { name: outputPdfFilename, url: outputPdfSigned?.signedUrl || '#' };
         newEntries.push(outputEntry);
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
