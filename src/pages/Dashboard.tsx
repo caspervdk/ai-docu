@@ -469,8 +469,37 @@ const getPlaceholder = (title: string) => {
                   <AccordionTrigger className="justify-start gap-2">
                     <span className="inline-flex items-center"><Clock className="mr-2 h-4 w-4" /> Recent</span>
                   </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Quickly access your recently added files.
+                  <AccordionContent className="animate-fade-in">
+                    {docs.length === 0 ? (
+                      <div className="text-xs text-muted-foreground">No recent files.</div>
+                    ) : (
+                      <ul className="space-y-2">
+                        {(docs.slice(0, 5)).map((d) => (
+                          <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                            <div className="min-w-0 flex-1">
+                              <span className="block truncate" title={d.name}>{d.name}</span>
+                              {d.updatedAt && (
+                                <span className="block text-[11px] text-muted-foreground">
+                                  {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
+                                </span>
+                              )}
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" aria-label="Options">
+                                  <Menu className="h-4 w-4" aria-hidden="true" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="z-50">
+                                <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
 
