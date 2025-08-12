@@ -41,7 +41,7 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
   const lines = !isEmpty && !jsonPretty ? displayValue.split(/\n+/).map((l) => l.trim()).filter(Boolean) : [];
 
   return (
-    <section aria-label="AI summary" className="animate-fade-in">
+    <section aria-label={title} className="animate-fade-in">
       <div className="rounded-2xl border border-primary/20 bg-gradient-subtle p-4 sm:p-6 shadow-sm">
         <header className="mb-3 flex items-center gap-2 text-primary">
           <div className="rounded-full border border-primary/30 p-1">

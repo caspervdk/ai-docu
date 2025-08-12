@@ -1066,7 +1066,11 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <OutputPanel title="AI summary" content={output} emptyText="Results will appear here." />
+                <OutputPanel
+                  title={activeTool?.title === "Cross-Doc Linker" ? "AI CROSS-DOC LINKER" : activeTool?.title === "Translate & Localize" ? "AI TRANSLATE & LOCALIZE" : "AI SUMMARY"}
+                  content={output}
+                  emptyText="Results will appear here."
+                />
               </div>
 
               <div className="space-y-2">
