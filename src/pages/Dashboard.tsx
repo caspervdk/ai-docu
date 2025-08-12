@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { formatDistanceToNow } from "date-fns";
 
 type Tool = {
   icon: LucideIcon;
@@ -55,7 +56,7 @@ const Dashboard = () => {
   const [docName, setDocName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [docs, setDocs] = useState<{ name: string; url: string }[]>([]);
+  const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
   const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
@@ -100,12 +101,12 @@ const Dashboard = () => {
       if (!userId) { setDocs([]); return; }
       const { data: files, error } = await supabase.storage
         .from('documents')
-        .list(userId, { limit: 20, sortBy: { column: 'name', order: 'desc' } });
+        .list(userId, { limit: 20, sortBy: { column: 'updated_at', order: 'desc' } });
       if (error || !files) { setDocs([]); return; }
-      const items = await Promise.all(files.map(async (f) => {
+      const items = await Promise.all(files.map(async (f: any) => {
         const path = `${userId}/${f.name}`;
         const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-        return { name: f.name, url: signed?.signedUrl || '#' };
+        return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
       }));
       setDocs(items);
     };
@@ -211,9 +212,9 @@ const slugFileName = (s: string) =>
         return;
       }
 
-      let originalEntry: { name: string; url: string } | undefined;
-      let outputEntry: { name: string; url: string } | undefined;
-      const newEntries: { name: string; url: string }[] = [];
+      let originalEntry: { name: string; url: string; updatedAt?: string } | undefined;
+      let outputEntry: { name: string; url: string; updatedAt?: string } | undefined;
+      const newEntries: { name: string; url: string; updatedAt?: string }[] = [];
 
       const isPdfUpload = selectedFile && /\.pdf$/i.test(selectedFile.name);
 
@@ -288,14 +289,14 @@ const slugFileName = (s: string) =>
             const { data: originalSigned } = await supabase.storage
               .from('documents')
               .createSignedUrl(originalPath, 600);
-            originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#' };
+            originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
             newEntries.push(originalEntry);
           }
         } catch (origErr: any) {
           toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
         }
 
-        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
@@ -324,7 +325,7 @@ const slugFileName = (s: string) =>
               const { data: originalSigned } = await supabase.storage
                 .from('documents')
                 .createSignedUrl(originalPath, 600);
-              originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#' };
+              originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
               newEntries.push(originalEntry);
             }
           } catch (origErr: any) {
@@ -332,7 +333,7 @@ const slugFileName = (s: string) =>
           }
         }
 
-        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#' };
+        outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
       }
 
@@ -351,7 +352,7 @@ const slugFileName = (s: string) =>
 
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete',
-    doc: { name: string; url: string }
+    doc: { name: string; url: string; updatedAt?: string }
   ) => {
     if (action === 'view') {
       setPreviewDoc(doc);
@@ -500,8 +501,8 @@ const getPlaceholder = (title: string) => {
             <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
           </section>
 
-          <section aria-label="My documents" className="rounded-lg border p-4">
-            <div className="text-sm font-medium mb-2">My documents</div>
+          <section aria-label="Recent" className="rounded-lg border p-4">
+            <div className="text-sm font-medium mb-2">Recent</div>
             {docs.length === 0 ? (
               <div className="text-xs text-muted-foreground">No documents yet.</div>
             ) : (
@@ -509,7 +510,14 @@ const getPlaceholder = (title: string) => {
                 <ul className="space-y-2">
                   {(showAllDocs ? docs : docs.slice(0, 5)).map((d) => (
                     <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
-                      <span className="truncate max-w-[9rem]" title={d.name}>{d.name}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="block truncate max-w-[9rem]" title={d.name}>{d.name}</span>
+                        {d.updatedAt && (
+                          <span className="block text-[11px] text-muted-foreground">
+                            {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
+                          </span>
+                        )}
+                      </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" aria-label="Options">
