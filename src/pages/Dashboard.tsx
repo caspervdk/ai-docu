@@ -2,7 +2,6 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileText, Search, Languages, ShieldAlert, Bug, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -1066,29 +1065,8 @@ const getPlaceholder = (title: string) => {
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <div className="rounded-xl border bg-muted/30 p-4 shadow-sm">
-                  {output.trim() ? (
-                    <ScrollArea className="max-h-72 pr-2">
-                      {(() => {
-                        try {
-                          const pretty = JSON.stringify(JSON.parse(output), null, 2);
-                          return (
-                            <pre className="font-mono text-[13px] leading-relaxed whitespace-pre overflow-x-auto">
-                              {pretty}
-                            </pre>
-                          );
-                        } catch {
-                          return (
-                            <div className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                              {output}
-                            </div>
-                          );
-                        }
-                      })()}
-                    </ScrollArea>
-                  ) : (
-                    <div className="text-sm text-muted-foreground">Results will appear here.</div>
-                  )}
+                <div className="min-h-24 rounded-md border p-3 text-sm text-muted-foreground whitespace-pre-wrap">
+                  {output || "Results will appear here."}
                 </div>
               </div>
 
