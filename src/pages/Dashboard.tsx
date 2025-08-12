@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { formatDistanceToNow } from "date-fns";
@@ -443,32 +444,61 @@ const getPlaceholder = (title: string) => {
           <nav className="space-y-2">
             <section aria-label="My Drive" className="rounded-lg border p-4">
               <div className="text-sm font-medium mb-2">My Drive</div>
-              <div className="grid gap-1">
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Folder className="mr-2 h-4 w-4" />
-                  My documents
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Users className="mr-2 h-4 w-4" />
-                  Shared with me
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Clock className="mr-2 h-4 w-4" />
-                  Recent
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Star className="mr-2 h-4 w-4" />
-                  Starred
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Trash
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <Tags className="mr-2 h-4 w-4" />
-                  Tags
-                </Button>
-              </div>
+              <Accordion type="multiple" className="w-full">
+                <AccordionItem value="my-documents">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Folder className="mr-2 h-4 w-4" /> My documents</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Access all files you’ve saved to My documents.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="shared-with-me">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Users className="mr-2 h-4 w-4" /> Shared with me</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Files others have shared with you.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="recent">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Clock className="mr-2 h-4 w-4" /> Recent</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Quickly access your recently added files.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="starred">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Star className="mr-2 h-4 w-4" /> Starred</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Your favorites in one place.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="trash">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Trash2 className="mr-2 h-4 w-4" /> Trash</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Recently deleted items are kept here temporarily.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="tags">
+                  <AccordionTrigger className="justify-start gap-2">
+                    <span className="inline-flex items-center"><Tags className="mr-2 h-4 w-4" /> Tags</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
+                    Organize and filter files with tags.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </section>
           </nav>
 
