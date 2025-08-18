@@ -316,36 +316,50 @@ export default function Account() {
           <div className="flex items-center gap-2">
             {isEditing ? (
               <>
-                <Button onClick={handleCancel} variant="outline" size="sm" disabled={isSaving}>
+                <Button onClick={handleCancel} variant="outline" size="sm" disabled={isSaving} className="hidden sm:flex">
                   <X className="size-4 mr-1" />
                   Cancel
                 </Button>
-                <Button onClick={handleSave} size="sm" disabled={isSaving}>
+                <Button onClick={handleCancel} variant="outline" size="sm" disabled={isSaving} className="flex sm:hidden">
+                  <X className="size-4" />
+                </Button>
+                <Button onClick={handleSave} size="sm" disabled={isSaving} className="hidden sm:flex">
                   <Save className="size-4 mr-1" />
                   {isSaving ? 'Saving...' : 'Save'}
                 </Button>
+                <Button onClick={handleSave} size="sm" disabled={isSaving} className="flex sm:hidden">
+                  <Save className="size-4" />
+                </Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)} variant="secondary" size="sm">
-                <Edit2 className="size-4 mr-1" />
-                Edit Profile
-              </Button>
+              <>
+                <Button onClick={() => setIsEditing(true)} variant="secondary" size="sm" className="hidden sm:flex">
+                  <Edit2 className="size-4 mr-1" />
+                  Edit Profile
+                </Button>
+                <Button onClick={() => setIsEditing(true)} variant="secondary" size="sm" className="flex sm:hidden">
+                  <Edit2 className="size-4" />
+                </Button>
+              </>
             )}
-            <Button asChild variant="ghost" size="sm">
+            <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
               <a href="/dashboard">Back to Dashboard</a>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="flex sm:hidden">
+              <a href="/dashboard">Back</a>
             </Button>
           </div>
         </nav>
       </header>
 
-      <main className="container py-6 animate-enter">
-        <section className="grid gap-6 md:grid-cols-[280px_1fr]">
+      <main className="container py-4 sm:py-6 animate-enter">
+        <section className="grid gap-6 lg:grid-cols-[280px_1fr]">
           {/* Left column */}
           <div className="space-y-6">
             <Card className="overflow-hidden">
               <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="relative mx-auto sm:mx-0">
                     <Avatar className="h-20 w-20">
                       <AvatarImage src={profile?.avatar_url || undefined} alt="Profile" />
                       <AvatarFallback>{getInitials()}</AvatarFallback>
@@ -367,7 +381,7 @@ export default function Account() {
                       className="hidden"
                     />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-center sm:text-left">
                     {isEditing ? (
                       <div className="space-y-2">
                         <Input
@@ -384,7 +398,7 @@ export default function Account() {
                     ) : (
                       <>
                         <p className="text-sm text-muted-foreground">{profile?.title || 'No job title'}</p>
-                        <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="mt-1 flex items-center justify-center sm:justify-start gap-2 text-sm text-muted-foreground">
                           <MapPin className="h-4 w-4" /> 
                           <span>{profile?.location || 'No location'}</span>
                         </div>
@@ -484,7 +498,7 @@ export default function Account() {
                   <div className="flex-1">
                     {isEditing ? (
                       <div className="space-y-2">
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <Input
                             placeholder="First Name"
                             value={formData.first_name}
@@ -517,7 +531,7 @@ export default function Account() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">Ranking</span>
                     <span className="text-base font-semibold">8,6</span>
@@ -527,10 +541,10 @@ export default function Account() {
                       ))}
                     </div>
                   </div>
-                  <div className="ml-auto flex items-center gap-2">
-                    <Button size="sm" variant="secondary">Send message</Button>
-                    <Button size="sm" variant="default">Contacts</Button>
-                    <Button size="sm" variant="ghost">Report user</Button>
+                  <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+                    <Button size="sm" variant="secondary" className="flex-1 sm:flex-none">Send message</Button>
+                    <Button size="sm" variant="default" className="flex-1 sm:flex-none">Contacts</Button>
+                    <Button size="sm" variant="ghost" className="hidden sm:flex">Report user</Button>
                   </div>
                 </div>
 
@@ -565,7 +579,7 @@ export default function Account() {
                       </div>
                     )}
                     
-                    <div className="grid gap-6 md:grid-cols-2">
+                    <div className="grid gap-6 sm:grid-cols-2">
                       <div className="space-y-3">
                         <p className="text-sm font-medium">Contact information</p>
                         {isEditing ? (
