@@ -771,7 +771,10 @@ const slugFileName = (s: string) =>
       await fetchFolderDocs(folder.storage_path.replace('/.keep', ''));
     }
     
-    // Refresh the allFiles list for storage popup
+    // Immediately remove from allFiles for instant feedback in storage popup
+    setAllFiles((prev) => prev.filter((f) => f.name !== doc.name));
+    
+    // Refresh the allFiles list for storage popup as backup
     await refreshAllFiles();
     
     toast({ title: 'Moved to Trash', description: doc.name });
