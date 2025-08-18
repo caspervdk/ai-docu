@@ -1030,7 +1030,9 @@ const getPlaceholder = (title: string) => {
                       <div className="text-xs text-muted-foreground">No recent files.</div>
                     ) : (
                       <ul className="space-y-2">
-                        {(docs.slice(0, 5)).map((d) => (
+                        {(docs.slice(0, 5))
+                          .filter(d => d.name.includes('.')) // Only show files with extensions
+                          .map((d) => (
                           <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
                                <FileNameDisplay fileName={d.name} className="block" />
