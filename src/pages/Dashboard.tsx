@@ -7,6 +7,7 @@ import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -94,6 +95,8 @@ const Dashboard = () => {
   // Folder view state
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
+  // Delete confirmation dialog state
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -761,6 +764,50 @@ const slugFileName = (s: string) =>
   const moveToTrash = (doc: { name: string; url: string; updatedAt?: string }) => {
     handleDocAction('delete', doc);
   };
+
+  // Perform actual delete after confirmation
+  const performDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean) => {
+    if (!userId) {
+      toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
+      return;
+    }
+
+    const fromPath = `${userId}/${doc.name}`;
+    let toName = doc.name;
+    let toPath = `${userId}/trash/${toName}`;
+
+    const tryMove = async (dst: string) => {
+      return await supabase.storage.from('documents').move(fromPath, dst);
+    };
+
+    let { error: moveError } = await tryMove(toPath);
+    if (moveError) {
+      const msg = String((moveError as any).message || '').toLowerCase();
+      if (msg.includes('exists')) {
+        const dot = toName.lastIndexOf('.');
+        const base = dot >= 0 ? toName.slice(0, dot) : toName;
+        const ext = dot >= 0 ? toName.slice(dot) : '';
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+        toName = `${base} (deleted ${stamp})${ext}`;
+        toPath = `${userId}/trash/${toName}`;
+
+        const { error: moveError2 } = await tryMove(toPath);
+        if (moveError2) {
+          toast({ title: 'Could not move to Trash', description: (moveError2 as any).message || 'Unknown error', variant: 'destructive' } as any);
+          return;
+        }
+      } else {
+        toast({ title: 'Could not move to Trash', description: (moveError as any).message || 'Unknown error', variant: 'destructive' } as any);
+        return;
+      }
+    }
+
+    setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+    if (openFolder) {
+      setFolderDocs((prev) => prev.filter((d) => d.name !== doc.name));
+    }
+    toast({ title: 'Moved to Trash', description: doc.name });
+  };
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete' | 'delete-forever' | 'move' | 'rename',
     doc: { name: string; url: string; updatedAt?: string },
@@ -819,44 +866,8 @@ const slugFileName = (s: string) =>
         toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
         return;
       }
-      const confirmDelete = window.confirm(`Move ${doc.name} to Trash?`);
-      if (!confirmDelete) return;
-      const fromPath = `${userId}/${doc.name}`;
-      let toName = doc.name;
-      let toPath = `${userId}/trash/${toName}`;
-
-      const tryMove = async (dst: string) => {
-        return await supabase.storage.from('documents').move(fromPath, dst);
-      };
-
-      let { error: moveError } = await tryMove(toPath);
-      if (moveError) {
-        const msg = String((moveError as any).message || '').toLowerCase();
-        if (msg.includes('exists')) {
-          const dot = toName.lastIndexOf('.');
-          const base = dot >= 0 ? toName.slice(0, dot) : toName;
-          const ext = dot >= 0 ? toName.slice(dot) : '';
-          const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-          toName = `${base} (deleted ${stamp})${ext}`;
-          toPath = `${userId}/trash/${toName}`;
-
-          const { error: moveError2 } = await tryMove(toPath);
-          if (moveError2) {
-            toast({ title: 'Could not move to Trash', description: (moveError2 as any).message || 'Unknown error', variant: 'destructive' } as any);
-            return;
-          }
-        } else {
-          toast({ title: 'Could not move to Trash', description: (moveError as any).message || 'Unknown error', variant: 'destructive' } as any);
-          return;
-        }
-      }
-
-      setDocs((prev) => prev.filter((d) => d.name !== doc.name));
-      const { data: trashSigned } = await supabase.storage
-        .from('documents')
-        .createSignedUrl(`${userId}/trash/${toName}`, 600);
-      setTrashDocs((prev) => [{ name: toName, url: trashSigned?.signedUrl || '#', updatedAt: new Date().toISOString() }, ...prev]);
-      toast({ title: 'Moved to Trash', description: toName });
+      setDeleteConfirmDialog({ doc, isTrash: false });
+      return;
     }
   };
 
@@ -1897,6 +1908,31 @@ const getPlaceholder = (title: string) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deleteConfirmDialog} onOpenChange={(open) => !open && setDeleteConfirmDialog(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Document</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this document? The document will be moved to trash.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={async () => {
+                  if (deleteConfirmDialog) {
+                    await performDelete(deleteConfirmDialog.doc, deleteConfirmDialog.isTrash);
+                    setDeleteConfirmDialog(null);
+                  }
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         </main>
       </div>
     </>
