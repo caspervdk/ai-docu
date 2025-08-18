@@ -140,6 +140,22 @@ export default function Account() {
         
       if (data) {
         setProfile(data);
+        // Reset form data to the newly saved profile data (same as Cancel button)
+        setFormData({
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          title: data.title || '',
+          location: data.location || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          website: data.website || '',
+          bio: data.bio || '',
+          gender: data.gender || '',
+          birthday: data.birthday || '',
+          work_primary: data.work_primary || '',
+          work_secondary: data.work_secondary || '',
+          skills: data.skills || []
+        });
       }
       
       // Always return to normal view after successful save
