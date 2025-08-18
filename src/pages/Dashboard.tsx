@@ -86,6 +86,9 @@ const Dashboard = () => {
   // Save to folder state
   const [saveToFolderId, setSaveToFolderId] = useState<string | null>(null);
   const [newFileSaveToFolderId, setNewFileSaveToFolderId] = useState<string | null>(null);
+  // Create folder dialog state
+  const [createFolderDialogOpen, setCreateFolderDialogOpen] = useState(false);
+  const [createFolderCallback, setCreateFolderCallback] = useState<((folderId: string) => void) | null>(null);
   // Folder view state
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
@@ -620,9 +623,9 @@ const slugFileName = (s: string) =>
     }
   };
 
-  const createFolder = async () => {
+  const createFolder = async (folderName?: string) => {
     if (!userId) { toast({ title: 'Log in required', description: 'Please log in to create folders.' }); return; }
-    const base = slugFileName(newFolderName.trim());
+    const base = slugFileName((folderName || newFolderName).trim());
     if (!base) { toast({ title: 'Folder name required', description: 'Please enter a folder name.' }); return; }
     try {
       setCreatingFolder(true);
@@ -659,8 +662,16 @@ const slugFileName = (s: string) =>
       // Update folders list
       setFolders(prev => [folderData, ...prev]);
       
+      // Call the callback if it exists (from dropdown selection)
+      if (createFolderCallback) {
+        createFolderCallback(folderData.id);
+        setCreateFolderCallback(null);
+      }
+      
       toast({ title: 'Folder created', description: `Folder "${folder}" is ready and saved.` });
       setNewFolderName('');
+      setCreateFolderDialogOpen(false);
+      return folderData;
     } catch (e: any) {
       toast({ title: 'Create folder failed', description: e?.message || 'Could not create folder.', variant: 'destructive' } as any);
     } finally {
@@ -971,7 +982,7 @@ const getPlaceholder = (title: string) => {
                           onChange={(e) => setNewFolderName(e.target.value)}
                           className="text-sm"
                         />
-                        <Button size="sm" onClick={createFolder} disabled={!userId || creatingFolder || !newFolderName.trim()}>
+                        <Button size="sm" onClick={() => createFolder()} disabled={!userId || creatingFolder || !newFolderName.trim()}>
                           {creatingFolder ? 'Creating...' : 'Create'}
                         </Button>
                       </div>
@@ -1144,7 +1155,7 @@ const getPlaceholder = (title: string) => {
                           value={newFolderName}
                           onChange={(e) => setNewFolderName(e.target.value)}
                         />
-                        <Button size="sm" onClick={createFolder} disabled={!userId || creatingFolder || !newFolderName.trim()}>
+                        <Button size="sm" onClick={() => createFolder()} disabled={!userId || creatingFolder || !newFolderName.trim()}>
                           {creatingFolder ? 'Creating...' : 'Create folder'}
                         </Button>
                       </div>
@@ -1299,21 +1310,8 @@ const getPlaceholder = (title: string) => {
                     value={newFileSaveToFolderId || ''} 
                     onChange={(e) => {
                       if (e.target.value === 'create-new') {
-                        // Trigger folder creation
-                        const folderName = prompt('Enter folder name:');
-                        if (folderName && folderName.trim()) {
-                          setNewFolderName(folderName.trim());
-                          createFolder().then(() => {
-                            // After folder is created, it will be added to the folders list
-                            // and we can set it as the selected folder
-                            setTimeout(() => {
-                              const newFolder = folders.find(f => f.name === slugFileName(folderName.trim()));
-                              if (newFolder) {
-                                setNewFileSaveToFolderId(newFolder.id);
-                              }
-                            }, 500);
-                          });
-                        }
+                        setCreateFolderCallback((folderId: string) => setNewFileSaveToFolderId(folderId));
+                        setCreateFolderDialogOpen(true);
                       } else {
                         setNewFileSaveToFolderId(e.target.value || null);
                       }
@@ -1500,21 +1498,8 @@ const getPlaceholder = (title: string) => {
                   value={saveToFolderId || ''} 
                   onChange={(e) => {
                     if (e.target.value === 'create-new') {
-                      // Trigger folder creation
-                      const folderName = prompt('Enter folder name:');
-                      if (folderName && folderName.trim()) {
-                        setNewFolderName(folderName.trim());
-                        createFolder().then(() => {
-                          // After folder is created, it will be added to the folders list
-                          // and we can set it as the selected folder
-                          setTimeout(() => {
-                            const newFolder = folders.find(f => f.name === slugFileName(folderName.trim()));
-                            if (newFolder) {
-                              setSaveToFolderId(newFolder.id);
-                            }
-                          }, 500);
-                        });
-                      }
+                      setCreateFolderCallback((folderId: string) => setSaveToFolderId(folderId));
+                      setCreateFolderDialogOpen(true);
                     } else {
                       setSaveToFolderId(e.target.value || null);
                     }
@@ -1727,6 +1712,49 @@ const getPlaceholder = (title: string) => {
               </Button>
               <Button onClick={handleRenameDoc} disabled={!renameDocDialog?.newName.trim()}>
                 Rename
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Folder Dialog */}
+        <Dialog open={createFolderDialogOpen} onOpenChange={setCreateFolderDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Create New Folder</DialogTitle>
+              <DialogDescription>
+                Create a folder to organize your documents.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="folder-name">New folder name</Label>
+                <Input
+                  id="folder-name"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  placeholder="Enter folder name"
+                  className="mt-1"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Folders help you organize files and can be accessed from My Documents.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setCreateFolderDialogOpen(false);
+                setNewFolderName('');
+                setCreateFolderCallback(null);
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => createFolder(newFolderName)} 
+                disabled={!userId || creatingFolder || !newFolderName.trim()}
+                className="bg-primary hover:bg-primary/90"
+              >
+                {creatingFolder ? 'Creating...' : 'Create'}
               </Button>
             </DialogFooter>
           </DialogContent>
