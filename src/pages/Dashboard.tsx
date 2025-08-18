@@ -891,6 +891,45 @@ const slugFileName = (s: string) =>
     
     setAllFiles(allFilesArray);
   };
+
+  // Delete specific files from storage
+  const deleteStorageItems = async (itemNames: string[]) => {
+    if (!userId) return;
+    
+    try {
+      const itemsToDelete = itemNames.map(name => `${userId}/${name}`);
+      
+      const { error } = await supabase.storage
+        .from('documents')
+        .remove(itemsToDelete);
+        
+      if (error) {
+        console.error('Error deleting items:', error);
+        toast({
+          title: "Error deleting items",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Refresh the file lists
+      await refreshAllFiles();
+      
+      toast({
+        title: "Items deleted",
+        description: `${itemNames.length} items removed from storage`
+      });
+      
+    } catch (error: any) {
+      console.error('Unexpected error deleting items:', error);
+      toast({
+        title: "Error deleting items", 
+        description: error.message || "Something went wrong",
+        variant: "destructive"
+      });
+    }
+  };
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete' | 'delete-forever' | 'move' | 'rename',
     doc: { name: string; url: string; updatedAt?: string },
@@ -1922,6 +1961,27 @@ const getPlaceholder = (title: string) => {
                     Storage usage: {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} slots remaining
                   </div>
                   <ul className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {/* Add cleanup button for problematic items */}
+                    <div className="mb-4 p-3 border border-orange-200 bg-orange-50 rounded-lg">
+                      <div className="text-sm font-medium text-orange-800 mb-2">Clean up storage</div>
+                      <div className="text-xs text-orange-700 mb-3">
+                        Remove problematic folder placeholders that are causing errors
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => deleteStorageItems([
+                          'test-1-1755551423899',
+                          'test-1', 
+                          'folder-2',
+                          'folder-1',
+                          '3-folder'
+                        ])}
+                        className="text-orange-700 border-orange-300 hover:bg-orange-100"
+                      >
+                        Clean Up Storage
+                      </Button>
+                    </div>
                     {allFiles.map((doc, i) => (
                       <li key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
