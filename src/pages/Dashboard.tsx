@@ -957,19 +957,21 @@ const getPlaceholder = (title: string) => {
                           {folderDocs.length === 0 ? (
                             <div className="text-xs text-muted-foreground">This folder is empty.</div>
                           ) : (
-                            <ul className="space-y-1">
+                            <ul className="space-y-2">
                               {folderDocs.map((doc, i) => (
-                                <li key={i} className="flex items-center justify-between gap-2 text-sm">
-                                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                                    <FileText className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                                    <FileNameDisplay fileName={doc.name} />
+                                <li key={i} className="flex items-center justify-between gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors">
+                                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <FileText className="h-4 w-4 text-primary flex-shrink-0" />
+                                    <div className="min-w-0 flex-1">
+                                      <FileNameDisplay fileName={doc.name} className="text-sm" />
+                                      {doc.updatedAt && (
+                                        <div className="text-xs text-muted-foreground mt-0.5">
+                                          {formatDistanceToNow(new Date(doc.updatedAt), { addSuffix: true })}
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
                                   <div className="flex items-center gap-1 flex-shrink-0">
-                                    {doc.updatedAt && (
-                                      <span className="text-xs text-muted-foreground">
-                                        {formatDistanceToNow(new Date(doc.updatedAt), { addSuffix: true })}
-                                      </span>
-                                    )}
                                     <DropdownMenu>
                                       <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
