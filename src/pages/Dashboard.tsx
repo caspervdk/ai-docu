@@ -77,6 +77,8 @@ const Dashboard = () => {
   // Create folder state
   const [newFolderName, setNewFolderName] = useState("");
   const [creatingFolder, setCreatingFolder] = useState(false);
+  // Upgrade modal state
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -797,7 +799,7 @@ const getPlaceholder = (title: string) => {
               <li className="flex items-center gap-2"><Check className="h-3 w-3 text-primary" />Higher limits & faster processing</li>
               <li className="flex items-center gap-2"><Check className="h-3 w-3 text-primary" />Priority support</li>
             </ul>
-            <Button variant="pro" size="sm" className="w-full mt-3" onClick={() => navigate("/#pricing")}>
+            <Button variant="pro" size="sm" className="w-full mt-3" onClick={() => setUpgradeModalOpen(true)}>
               <Rocket className="size-4 mr-2" aria-hidden="true" /> Upgrade to Pro
             </Button>
           </section>
@@ -872,7 +874,7 @@ const getPlaceholder = (title: string) => {
                           variant="pro"
                           size="sm"
                           className="absolute right-4 top-4 inline-flex"
-                          onClick={() => navigate('/#pricing')}
+                          onClick={() => setUpgradeModalOpen(true)}
                           aria-label="Upgrade to Pro"
                         >
                           <Rocket className="size-4 mr-2" aria-hidden="true" />
@@ -1093,8 +1095,51 @@ const getPlaceholder = (title: string) => {
             </DialogHeader>
             <div className="flex items-center gap-2">
               <Button variant="outline" onClick={() => setProPromptTool(null)}>Maybe later</Button>
-              <Button variant="pro" onClick={() => navigate('/#pricing')}><Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro</Button>
+              <Button variant="pro" onClick={() => setUpgradeModalOpen(true)}><Rocket className="size-4" aria-hidden="true" /> Upgrade to Pro</Button>
             </div>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Rocket className="size-5 text-primary" />
+                Upgrade to Pro
+              </DialogTitle>
+              <DialogDescription>
+                Unlock unlimited AI tools, higher limits, priority support, and faster processing.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-foreground">Free Plan</h4>
+                  <ul className="space-y-1 text-muted-foreground">
+                    <li>• Basic AI tools</li>
+                    <li>• Limited processing</li>
+                    <li>• Standard support</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium text-primary">Pro Plan</h4>
+                  <ul className="space-y-1 text-muted-foreground">
+                    <li className="flex items-center gap-1"><Check className="size-3 text-primary" />All AI tools</li>
+                    <li className="flex items-center gap-1"><Check className="size-3 text-primary" />Unlimited usage</li>
+                    <li className="flex items-center gap-1"><Check className="size-3 text-primary" />Priority support</li>
+                    <li className="flex items-center gap-1"><Check className="size-3 text-primary" />Faster processing</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setUpgradeModalOpen(false)}>
+                Maybe later
+              </Button>
+              <Button variant="pro" onClick={() => navigate('/#pricing')}>
+                <Rocket className="size-4 mr-2" />
+                View pricing
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
         <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) setPreviewDoc(null); }}>
