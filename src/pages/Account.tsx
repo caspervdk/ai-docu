@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -213,17 +213,17 @@ export default function Account() {
     }
   };
 
-  const getInitials = () => {
+  const getInitials = useCallback(() => {
     const firstName = profile?.first_name || formData.first_name;
     const lastName = profile?.last_name || formData.last_name;
     return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase() || 'U';
-  };
+  }, [profile, formData]);
 
-  const getDisplayName = () => {
+  const getDisplayName = useCallback(() => {
     const firstName = profile?.first_name || formData.first_name;
     const lastName = profile?.last_name || formData.last_name;
     return `${firstName || ''} ${lastName || ''}`.trim() || 'User';
-  };
+  }, [profile, formData]);
 
   return (
     <>
