@@ -542,9 +542,6 @@ export default function Account() {
                       </>
                     )}
                   </div>
-                  <Button variant="outline" size="icon" aria-label="Bookmark profile">
-                    <Bookmark className="h-4 w-4" />
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
