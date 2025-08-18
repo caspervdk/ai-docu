@@ -97,7 +97,7 @@ const Dashboard = () => {
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   // Delete confirmation dialog state
-  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean; folder?: { id: string; name: string; storage_path: string } } | null>(null);
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean; folder?: { id: string; name: string; storage_path: string }; fromStorage?: boolean } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -717,7 +717,7 @@ const slugFileName = (s: string) =>
   };
 
   // Perform actual delete after confirmation
-  const performDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean, folder?: { id: string; name: string; storage_path: string }) => {
+  const performDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean, folder?: { id: string; name: string; storage_path: string }, fromStorage?: boolean) => {
     if (!userId) {
       toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
       return;
@@ -1920,8 +1920,8 @@ const getPlaceholder = (title: string) => {
                                 Rename
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => { 
-                                setDeleteConfirmDialog({ doc, isTrash: false, folder: doc.folder }); 
-                                setStoragePopupOpen(false); 
+                                setDeleteConfirmDialog({ doc, isTrash: false, folder: doc.folder, fromStorage: true }); 
+                                // Keep storage popup open during deletion
                               }}>
                                 Delete
                               </DropdownMenuItem>
@@ -1956,7 +1956,7 @@ const getPlaceholder = (title: string) => {
               <AlertDialogAction 
                 onClick={async () => {
                   if (deleteConfirmDialog) {
-                    await performDelete(deleteConfirmDialog.doc, deleteConfirmDialog.isTrash, deleteConfirmDialog.folder);
+                    await performDelete(deleteConfirmDialog.doc, deleteConfirmDialog.isTrash, deleteConfirmDialog.folder, deleteConfirmDialog.fromStorage);
                     setDeleteConfirmDialog(null);
                   }
                 }}
