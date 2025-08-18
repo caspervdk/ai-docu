@@ -17,7 +17,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
@@ -271,10 +271,12 @@ const Index = () => {
   };
 
   const loginRequiredToast = () => {
+    console.log('Login required toast called');
     toast({ title: 'Log in required', description: 'Please log in to upload and use the AI tools.' });
   };
 
   const handleUploadClick = (actionLabel: string) => () => {
+    console.log('Upload clicked, isAuthed:', isAuthed);
     setSelectedAction(actionLabel);
     if (!isAuthed) { loginRequiredToast(); return; }
     document.getElementById('upload-input')?.click();
