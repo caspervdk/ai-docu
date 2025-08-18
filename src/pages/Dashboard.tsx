@@ -78,6 +78,9 @@ const Dashboard = () => {
   // Create folder state
   const [newFolderName, setNewFolderName] = useState("");
   const [creatingFolder, setCreatingFolder] = useState(false);
+  // Move and rename dialogs
+  const [moveDocDialog, setMoveDocDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; selectedFolder?: string } | null>(null);
+  const [renameDocDialog, setRenameDocDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; newName: string } | null>(null);
   // Upgrade modal state
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
@@ -515,10 +518,20 @@ const slugFileName = (s: string) =>
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
   const handleDocAction = async (
-    action: 'view' | 'share' | 'delete' | 'delete-forever',
+    action: 'view' | 'share' | 'delete' | 'delete-forever' | 'move' | 'rename',
     doc: { name: string; url: string; updatedAt?: string },
     isTrash?: boolean
   ) => {
+    if (action === 'move') {
+      setMoveDocDialog({ doc, selectedFolder: '' });
+      return;
+    }
+    
+    if (action === 'rename') {
+      setRenameDocDialog({ doc, newName: doc.name });
+      return;
+    }
+    
     if (action === 'view') {
       setPreviewDoc(doc);
       return;
@@ -600,6 +613,50 @@ const slugFileName = (s: string) =>
         .createSignedUrl(`${userId}/trash/${toName}`, 600);
       setTrashDocs((prev) => [{ name: toName, url: trashSigned?.signedUrl || '#', updatedAt: new Date().toISOString() }, ...prev]);
       toast({ title: 'Moved to Trash', description: toName });
+    }
+  };
+
+  const handleMoveDoc = async () => {
+    if (!moveDocDialog || !userId) return;
+    
+    try {
+      const { doc, selectedFolder } = moveDocDialog;
+      const fromPath = `${userId}/${doc.name}`;
+      const toPath = selectedFolder ? `${userId}/${selectedFolder}/${doc.name}` : `${userId}/${doc.name}`;
+      
+      const { error } = await supabase.storage.from('documents').move(fromPath, toPath);
+      if (error) throw error;
+      
+      setDocs(prev => prev.filter(d => d.name !== doc.name));
+      toast({ title: 'File moved', description: `${doc.name} moved to ${selectedFolder || 'documents'}` });
+      setMoveDocDialog(null);
+    } catch (error: any) {
+      toast({ title: 'Move failed', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleRenameDoc = async () => {
+    if (!renameDocDialog || !userId) return;
+    
+    try {
+      const { doc, newName } = renameDocDialog;
+      if (newName === doc.name) {
+        setRenameDocDialog(null);
+        return;
+      }
+      
+      const fromPath = `${userId}/${doc.name}`;
+      const toPath = `${userId}/${newName}`;
+      
+      const { error } = await supabase.storage.from('documents').move(fromPath, toPath);
+      if (error) throw error;
+      
+      // Update the docs list
+      setDocs(prev => prev.map(d => d.name === doc.name ? { ...d, name: newName } : d));
+      toast({ title: 'File renamed', description: `Renamed to ${newName}` });
+      setRenameDocDialog(null);
+    } catch (error: any) {
+      toast({ title: 'Rename failed', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -810,6 +867,8 @@ const getPlaceholder = (title: string) => {
                               <DropdownMenuContent align="end" className="z-50">
                                 <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -948,6 +1007,8 @@ const getPlaceholder = (title: string) => {
                         <DropdownMenuContent align="end" className="z-50">
                           <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -1313,6 +1374,73 @@ const getPlaceholder = (title: string) => {
                 }}
               >
                 Submit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Move Document Dialog */}
+        <Dialog open={!!moveDocDialog} onOpenChange={(open) => { if (!open) setMoveDocDialog(null); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Move File</DialogTitle>
+              <DialogDescription>
+                Choose a folder to move "{moveDocDialog?.doc.name}" to, or leave blank for root documents.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="folder-select">Select Folder</Label>
+                <select
+                  id="folder-select"
+                  className="w-full mt-1 px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  value={moveDocDialog?.selectedFolder || ''}
+                  onChange={(e) => moveDocDialog && setMoveDocDialog({ ...moveDocDialog, selectedFolder: e.target.value })}
+                >
+                  <option value="">Documents (Root)</option>
+                  {folders.map(folder => (
+                    <option key={folder.id} value={folder.name}>{folder.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setMoveDocDialog(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleMoveDoc}>
+                Move File
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Rename Document Dialog */}
+        <Dialog open={!!renameDocDialog} onOpenChange={(open) => { if (!open) setRenameDocDialog(null); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Rename File</DialogTitle>
+              <DialogDescription>
+                Enter a new name for "{renameDocDialog?.doc.name}".
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="new-name">New File Name</Label>
+                <Input
+                  id="new-name"
+                  value={renameDocDialog?.newName || ''}
+                  onChange={(e) => renameDocDialog && setRenameDocDialog({ ...renameDocDialog, newName: e.target.value })}
+                  placeholder="Enter new name"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenameDocDialog(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleRenameDoc} disabled={!renameDocDialog?.newName.trim()}>
+                Rename
               </Button>
             </DialogFooter>
           </DialogContent>
