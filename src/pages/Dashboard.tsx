@@ -132,28 +132,36 @@ const Dashboard = () => {
   const fetchFolderDocs = async (folderStoragePath: string) => {
     if (!userId) return;
     
+    console.log('Fetching folder contents for path:', folderStoragePath);
+    
     const { data: files, error } = await supabase.storage
       .from('documents')
       .list(folderStoragePath, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
       
+    console.log('Folder list response:', { files, error });
+      
     if (error || !files) {
+      console.log('Error or no files found:', error);
       setFolderDocs([]);
       return;
     }
 
-    const visible = (files || []).filter((f: any) => f.name && !f.name.endsWith('/'));
+    const visible = (files || []).filter((f: any) => f.name && !f.name.endsWith('/') && f.name !== '.keep');
+    console.log('Visible files in folder:', visible);
+    
     const items = await Promise.all(visible.map(async (f: any) => {
       const path = `${folderStoragePath}/${f.name}`;
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
       return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
     }));
+    
+    console.log('Folder docs items:', items);
     setFolderDocs(items);
   };
 
-  // Open folder and load its contents
   const handleOpenFolder = async (folder: { id: string; name: string; storage_path: string }) => {
     setOpenFolder(folder);
-    await fetchFolderDocs(folder.storage_path);
+    await fetchFolderDocs(folder.storage_path.replace('/.keep', ''));
   };
 
   // Close folder and return to main view
