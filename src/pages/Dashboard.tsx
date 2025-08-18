@@ -1078,47 +1078,6 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="recent" id="recent">
-                  <AccordionTrigger className="justify-start gap-2" aria-label="Recent">
-                    <span className="inline-flex items-center" aria-hidden="false"><Clock className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Recent</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in">
-                    {docs.length === 0 ? (
-                      <div className="text-xs text-muted-foreground">No recent files.</div>
-                    ) : (
-                      <ul className="space-y-2">
-                        {(docs.slice(0, 5))
-                          .filter(d => d.name.includes('.')) // Only show files with extensions
-                          .map((d) => (
-                          <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
-                            <div className="min-w-0 flex-1">
-                               <FileNameDisplay fileName={d.name} className="block" />
-                              {d.updatedAt && (
-                                <span className="block text-[11px] text-muted-foreground">
-                                  {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
-                                </span>
-                              )}
-                            </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" aria-label="Options">
-                                  <Menu className="h-4 w-4" aria-hidden="true" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="z-50">
-                                <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
 
                 <AccordionItem value="starred" id="starred">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Starred">
