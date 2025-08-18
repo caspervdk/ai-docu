@@ -96,7 +96,7 @@ const Dashboard = () => {
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   // Delete confirmation dialog state
-  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean } | null>(null);
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean; folder?: { id: string; name: string; storage_path: string } } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -672,13 +672,23 @@ const slugFileName = (s: string) =>
   };
 
   // Perform actual delete after confirmation
-  const performDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean) => {
+  const performDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean, folder?: { id: string; name: string; storage_path: string }) => {
     if (!userId) {
       toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
       return;
     }
 
-    const fromPath = `${userId}/${doc.name}`;
+    // Determine the correct source path based on whether the file is in a folder
+    let fromPath: string;
+    if (folder) {
+      // File is in a folder
+      const folderPath = folder.storage_path.replace('/.keep', '');
+      fromPath = `${folderPath}/${doc.name}`;
+    } else {
+      // File is in root directory
+      fromPath = `${userId}/${doc.name}`;
+    }
+    
     let toName = doc.name;
     let toPath = `${userId}/trash/${toName}`;
 
@@ -708,10 +718,14 @@ const slugFileName = (s: string) =>
       }
     }
 
+    // Update UI state - remove from main docs list if it was there
     setDocs((prev) => prev.filter((d) => d.name !== doc.name));
-    if (openFolder) {
-      setFolderDocs((prev) => prev.filter((d) => d.name !== doc.name));
+    
+    // If deleting from a folder, refresh the folder contents
+    if (folder && openFolder && openFolder.id === folder.id) {
+      await fetchFolderDocs(folder.storage_path.replace('/.keep', ''));
     }
+    
     toast({ title: 'Moved to Trash', description: doc.name });
   };
   const handleDocAction = async (
@@ -772,7 +786,7 @@ const slugFileName = (s: string) =>
         toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
         return;
       }
-      setDeleteConfirmDialog({ doc, isTrash: false });
+      setDeleteConfirmDialog({ doc, isTrash: false, folder: openFolder || undefined });
       return;
     }
   };
@@ -1829,7 +1843,7 @@ const getPlaceholder = (title: string) => {
               <AlertDialogAction 
                 onClick={async () => {
                   if (deleteConfirmDialog) {
-                    await performDelete(deleteConfirmDialog.doc, deleteConfirmDialog.isTrash);
+                    await performDelete(deleteConfirmDialog.doc, deleteConfirmDialog.isTrash, deleteConfirmDialog.folder);
                     setDeleteConfirmDialog(null);
                   }
                 }}
