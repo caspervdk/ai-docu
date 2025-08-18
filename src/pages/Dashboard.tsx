@@ -1170,7 +1170,9 @@ const getPlaceholder = (title: string) => {
             ) : (
               <>
                 <ul className="space-y-2">
-                  {(showAllDocs ? docs : docs.slice(0, 5)).map((d) => (
+                  {(showAllDocs ? docs : docs.slice(0, 5))
+                    .filter(d => d.name.includes('.')) // Only show files with extensions
+                    .map((d) => (
                     <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                       <div className="min-w-0 flex-1">
                         <FileNameDisplay fileName={d.name} className="block max-w-[9rem]" />
