@@ -1135,7 +1135,7 @@ const getPlaceholder = (title: string) => {
               <Button variant="outline" onClick={() => setUpgradeModalOpen(false)}>
                 Maybe later
               </Button>
-              <Button variant="pro" onClick={() => navigate('/#pricing')}>
+              <Button variant="pro" onClick={() => navigate('/pricing')}>
                 <Rocket className="size-4 mr-2" />
                 View pricing
               </Button>
