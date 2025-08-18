@@ -89,6 +89,8 @@ const Dashboard = () => {
   // Create folder dialog state
   const [createFolderDialogOpen, setCreateFolderDialogOpen] = useState(false);
   const [createFolderCallback, setCreateFolderCallback] = useState<((folderId: string) => void) | null>(null);
+  // Storage popup state
+  const [storagePopupOpen, setStoragePopupOpen] = useState(false);
   // Folder view state
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
@@ -1188,13 +1190,18 @@ const getPlaceholder = (title: string) => {
             </Button>
           </section>
 
-          <section aria-label="Storage usage" className="rounded-xl border p-4 bg-gradient-subtle shadow-sm">
+          <section 
+            aria-label="Storage usage" 
+            className="rounded-xl border p-4 bg-gradient-subtle shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => setStoragePopupOpen(true)}
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Storage</div>
               <Badge variant="secondary">{docs.length}/{DOC_QUOTA}</Badge>
             </div>
             <Progress value={usagePct} className="h-2" />
             <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
+            <div className="mt-2 text-xs text-muted-foreground opacity-75">Click to view all files</div>
           </section>
 
           <section aria-label="Recent" className="rounded-lg border p-4">
@@ -1755,6 +1762,86 @@ const getPlaceholder = (title: string) => {
                 className="bg-primary hover:bg-primary/90"
               >
                 {creatingFolder ? 'Creating...' : 'Create'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Storage Files Dialog */}
+        <Dialog open={storagePopupOpen} onOpenChange={setStoragePopupOpen}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-hidden">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Files className="h-5 w-5" />
+                All Files ({docs.length}/{DOC_QUOTA})
+              </DialogTitle>
+              <DialogDescription>
+                View and manage all your stored documents
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 overflow-y-auto">
+              {docs.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Files className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <div>No documents stored yet</div>
+                  <div className="text-xs mt-1">Upload files to see them here</div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Storage usage: {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} slots remaining
+                  </div>
+                  <ul className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {docs.map((doc, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="flex-shrink-0">
+                            <FileText className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <FileNameDisplay fileName={doc.name} className="text-sm" />
+                            {doc.updatedAt && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {formatDistanceToNow(new Date(doc.updatedAt), { addSuffix: true })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Menu className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="z-50">
+                              <DropdownMenuItem onClick={() => { setPreviewDoc(doc); setStoragePopupOpen(false); }}>
+                                Preview
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('share', doc)}>
+                                Share
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { setMoveDocDialog({ doc, selectedFolder: '' }); setStoragePopupOpen(false); }}>
+                                Move to Folder
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { setRenameDocDialog({ doc, newName: doc.name }); setStoragePopupOpen(false); }}>
+                                Rename
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { moveToTrash(doc); setStoragePopupOpen(false); }}>
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setStoragePopupOpen(false)}>
+                Close
               </Button>
             </DialogFooter>
           </DialogContent>
