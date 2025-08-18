@@ -1566,7 +1566,7 @@ const getPlaceholder = (title: string) => {
                   value={moveDocDialog?.selectedFolder || ''}
                   onChange={(e) => moveDocDialog && setMoveDocDialog({ ...moveDocDialog, selectedFolder: e.target.value })}
                 >
-                  <option value="">Documents (Root)</option>
+                  <option value="">My Documents</option>
                   {folders.map(folder => (
                     <option key={folder.id} value={folder.name}>{folder.name}</option>
                   ))}
