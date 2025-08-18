@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -16,25 +16,64 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
+          birthday: string | null
           created_at: string
+          email: string | null
           first_name: string | null
+          gender: string | null
           id: string
           last_name: string | null
+          location: string | null
+          phone: string | null
+          ranking: number | null
+          skills: string[] | null
+          title: string | null
           updated_at: string
+          website: string | null
+          work_primary: string | null
+          work_secondary: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          birthday?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
+          gender?: string | null
           id: string
           last_name?: string | null
+          location?: string | null
+          phone?: string | null
+          ranking?: number | null
+          skills?: string[] | null
+          title?: string | null
           updated_at?: string
+          website?: string | null
+          work_primary?: string | null
+          work_secondary?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          birthday?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
+          gender?: string | null
           id?: string
           last_name?: string | null
+          location?: string | null
+          phone?: string | null
+          ranking?: number | null
+          skills?: string[] | null
+          title?: string | null
           updated_at?: string
+          website?: string | null
+          work_primary?: string | null
+          work_secondary?: string | null
         }
         Relationships: []
       }
