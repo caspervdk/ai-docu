@@ -59,6 +59,7 @@ const Dashboard = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
+  const [folders, setFolders] = useState<{ id: string; name: string; storage_path: string; created_at: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
   const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
@@ -112,7 +113,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchDocs = async () => {
-      if (!userId) { setDocs([]); setTrashDocs([]); return; }
+      if (!userId) { setDocs([]); setTrashDocs([]); setFolders([]); return; }
       // Root (Recent)
       const { data: files, error } = await supabase.storage
         .from('documents')
@@ -137,6 +138,15 @@ const Dashboard = () => {
         return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
       }));
       setTrashDocs(tItems);
+      
+      // Fetch folders from database
+      const { data: foldersData } = await supabase
+        .from('folders')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+        
+      setFolders(foldersData || []);
     };
     fetchDocs();
   }, [userId]);
@@ -440,6 +450,8 @@ const slugFileName = (s: string) =>
       setCreatingFolder(true);
       let folder = base;
       let path = `${userId}/${folder}/.keep`;
+      
+      // Create folder in storage
       let { error } = await supabase.storage.from('documents').upload(path, new Blob([], { type: 'text/plain' }), { upsert: false });
       if (error) {
         const msg = String((error as any).message || '').toLowerCase();
@@ -452,12 +464,51 @@ const slugFileName = (s: string) =>
           throw error;
         }
       }
-      toast({ title: 'Folder created', description: `Folder "${folder}" is ready in My documents.` });
+      
+      // Save folder to database
+      const { data: folderData, error: dbError } = await supabase
+        .from('folders')
+        .insert({
+          user_id: userId,
+          name: folder,
+          storage_path: path
+        })
+        .select()
+        .single();
+        
+      if (dbError) throw dbError;
+      
+      // Update folders list
+      setFolders(prev => [folderData, ...prev]);
+      
+      toast({ title: 'Folder created', description: `Folder "${folder}" is ready and saved.` });
       setNewFolderName('');
     } catch (e: any) {
       toast({ title: 'Create folder failed', description: e?.message || 'Could not create folder.', variant: 'destructive' } as any);
     } finally {
       setCreatingFolder(false);
+    }
+  };
+
+  const deleteFolder = async (folderId: string, folderName: string, storagePath: string) => {
+    try {
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('folders')
+        .delete()
+        .eq('id', folderId);
+        
+      if (dbError) throw dbError;
+      
+      // Delete from storage (optional - you might want to keep files)
+      await supabase.storage.from('documents').remove([storagePath]);
+      
+      // Update folders list
+      setFolders(prev => prev.filter(f => f.id !== folderId));
+      
+      toast({ title: 'Folder deleted', description: `Folder "${folderName}" has been removed.` });
+    } catch (e: any) {
+      toast({ title: 'Delete failed', description: e?.message || 'Could not delete folder.', variant: 'destructive' });
     }
   };
 
@@ -684,6 +735,40 @@ const getPlaceholder = (title: string) => {
                         </Button>
                       </div>
                       <p className="text-xs text-muted-foreground">Folders help you organize files and can be accessed from My Documents.</p>
+                      
+                      {/* Display existing folders */}
+                      {folders.length > 0 && (
+                        <div className="mt-4 space-y-2">
+                          <div className="text-sm font-medium">Your Folders</div>
+                          <ul className="space-y-1">
+                            {folders.map((folder) => (
+                              <li key={folder.id} className="flex items-center justify-between gap-2 text-sm">
+                                <div className="flex items-center gap-2">
+                                  <Folder className="h-4 w-4 text-muted-foreground" />
+                                  <span>{folder.name}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-muted-foreground">
+                                    {formatDistanceToNow(new Date(folder.created_at), { addSuffix: true })}
+                                  </span>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                        <Menu className="h-3 w-3" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem onClick={() => deleteFolder(folder.id, folder.name, folder.storage_path)}>
+                                        Delete folder
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
