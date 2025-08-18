@@ -60,6 +60,7 @@ const Dashboard = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
+  const [allFiles, setAllFiles] = useState<{ name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string } }[]>([]);
   const [folders, setFolders] = useState<{ id: string; name: string; storage_path: string; created_at: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
   const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
@@ -172,12 +173,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchDocs = async () => {
-      if (!userId) { setDocs([]); setTrashDocs([]); setFolders([]); return; }
+      if (!userId) { setDocs([]); setTrashDocs([]); setFolders([]); setAllFiles([]); return; }
+      
       // Root (Recent)
       const { data: files, error } = await supabase.storage
         .from('documents')
         .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
-      if (error || !files) { setDocs([]); } else {
+      
+      let items: { name: string; url: string; updatedAt?: string }[] = [];
+      
+      if (error || !files) { 
+        setDocs([]); 
+      } else {
         // Filter to only include actual files (not folders or special entries)
         const visible = (files || []).filter((f: any) => {
           if (!f.name) return false;
@@ -187,7 +194,7 @@ const Dashboard = () => {
           // Only include files with extensions or known file patterns
           return f.name.includes('.') || f.name.match(/^[^.]+$/);
         });
-        const items = await Promise.all(visible.map(async (f: any) => {
+        items = await Promise.all(visible.map(async (f: any) => {
           const path = `${userId}/${f.name}`;
           const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
           return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
@@ -214,6 +221,44 @@ const Dashboard = () => {
         .order('created_at', { ascending: false });
         
       setFolders(foldersData || []);
+
+      // Fetch all files from all locations for storage popup
+      const allFilesArray: { name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string } }[] = [];
+      
+      // Add root files to allFiles
+      items.forEach(item => {
+        allFilesArray.push(item);
+      });
+      
+      // Add files from all folders
+      if (foldersData && foldersData.length > 0) {
+        for (const folder of foldersData) {
+          try {
+            const folderPath = folder.storage_path.replace('/.keep', '');
+            const { data: folderFiles } = await supabase.storage
+              .from('documents')
+              .list(folderPath, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+              
+            if (folderFiles) {
+              const visibleFolderFiles = folderFiles.filter((f: any) => f.name && !f.name.endsWith('/') && f.name !== '.keep');
+              for (const file of visibleFolderFiles) {
+                const filePath = `${folderPath}/${file.name}`;
+                const { data: signed } = await supabase.storage.from('documents').createSignedUrl(filePath, 600);
+                allFilesArray.push({
+                  name: file.name,
+                  url: signed?.signedUrl || '#',
+                  updatedAt: file.updated_at || file.created_at,
+                  folder: folder
+                });
+              }
+            }
+          } catch (err) {
+            console.warn('Error fetching files from folder:', folder.name, err);
+          }
+        }
+      }
+      
+      setAllFiles(allFilesArray);
     };
     fetchDocs();
   }, [userId]);
@@ -726,7 +771,69 @@ const slugFileName = (s: string) =>
       await fetchFolderDocs(folder.storage_path.replace('/.keep', ''));
     }
     
+    // Refresh the allFiles list for storage popup
+    await refreshAllFiles();
+    
     toast({ title: 'Moved to Trash', description: doc.name });
+  };
+  
+  // Refresh allFiles list
+  const refreshAllFiles = async () => {
+    if (!userId) return;
+    
+    const allFilesArray: { name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string } }[] = [];
+    
+    // Add root files
+    const { data: files } = await supabase.storage
+      .from('documents')
+      .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+      
+    if (files) {
+      const visible = files.filter((f: any) => {
+        if (!f.name) return false;
+        if (f.name === 'trash') return false;
+        if (f.name.endsWith('/')) return false;
+        if (f.name === '.keep') return false;
+        return f.name.includes('.') || f.name.match(/^[^.]+$/);
+      });
+      const items = await Promise.all(visible.map(async (f: any) => {
+        const path = `${userId}/${f.name}`;
+        const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+        return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+      }));
+      
+      items.forEach(item => {
+        allFilesArray.push(item);
+      });
+    }
+    
+    // Add files from all folders
+    for (const folder of folders) {
+      try {
+        const folderPath = folder.storage_path.replace('/.keep', '');
+        const { data: folderFiles } = await supabase.storage
+          .from('documents')
+          .list(folderPath, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+          
+        if (folderFiles) {
+          const visibleFolderFiles = folderFiles.filter((f: any) => f.name && !f.name.endsWith('/') && f.name !== '.keep');
+          for (const file of visibleFolderFiles) {
+            const filePath = `${folderPath}/${file.name}`;
+            const { data: signed } = await supabase.storage.from('documents').createSignedUrl(filePath, 600);
+            allFilesArray.push({
+              name: file.name,
+              url: signed?.signedUrl || '#',
+              updatedAt: file.updated_at || file.created_at,
+              folder: folder
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Error fetching files from folder:', folder.name, err);
+      }
+    }
+    
+    setAllFiles(allFilesArray);
   };
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete' | 'delete-forever' | 'move' | 'rename',
@@ -1179,9 +1286,9 @@ const getPlaceholder = (title: string) => {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Storage</div>
-              <Badge variant="secondary">{docs.length}/{DOC_QUOTA}</Badge>
+              <Badge variant="secondary">{allFiles.length}/{DOC_QUOTA}</Badge>
             </div>
-            <Progress value={usagePct} className="h-2" />
+            <Progress value={Math.round((allFiles.length / DOC_QUOTA) * 100)} className="h-2" />
             <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
             <div className="mt-2 text-xs text-muted-foreground opacity-75">Click to view all files</div>
           </section>
@@ -1755,7 +1862,7 @@ const getPlaceholder = (title: string) => {
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Files className="h-5 w-5" />
-                All Files ({docs.length}/{DOC_QUOTA})
+                All Files ({allFiles.length}/{DOC_QUOTA})
               </DialogTitle>
               <DialogDescription>
                 View and manage all your stored documents
@@ -1774,15 +1881,18 @@ const getPlaceholder = (title: string) => {
                     Storage usage: {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} slots remaining
                   </div>
                   <ul className="space-y-2 max-h-[400px] overflow-y-auto">
-                    {docs.map((doc, i) => (
+                    {allFiles.map((doc, i) => (
                       <li key={i} className="flex items-center justify-between gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                           <div className="flex-shrink-0">
                             <FileText className="h-5 w-5 text-primary" />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <FileNameDisplay fileName={doc.name} className="text-sm" />
-                            {doc.updatedAt && (
+                        <div className="min-w-0 flex-1">
+                          <FileNameDisplay fileName={doc.name} className="text-sm" />
+                          {doc.folder && (
+                            <div className="text-xs text-muted-foreground">in {doc.folder.name}</div>
+                          )}
+                          {doc.updatedAt && (
                               <div className="text-xs text-muted-foreground mt-1">
                                 {formatDistanceToNow(new Date(doc.updatedAt), { addSuffix: true })}
                               </div>
@@ -1809,7 +1919,10 @@ const getPlaceholder = (title: string) => {
                               <DropdownMenuItem onClick={() => { setRenameDocDialog({ doc, newName: doc.name }); setStoragePopupOpen(false); }}>
                                 Rename
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { moveToTrash(doc); setStoragePopupOpen(false); }}>
+                              <DropdownMenuItem onClick={() => { 
+                                setDeleteConfirmDialog({ doc, isTrash: false, folder: doc.folder }); 
+                                setStoragePopupOpen(false); 
+                              }}>
                                 Delete
                               </DropdownMenuItem>
                             </DropdownMenuContent>
