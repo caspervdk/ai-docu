@@ -81,6 +81,7 @@ export default function Account() {
       }
       
       if (data) {
+        console.log('Loading existing profile:', data);
         setProfile(data);
         setFormData({
           first_name: data.first_name || '',
@@ -96,6 +97,42 @@ export default function Account() {
           work_primary: data.work_primary || '',
           work_secondary: data.work_secondary || '',
           skills: data.skills || []
+        });
+      } else {
+        // New user - initialize empty profile
+        console.log('New user - initializing empty profile');
+        const emptyProfile = {
+          id: session.user.id,
+          first_name: null,
+          last_name: null,
+          title: null,
+          location: null,
+          phone: null,
+          email: null,
+          website: null,
+          bio: null,
+          gender: null,
+          birthday: null,
+          work_primary: null,
+          work_secondary: null,
+          skills: null,
+          avatar_url: null
+        };
+        setProfile(emptyProfile);
+        setFormData({
+          first_name: '',
+          last_name: '',
+          title: '',
+          location: '',
+          phone: '',
+          email: '',
+          website: '',
+          bio: '',
+          gender: '',
+          birthday: '',
+          work_primary: '',
+          work_secondary: '',
+          skills: []
         });
       }
     };
@@ -109,14 +146,20 @@ export default function Account() {
     setSaving(true);
     
     try {
-      const { error } = await supabase
+      console.log('Saving profile data:', { id: userId, ...formData });
+      
+      const { data: savedData, error } = await supabase
         .from('profiles')
         .upsert({
           id: userId,
-          ...formData
-        });
+          ...formData,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
         
       if (error) {
+        console.error('Save error:', error);
         toast({
           title: "Error saving profile",
           description: error.message,
@@ -124,6 +167,8 @@ export default function Account() {
         });
         return;
       }
+      
+      console.log('Profile saved successfully:', savedData);
 
       // Success - show toast and refresh data
       toast({
@@ -131,30 +176,32 @@ export default function Account() {
         description: "Your profile has been successfully updated."
       });
       
-      // Refresh profile data
-      const { data } = await supabase
+      // Refresh profile data to confirm it was saved
+      const { data: refreshedData } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .maybeSingle();
+        .single(); // Use single() since we know the data exists now
         
-      if (data) {
-        setProfile(data);
+      console.log('Refreshed profile data:', refreshedData);
+        
+      if (refreshedData) {
+        setProfile(refreshedData);
         // Reset form data to the newly saved profile data (same as Cancel button)
         setFormData({
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          title: data.title || '',
-          location: data.location || '',
-          phone: data.phone || '',
-          email: data.email || '',
-          website: data.website || '',
-          bio: data.bio || '',
-          gender: data.gender || '',
-          birthday: data.birthday || '',
-          work_primary: data.work_primary || '',
-          work_secondary: data.work_secondary || '',
-          skills: data.skills || []
+          first_name: refreshedData.first_name || '',
+          last_name: refreshedData.last_name || '',
+          title: refreshedData.title || '',
+          location: refreshedData.location || '',
+          phone: refreshedData.phone || '',
+          email: refreshedData.email || '',
+          website: refreshedData.website || '',
+          bio: refreshedData.bio || '',
+          gender: refreshedData.gender || '',
+          birthday: refreshedData.birthday || '',
+          work_primary: refreshedData.work_primary || '',
+          work_secondary: refreshedData.work_secondary || '',
+          skills: refreshedData.skills || []
         });
       }
       
