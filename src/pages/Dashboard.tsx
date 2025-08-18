@@ -83,6 +83,9 @@ const Dashboard = () => {
   const [renameDocDialog, setRenameDocDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; newName: string } | null>(null);
   // Upgrade modal state
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  // Folder view state
+  const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
+  const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -113,6 +116,40 @@ const Dashboard = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Fetch folder contents
+  const fetchFolderDocs = async (folderStoragePath: string) => {
+    if (!userId) return;
+    
+    const { data: files, error } = await supabase.storage
+      .from('documents')
+      .list(folderStoragePath, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+      
+    if (error || !files) {
+      setFolderDocs([]);
+      return;
+    }
+
+    const visible = (files || []).filter((f: any) => f.name && !f.name.endsWith('/'));
+    const items = await Promise.all(visible.map(async (f: any) => {
+      const path = `${folderStoragePath}/${f.name}`;
+      const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+      return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+    }));
+    setFolderDocs(items);
+  };
+
+  // Open folder and load its contents
+  const handleOpenFolder = async (folder: { id: string; name: string; storage_path: string }) => {
+    setOpenFolder(folder);
+    await fetchFolderDocs(folder.storage_path);
+  };
+
+  // Close folder and return to main view
+  const handleCloseFolder = () => {
+    setOpenFolder(null);
+    setFolderDocs([]);
+  };
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -517,6 +554,11 @@ const slugFileName = (s: string) =>
 
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
+  
+  // Move document to trash (wrapper for handleDocAction)
+  const moveToTrash = (doc: { name: string; url: string; updatedAt?: string }) => {
+    handleDocAction('delete', doc);
+  };
   const handleDocAction = async (
     action: 'view' | 'share' | 'delete' | 'delete-forever' | 'move' | 'rename',
     doc: { name: string; url: string; updatedAt?: string },
@@ -794,13 +836,13 @@ const getPlaceholder = (title: string) => {
                       <p className="text-xs text-muted-foreground">Folders help you organize files and can be accessed from My Documents.</p>
                       
                       {/* Display existing folders */}
-                      {folders.length > 0 && (
+                      {folders.length > 0 && !openFolder && (
                         <div className="mt-4 space-y-2">
                           <div className="text-sm font-medium">Your Folders</div>
                           <ul className="space-y-1">
                             {folders.map((folder) => (
                               <li key={folder.id} className="flex items-center justify-between gap-2 text-sm">
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 cursor-pointer hover:text-primary flex-1" onClick={() => handleOpenFolder(folder)}>
                                   <Folder className="h-4 w-4 text-muted-foreground" />
                                   <span>{folder.name}</span>
                                 </div>
@@ -824,6 +866,60 @@ const getPlaceholder = (title: string) => {
                               </li>
                             ))}
                           </ul>
+                        </div>
+                      )}
+                      
+                      {/* Display folder contents when a folder is open */}
+                      {openFolder && (
+                        <div className="mt-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm" onClick={handleCloseFolder} className="h-6 px-2">
+                              ← Back
+                            </Button>
+                            <div className="text-sm font-medium">{openFolder.name}</div>
+                          </div>
+                          {folderDocs.length === 0 ? (
+                            <div className="text-xs text-muted-foreground">This folder is empty.</div>
+                          ) : (
+                            <ul className="space-y-1">
+                              {folderDocs.map((doc, i) => (
+                                <li key={i} className="flex items-center justify-between gap-2 text-sm">
+                                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                                    <FileText className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                                    <span className="truncate">{doc.name}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 flex-shrink-0">
+                                    {doc.updatedAt && (
+                                      <span className="text-xs text-muted-foreground">
+                                        {formatDistanceToNow(new Date(doc.updatedAt), { addSuffix: true })}
+                                      </span>
+                                    )}
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                          <Menu className="h-3 w-3" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => setPreviewDoc(doc)}>
+                                          Preview
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setMoveDocDialog({ doc, selectedFolder: 'Documents' })}>
+                                          Move to Documents
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setRenameDocDialog({ doc, newName: doc.name })}>
+                                          Rename
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => moveToTrash(doc)}>
+                                          Delete
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       )}
                     </div>
