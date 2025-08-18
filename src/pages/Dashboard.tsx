@@ -227,9 +227,12 @@ const Dashboard = () => {
       // Fetch all files from all locations for storage popup
       const allFilesArray: { name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string } }[] = [];
       
-      // Add root files to allFiles
+      // Add root files to allFiles (filter out system files and folders)
       items.forEach(item => {
-        allFilesArray.push(item);
+        // Only add actual files, not folders or system files
+        if (!item.name.includes('.keep') && !item.name.endsWith('/')) {
+          allFilesArray.push(item);
+        }
       });
       
       // Add files from all folders
@@ -850,7 +853,10 @@ const slugFileName = (s: string) =>
       }));
       
       items.forEach(item => {
-        allFilesArray.push(item);
+        // Only add actual files, not folders or system files
+        if (!item.name.includes('.keep') && !item.name.endsWith('/')) {
+          allFilesArray.push(item);
+        }
       });
     }
     
@@ -865,14 +871,17 @@ const slugFileName = (s: string) =>
         if (folderFiles) {
           const visibleFolderFiles = folderFiles.filter((f: any) => f.name && !f.name.endsWith('/') && f.name !== '.keep');
           for (const file of visibleFolderFiles) {
-            const filePath = `${folderPath}/${file.name}`;
-            const { data: signed } = await supabase.storage.from('documents').createSignedUrl(filePath, 600);
-            allFilesArray.push({
-              name: file.name,
-              url: signed?.signedUrl || '#',
-              updatedAt: file.updated_at || file.created_at,
-              folder: folder
-            });
+            // Only add actual files, not folders or system files
+            if (!file.name.includes('.keep') && !file.name.endsWith('/')) {
+              const filePath = `${folderPath}/${file.name}`;
+              const { data: signed } = await supabase.storage.from('documents').createSignedUrl(filePath, 600);
+              allFilesArray.push({
+                name: file.name,
+                url: signed?.signedUrl || '#',
+                updatedAt: file.updated_at || file.created_at,
+                folder: folder
+              });
+            }
           }
         }
       } catch (err) {
