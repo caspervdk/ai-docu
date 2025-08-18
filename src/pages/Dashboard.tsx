@@ -470,8 +470,29 @@ const slugFileName = (s: string) =>
         }
         toast({ title: 'Saved to folder', description: `${newEntries.length} item(s) added to ${selectedFolder.name}` });
       } else {
-        // If saved to root, update the main documents list
+        // If saved to root, update the main documents list and refresh from storage
         setDocs((prev) => [...newEntries, ...prev]);
+        // Also refresh the docs list from storage to ensure UI consistency
+        setTimeout(async () => {
+          const { data: files } = await supabase.storage
+            .from('documents')
+            .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+          if (files) {
+            const visible = files.filter((f: any) => {
+              if (!f.name) return false;
+              if (f.name === 'trash') return false;
+              if (f.name.endsWith('/')) return false;
+              if (f.name === '.keep') return false;
+              return f.name.includes('.') || f.name.match(/^[^.]+$/);
+            });
+            const items = await Promise.all(visible.map(async (f: any) => {
+              const path = `${userId}/${f.name}`;
+              const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+              return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+            }));
+            setDocs(items);
+          }
+        }, 1000);
         toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       }
       
@@ -547,8 +568,29 @@ const slugFileName = (s: string) =>
         }
         toast({ title: 'Uploaded to folder', description: `${savedName} saved to ${selectedFolder.name}` });
       } else {
-        // If saved to root, update the main documents list
+        // If saved to root, update the main documents list and refresh from storage
         setDocs((prev) => [entry, ...prev]);
+        // Also refresh the docs list from storage to ensure UI consistency
+        setTimeout(async () => {
+          const { data: files } = await supabase.storage
+            .from('documents')
+            .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
+          if (files) {
+            const visible = files.filter((f: any) => {
+              if (!f.name) return false;
+              if (f.name === 'trash') return false;
+              if (f.name.endsWith('/')) return false;
+              if (f.name === '.keep') return false;
+              return f.name.includes('.') || f.name.match(/^[^.]+$/);
+            });
+            const items = await Promise.all(visible.map(async (f: any) => {
+              const path = `${userId}/${f.name}`;
+              const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
+              return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+            }));
+            setDocs(items);
+          }
+        }, 1000);
         toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
       }
       
