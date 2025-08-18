@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { formatDistanceToNow } from "date-fns";
@@ -1748,36 +1749,158 @@ const getPlaceholder = (title: string) => {
           </DialogContent>
         </Dialog>
         <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) setPreviewDoc(null); }}>
-          <DialogContent className="sm:max-w-3xl">
+          <DialogContent className="sm:max-w-6xl">
             <DialogHeader>
               <DialogTitle>{previewDoc?.name}</DialogTitle>
               <DialogDescription>Preview</DialogDescription>
             </DialogHeader>
-            <div className="min-h-[60vh] relative">
-              {previewDoc && (
-                isPdf(previewDoc.name)
-                  ? <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
-                  : isImage(previewDoc.name)
-                    ? <img src={previewDoc.url} alt={previewDoc.name} className="max-h-[70vh] w-full object-contain rounded-md border" />
-                    : <iframe src={previewDoc.url} className="w-full h-[70vh] rounded-md border" />
-              )}
-
+            <div className="min-h-[70vh] relative">
               {previewDoc && lastSavedPair && (
                 (() => {
                   const isPrevOrig = lastSavedPair.original && previewDoc.name === lastSavedPair.original.name;
                   const isPrevOut = lastSavedPair.output && previewDoc.name === lastSavedPair.output.name;
-                  const related = isPrevOrig ? lastSavedPair.output : isPrevOut ? lastSavedPair.original : null;
-                  return related ? (
-                    <div className="absolute left-4 bottom-4 rounded-md border bg-background/80 backdrop-blur px-3 py-2 shadow-sm max-w-[95%]">
-                      <div className="text-xs text-muted-foreground mb-1">Related document</div>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-3.5 w-3.5 text-primary" />
-                        <span className="text-sm truncate max-w-[220px]" title={related.name}>{related.name}</span>
-                        <Button variant="outline" size="sm" onClick={() => setPreviewDoc(related as { name: string; url: string })}>Open</Button>
+                  const hasInputOutput = lastSavedPair.original && lastSavedPair.output;
+                  
+                  if (hasInputOutput && (isPrevOrig || isPrevOut)) {
+                    return (
+                      <Tabs defaultValue="split" className="w-full">
+                        <TabsList className="grid w-full grid-cols-3">
+                          <TabsTrigger value="split">Input & Output</TabsTrigger>
+                          <TabsTrigger value="input">Input Only</TabsTrigger>
+                          <TabsTrigger value="output">Output Only</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="split" className="mt-4">
+                          <div className="grid grid-cols-2 gap-4 h-[65vh]">
+                            <div className="border rounded-lg overflow-hidden">
+                              <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
+                                Input: {lastSavedPair.original.name}
+                              </div>
+                              <div className="h-[calc(65vh-2.5rem)]">
+                                {isPdf(lastSavedPair.original.name) ? (
+                                  <iframe 
+                                    src={lastSavedPair.original.url} 
+                                    className="w-full h-full" 
+                                  />
+                                ) : isImage(lastSavedPair.original.name) ? (
+                                  <img 
+                                    src={lastSavedPair.original.url} 
+                                    alt={lastSavedPair.original.name} 
+                                    className="w-full h-full object-contain" 
+                                  />
+                                ) : (
+                                  <iframe 
+                                    src={lastSavedPair.original.url} 
+                                    className="w-full h-full" 
+                                  />
+                                )}
+                              </div>
+                            </div>
+                            <div className="border rounded-lg overflow-hidden">
+                              <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
+                                Output: {lastSavedPair.output.name}
+                              </div>
+                              <div className="h-[calc(65vh-2.5rem)]">
+                                {isPdf(lastSavedPair.output.name) ? (
+                                  <iframe 
+                                    src={lastSavedPair.output.url} 
+                                    className="w-full h-full" 
+                                  />
+                                ) : isImage(lastSavedPair.output.name) ? (
+                                  <img 
+                                    src={lastSavedPair.output.url} 
+                                    alt={lastSavedPair.output.name} 
+                                    className="w-full h-full object-contain" 
+                                  />
+                                ) : (
+                                  <iframe 
+                                    src={lastSavedPair.output.url} 
+                                    className="w-full h-full" 
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="input" className="mt-4">
+                          <div className="h-[65vh] border rounded-lg overflow-hidden">
+                            <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
+                              Input: {lastSavedPair.original.name}
+                            </div>
+                            <div className="h-[calc(65vh-2.5rem)]">
+                              {isPdf(lastSavedPair.original.name) ? (
+                                <iframe 
+                                  src={lastSavedPair.original.url} 
+                                  className="w-full h-full" 
+                                />
+                              ) : isImage(lastSavedPair.original.name) ? (
+                                <img 
+                                  src={lastSavedPair.original.url} 
+                                  alt={lastSavedPair.original.name} 
+                                  className="w-full h-full object-contain" 
+                                />
+                              ) : (
+                                <iframe 
+                                  src={lastSavedPair.original.url} 
+                                  className="w-full h-full" 
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="output" className="mt-4">
+                          <div className="h-[65vh] border rounded-lg overflow-hidden">
+                            <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
+                              Output: {lastSavedPair.output.name}
+                            </div>
+                            <div className="h-[calc(65vh-2.5rem)]">
+                              {isPdf(lastSavedPair.output.name) ? (
+                                <iframe 
+                                  src={lastSavedPair.output.url} 
+                                  className="w-full h-full" 
+                                />
+                              ) : isImage(lastSavedPair.output.name) ? (
+                                <img 
+                                  src={lastSavedPair.output.url} 
+                                  alt={lastSavedPair.output.name} 
+                                  className="w-full h-full object-contain" 
+                                />
+                              ) : (
+                                <iframe 
+                                  src={lastSavedPair.output.url} 
+                                  className="w-full h-full" 
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    );
+                  } else {
+                    // Fallback to single document view
+                    return (
+                      <div className="h-[65vh]">
+                        {isPdf(previewDoc.name) ? (
+                          <iframe src={previewDoc.url} className="w-full h-full rounded-md border" />
+                        ) : isImage(previewDoc.name) ? (
+                          <img src={previewDoc.url} alt={previewDoc.name} className="max-h-full w-full object-contain rounded-md border" />
+                        ) : (
+                          <iframe src={previewDoc.url} className="w-full h-full rounded-md border" />
+                        )}
                       </div>
-                    </div>
-                  ) : null;
+                    );
+                  }
                 })()
+              )}
+              {previewDoc && !lastSavedPair && (
+                <div className="h-[65vh]">
+                  {isPdf(previewDoc.name) ? (
+                    <iframe src={previewDoc.url} className="w-full h-full rounded-md border" />
+                  ) : isImage(previewDoc.name) ? (
+                    <img src={previewDoc.url} alt={previewDoc.name} className="max-h-full w-full object-contain rounded-md border" />
+                  ) : (
+                    <iframe src={previewDoc.url} className="w-full h-full rounded-md border" />
+                  )}
+                </div>
               )}
             </div>
             <DialogFooter>
