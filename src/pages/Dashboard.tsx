@@ -98,6 +98,8 @@ const Dashboard = () => {
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
   // Delete confirmation dialog state
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean; folder?: { id: string; name: string; storage_path: string }; fromStorage?: boolean } | null>(null);
+  // Delete forever confirmation dialog state
+  const [deleteForeverDialog, setDeleteForeverDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean } | null>(null);
 
   const handleClose = () => {
     setActiveTool(null);
@@ -780,6 +782,32 @@ const slugFileName = (s: string) =>
     toast({ title: 'Moved to Trash', description: doc.name });
   };
   
+  // Perform permanent deletion
+  const performPermanentDelete = async (doc: { name: string; url: string; updatedAt?: string }, isTrash?: boolean) => {
+    if (!userId) {
+      toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
+      return;
+    }
+
+    const path = isTrash ? `${userId}/trash/${doc.name}` : `${userId}/${doc.name}`;
+    const { error: removeError } = await supabase.storage.from('documents').remove([path]);
+    if (removeError) {
+      toast({ title: 'Could not delete', description: (removeError as any).message || 'Unknown error', variant: 'destructive' } as any);
+      return;
+    }
+
+    if (isTrash) {
+      setTrashDocs((prev) => prev.filter((d) => d.name !== doc.name));
+    } else {
+      setDocs((prev) => prev.filter((d) => d.name !== doc.name));
+    }
+    
+    // Also update allFiles list for storage popup
+    setAllFiles((prev) => prev.filter((f) => f.name !== doc.name));
+    
+    toast({ title: 'Deleted forever', description: doc.name });
+  };
+  
   // Refresh allFiles list
   const refreshAllFiles = async () => {
     if (!userId) return;
@@ -872,22 +900,7 @@ const slugFileName = (s: string) =>
         toast({ title: 'Log in required', description: 'Please log in to delete documents.' });
         return;
       }
-      const confirmPermanent = window.confirm(`Permanently delete ${doc.name}? This cannot be undone.`);
-      if (!confirmPermanent) return;
-
-      const path = isTrash ? `${userId}/trash/${doc.name}` : `${userId}/${doc.name}`;
-      const { error: removeError } = await supabase.storage.from('documents').remove([path]);
-      if (removeError) {
-        toast({ title: 'Could not delete', description: (removeError as any).message || 'Unknown error', variant: 'destructive' } as any);
-        return;
-      }
-
-      if (isTrash) {
-        setTrashDocs((prev) => prev.filter((d) => d.name !== doc.name));
-      } else {
-        setDocs((prev) => prev.filter((d) => d.name !== doc.name));
-      }
-      toast({ title: 'Deleted forever', description: doc.name });
+      setDeleteForeverDialog({ doc, isTrash });
       return;
     }
 
@@ -1965,6 +1978,32 @@ const getPlaceholder = (title: string) => {
                 }}
               >
                 Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        
+        {/* Delete Forever Confirmation Dialog */}
+        <AlertDialog open={!!deleteForeverDialog} onOpenChange={(open) => !open && setDeleteForeverDialog(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Forever</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to permanently delete this document? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={async () => {
+                  if (deleteForeverDialog) {
+                    await performPermanentDelete(deleteForeverDialog.doc, deleteForeverDialog.isTrash);
+                    setDeleteForeverDialog(null);
+                  }
+                }}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete Forever
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
