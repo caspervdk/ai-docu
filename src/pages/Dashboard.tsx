@@ -1360,19 +1360,6 @@ const getPlaceholder = (title: string) => {
             </Button>
           </section>
 
-          <section 
-            aria-label="Storage usage" 
-            className="rounded-xl border p-4 bg-gradient-subtle shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => setStoragePopupOpen(true)}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium">Storage</div>
-              <Badge variant="secondary">{allFiles.length}/{DOC_QUOTA}</Badge>
-            </div>
-            <Progress value={Math.round((allFiles.length / DOC_QUOTA) * 100)} className="h-2" />
-            <div className="mt-2 text-xs text-muted-foreground">Usage {usagePct}% • {Math.max(0, DOC_QUOTA - docs.length)} left</div>
-            <div className="mt-2 text-xs text-muted-foreground opacity-75">Click to view all files</div>
-          </section>
 
           <section aria-label="Recent" className="rounded-lg border p-4">
             <div className="text-sm font-medium mb-2">Recent</div>
