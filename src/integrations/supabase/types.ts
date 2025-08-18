@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      analyzed_files: {
+        Row: {
+          analysis_result: string | null
+          analysis_type: string
+          created_at: string
+          file_name: string
+          file_path: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_result?: string | null
+          analysis_type: string
+          created_at?: string
+          file_name: string
+          file_path?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_result?: string | null
+          analysis_type?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       folders: {
         Row: {
           created_at: string
