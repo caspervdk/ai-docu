@@ -162,7 +162,15 @@ const Dashboard = () => {
         .from('documents')
         .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
       if (error || !files) { setDocs([]); } else {
-        const visible = (files || []).filter((f: any) => f.name && f.name !== 'trash' && !f.name.endsWith('/'));
+        // Filter to only include actual files (not folders or special entries)
+        const visible = (files || []).filter((f: any) => {
+          if (!f.name) return false;
+          if (f.name === 'trash') return false;
+          if (f.name.endsWith('/')) return false; // Exclude folders
+          if (f.name === '.keep') return false; // Exclude .keep files
+          // Only include files with extensions or known file patterns
+          return f.name.includes('.') || f.name.match(/^[^.]+$/);
+        });
         const items = await Promise.all(visible.map(async (f: any) => {
           const path = `${userId}/${f.name}`;
           const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
