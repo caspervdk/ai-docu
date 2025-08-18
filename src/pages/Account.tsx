@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera } from "lucide-react";
+import AnalyzedFilesTimeline from "@/components/AnalyzedFilesTimeline";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -563,7 +564,7 @@ export default function Account() {
                     <TabsTrigger value="about">About</TabsTrigger>
                   </TabsList>
                   <TabsContent value="timeline" className="space-y-4">
-                    <p className="text-sm text-muted-foreground">Recent activity will appear here.</p>
+                    <AnalyzedFilesTimeline />
                   </TabsContent>
                   <TabsContent value="about" className="space-y-6">
                     {isEditing && (
