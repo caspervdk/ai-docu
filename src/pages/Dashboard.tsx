@@ -275,6 +275,34 @@ const slugFileName = (s: string) =>
     .trim()
     .replace(/[^a-z0-9._-]+/g, '-')
     .replace(/(^[.-]+|[.-]+$)/g, '');
+
+  // Utility function to parse file name and extension
+  const parseFileName = (fileName: string) => {
+    const lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex === -1 || lastDotIndex === 0) {
+      return { name: fileName, extension: '' };
+    }
+    return {
+      name: fileName.substring(0, lastDotIndex),
+      extension: fileName.substring(lastDotIndex)
+    };
+  };
+
+  // Component for displaying file names with improved styling
+  const FileNameDisplay = ({ fileName, className = "", showTooltip = true }: { fileName: string, className?: string, showTooltip?: boolean }) => {
+    const { name, extension } = parseFileName(fileName);
+    return (
+      <span 
+        className={`truncate ${className}`}
+        title={showTooltip ? fileName : undefined}
+      >
+        <span className="font-medium text-foreground">{name}</span>
+        {extension && (
+          <span className="text-muted-foreground font-normal">{extension}</span>
+        )}
+      </span>
+    );
+  };
   const saveOutput = async () => {
     if (!output.trim()) {
       toast({ title: "Nothing to save", description: "Run the tool to generate output first." });
@@ -934,7 +962,7 @@ const getPlaceholder = (title: string) => {
                                 <li key={i} className="flex items-center justify-between gap-2 text-sm">
                                   <div className="flex items-center gap-2 min-w-0 flex-1">
                                     <FileText className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                                    <span className="truncate">{doc.name}</span>
+                                    <FileNameDisplay fileName={doc.name} />
                                   </div>
                                   <div className="flex items-center gap-1 flex-shrink-0">
                                     {doc.updatedAt && (
@@ -995,7 +1023,7 @@ const getPlaceholder = (title: string) => {
                         {(docs.slice(0, 5)).map((d) => (
                           <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
-                              <span className="block truncate" title={d.name}>{d.name}</span>
+                               <FileNameDisplay fileName={d.name} className="block" />
                               {d.updatedAt && (
                                 <span className="block text-[11px] text-muted-foreground">
                                   {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
@@ -1044,7 +1072,7 @@ const getPlaceholder = (title: string) => {
                         {trashDocs.slice(0, 10).map((d) => (
                           <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
-                              <span className="block truncate" title={d.name}>{d.name}</span>
+                              <FileNameDisplay fileName={d.name} className="block" />
                               {d.updatedAt && (
                                 <span className="block text-[11px] text-muted-foreground">
                                   {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
@@ -1135,7 +1163,7 @@ const getPlaceholder = (title: string) => {
                   {(showAllDocs ? docs : docs.slice(0, 5)).map((d) => (
                     <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                       <div className="min-w-0 flex-1">
-                        <span className="block truncate max-w-[9rem]" title={d.name}>{d.name}</span>
+                        <FileNameDisplay fileName={d.name} className="block max-w-[9rem]" />
                         {d.updatedAt && (
                           <span className="block text-[11px] text-muted-foreground">
                             {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
