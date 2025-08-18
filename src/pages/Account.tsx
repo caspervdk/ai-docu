@@ -64,11 +64,23 @@ export default function Account() {
   // Get user session and load profile
   useEffect(() => {
     const getProfile = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
+      console.log('Getting user session...');
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        return;
+      }
+      
+      if (!session?.user) {
+        console.log('No user session found');
+        return;
+      }
+      
+      console.log('User session found:', session.user.id);
       setUserId(session.user.id);
       
+      console.log('Fetching profile for user:', session.user.id);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -77,6 +89,11 @@ export default function Account() {
         
       if (error) {
         console.error('Error fetching profile:', error);
+        toast({
+          title: "Error loading profile",
+          description: error.message,
+          variant: "destructive"
+        });
         return;
       }
       
@@ -100,7 +117,7 @@ export default function Account() {
         });
       } else {
         // New user - initialize empty profile
-        console.log('New user - initializing empty profile');
+        console.log('New user - initializing empty profile for:', session.user.id);
         const emptyProfile = {
           id: session.user.id,
           first_name: null,
@@ -141,7 +158,15 @@ export default function Account() {
   }, []);
 
   const handleSave = async () => {
-    if (!userId) return;
+    if (!userId) {
+      console.error('No userId found');
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
     
     setSaving(true);
     
@@ -170,45 +195,37 @@ export default function Account() {
       
       console.log('Profile saved successfully:', savedData);
 
-      // Success - show toast and refresh data
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been successfully updated."
+      // Update local profile state with the saved data
+      setProfile(savedData);
+      
+      // Reset form data to match the saved profile
+      setFormData({
+        first_name: savedData.first_name || '',
+        last_name: savedData.last_name || '',
+        title: savedData.title || '',
+        location: savedData.location || '',
+        phone: savedData.phone || '',
+        email: savedData.email || '',
+        website: savedData.website || '',
+        bio: savedData.bio || '',
+        gender: savedData.gender || '',
+        birthday: savedData.birthday || '',
+        work_primary: savedData.work_primary || '',
+        work_secondary: savedData.work_secondary || '',
+        skills: savedData.skills || []
       });
       
-      // Refresh profile data to confirm it was saved
-      const { data: refreshedData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single(); // Use single() since we know the data exists now
-        
-      console.log('Refreshed profile data:', refreshedData);
-        
-      if (refreshedData) {
-        setProfile(refreshedData);
-        // Reset form data to the newly saved profile data (same as Cancel button)
-        setFormData({
-          first_name: refreshedData.first_name || '',
-          last_name: refreshedData.last_name || '',
-          title: refreshedData.title || '',
-          location: refreshedData.location || '',
-          phone: refreshedData.phone || '',
-          email: refreshedData.email || '',
-          website: refreshedData.website || '',
-          bio: refreshedData.bio || '',
-          gender: refreshedData.gender || '',
-          birthday: refreshedData.birthday || '',
-          work_primary: refreshedData.work_primary || '',
-          work_secondary: refreshedData.work_secondary || '',
-          skills: refreshedData.skills || []
-        });
-      }
+      // Success - show toast
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been successfully saved."
+      });
       
-      // Always return to normal view after successful save
+      // Exit edit mode
       setIsEditing(false);
       
     } catch (error: any) {
+      console.error('Unexpected error:', error);
       toast({
         title: "Error saving profile",
         description: error.message || "Something went wrong",
