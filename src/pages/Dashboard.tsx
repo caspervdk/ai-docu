@@ -332,6 +332,10 @@ const slugFileName = (s: string) =>
       // Determine save path based on folder selection
       const selectedFolder = saveToFolderId ? folders.find(f => f.id === saveToFolderId) : null;
       const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
+      
+      // Debug logging to verify save path
+      console.log('Save location:', selectedFolder ? `Folder: ${selectedFolder.name}` : 'My Documents (root)');
+      console.log('Path prefix:', pathPrefix);
 
       let originalEntry: { name: string; url: string; updatedAt?: string } | undefined;
       let outputEntry: { name: string; url: string; updatedAt?: string } | undefined;
@@ -507,6 +511,11 @@ const slugFileName = (s: string) =>
     const selectedFolder = newFileSaveToFolderId ? folders.find(f => f.id === newFileSaveToFolderId) : null;
     const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
     const pathBase = `${pathPrefix}/${finalName}`;
+    
+    // Debug logging to verify save path
+    console.log('New file save location:', selectedFolder ? `Folder: ${selectedFolder.name}` : 'My Documents (root)');
+    console.log('Path prefix:', pathPrefix);
+    console.log('Full path:', pathBase);
     
     try {
       setNewSaving(true);
