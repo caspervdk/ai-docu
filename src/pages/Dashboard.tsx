@@ -329,12 +329,17 @@ const slugFileName = (s: string) =>
         return;
       }
 
-      // Determine save path based on folder selection
-      const selectedFolder = saveToFolderId ? folders.find(f => f.id === saveToFolderId) : null;
-      const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
+      // Determine save path based on folder selection (folder is required)
+      const selectedFolder = folders.find(f => f.id === saveToFolderId);
+      if (!selectedFolder) {
+        toast({ title: "Select a folder", description: "Please select a folder before saving." });
+        setIsSaving(false);
+        return;
+      }
+      const pathPrefix = selectedFolder.storage_path.replace('/.keep', '');
       
       // Debug logging to verify save path
-      console.log('Save location:', selectedFolder ? `Folder: ${selectedFolder.name}` : 'My Documents (root)');
+      console.log('Save location:', `Folder: ${selectedFolder.name}`);
       console.log('Path prefix:', pathPrefix);
 
       let originalEntry: { name: string; url: string; updatedAt?: string } | undefined;
@@ -531,13 +536,17 @@ const slugFileName = (s: string) =>
     if (!finalName) { toast({ title: 'Name required', description: 'Enter a file name.' }); return; }
     if (ext && !finalName.endsWith(ext)) finalName += ext;
 
-    // Determine save path based on folder selection
-    const selectedFolder = newFileSaveToFolderId ? folders.find(f => f.id === newFileSaveToFolderId) : null;
-    const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
+    // Determine save path based on folder selection (folder is required)
+    const selectedFolder = folders.find(f => f.id === newFileSaveToFolderId);
+    if (!selectedFolder) {
+      toast({ title: 'Select a folder', description: 'Please select a folder before saving.' });
+      return;
+    }
+    const pathPrefix = selectedFolder.storage_path.replace('/.keep', '');
     const pathBase = `${pathPrefix}/${finalName}`;
     
     // Debug logging to verify save path
-    console.log('New file save location:', selectedFolder ? `Folder: ${selectedFolder.name}` : 'My Documents (root)');
+    console.log('New file save location:', `Folder: ${selectedFolder.name}`);
     console.log('Path prefix:', pathPrefix);
     console.log('Full path:', pathBase);
     
@@ -1291,20 +1300,20 @@ const getPlaceholder = (title: string) => {
                     onChange={(e) => setNewFileSaveToFolderId(e.target.value || null)}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="">My Documents</option>
+                    <option value="" disabled>Select a folder</option>
                     {folders.map((folder) => (
                       <option key={folder.id} value={folder.id}>{folder.name}</option>
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground">
-                    {newFileSaveToFolderId ? `Will be saved in the selected folder.` : `Will be saved in My documents.`}
+                    {newFileSaveToFolderId ? `Will be saved in the selected folder.` : `Please select a folder to save your file.`}
                   </p>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setNewOpen(false)}>Cancel</Button>
-                <Button onClick={saveNewUpload} disabled={!newFile || !userId || newSaving || !newFileName.trim()}>
-                  {newSaving ? "Saving..." : newFileSaveToFolderId ? "Save to folder" : "Save to My documents"}
+                <Button onClick={saveNewUpload} disabled={!newFile || !userId || newSaving || !newFileName.trim() || !newFileSaveToFolderId}>
+                  {newSaving ? "Saving..." : "Save to folder"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -1471,20 +1480,20 @@ const getPlaceholder = (title: string) => {
                   onChange={(e) => setSaveToFolderId(e.target.value || null)}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="">My Documents</option>
+                  <option value="" disabled>Select a folder</option>
                   {folders.map((folder) => (
                     <option key={folder.id} value={folder.id}>{folder.name}</option>
                   ))}
                 </select>
                 <p className="text-xs text-muted-foreground">
-                  {saveToFolderId ? `Will be saved in the selected folder.` : `Will be saved in My documents.`}
+                  {saveToFolderId ? `Will be saved in the selected folder.` : `Please select a folder to save your document.`}
                 </p>
               </div>
             </div>
 
             <DialogFooter className="flex items-center justify-between">
-              <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
-                {isSaving ? "Saving..." : saveToFolderId ? "Save to folder" : "Save to My documents"}
+              <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim() || !saveToFolderId}>
+                {isSaving ? "Saving..." : "Save to folder"}
               </Button>
               <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)}>Feedback</Button>
             </DialogFooter>
