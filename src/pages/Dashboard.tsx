@@ -844,7 +844,8 @@ const slugFileName = (s: string) =>
         if (f.name === 'trash') return false;
         if (f.name.endsWith('/')) return false;
         if (f.name === '.keep') return false;
-        return f.name.includes('.') || f.name.match(/^[^.]+$/);
+        // Only include actual files with extensions, exclude folder placeholders
+        return f.name.includes('.') && f.metadata && f.metadata.size > 0;
       });
       const items = await Promise.all(visible.map(async (f: any) => {
         const path = `${userId}/${f.name}`;
