@@ -947,14 +947,6 @@ const getPlaceholder = (title: string) => {
                 </DropdownMenu>
               </div>
               <Accordion type="multiple" className="w-full hidden md:block">
-                <AccordionItem value="my-documents" id="my-documents">
-                  <AccordionTrigger className="justify-start gap-2" aria-label="My documents">
-                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">My documents</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Access all files you’ve saved to My documents.
-                  </AccordionContent>
-                </AccordionItem>
 
                 <AccordionItem value="folders" id="folders">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Folders">
