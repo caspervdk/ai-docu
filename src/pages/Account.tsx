@@ -558,11 +558,6 @@ export default function Account() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
-                    <Button size="sm" variant="secondary" className="flex-1 sm:flex-none">Send message</Button>
-                    <Button size="sm" variant="default" className="flex-1 sm:flex-none">Contacts</Button>
-                    <Button size="sm" variant="ghost" className="hidden sm:flex">Report user</Button>
-                  </div>
                 </div>
 
                 <Tabs defaultValue="about" className="w-full">
