@@ -931,7 +931,6 @@ const onStartAI = async (overrideAction?: string) => {
               <h2 className="text-3xl font-semibold">Contact our team</h2>
               <p className="text-sm text-muted-foreground">Questions about pricing, features, or onboarding? Send us a message and we’ll reply within 1 business day.</p>
               <div className="text-sm text-muted-foreground">
-                <p>Email: hello@docmind.ai</p>
               </div>
             </div>
             <Card className="shadow-sm">
