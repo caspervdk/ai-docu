@@ -650,6 +650,7 @@ const getPlaceholder = (title: string) => {
                     <DropdownMenuItem onClick={() => document.getElementById('recent')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Recent</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('starred')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Starred</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('trash')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Trash</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => document.getElementById('folders')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Folders</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('tags')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Tags</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -661,6 +662,29 @@ const getPlaceholder = (title: string) => {
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
                     Access all files you’ve saved to My documents.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="folders" id="folders">
+                  <AccordionTrigger className="justify-start gap-2" aria-label="Folders">
+                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Folders</span></span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-fade-in">
+                    <div className="space-y-2">
+                      <div className="text-sm text-muted-foreground">Create and manage folders to organize your documents.</div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          placeholder="New folder name"
+                          value={newFolderName}
+                          onChange={(e) => setNewFolderName(e.target.value)}
+                          className="text-sm"
+                        />
+                        <Button size="sm" onClick={createFolder} disabled={!userId || creatingFolder || !newFolderName.trim()}>
+                          {creatingFolder ? 'Creating...' : 'Create'}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Folders help you organize files and can be accessed from My Documents.</p>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
 
