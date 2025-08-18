@@ -462,9 +462,6 @@ const slugFileName = (s: string) =>
         newEntries.push(outputEntry);
       }
 
-      // Always add new files to Recent section regardless of save location
-      setDocs((prev) => [...newEntries, ...prev]);
-      
       // Update the appropriate document list based on folder selection
       if (selectedFolder) {
         // If saved to a folder, refresh folder contents if that folder is currently open
@@ -475,6 +472,10 @@ const slugFileName = (s: string) =>
       } else {
         toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       }
+      
+      // ALWAYS add new files to Recent sections (both sidebar and main) regardless of save location
+      const updatedDocs = [...newEntries, ...docs.filter(d => !newEntries.some(ne => ne.name === d.name))];
+      setDocs(updatedDocs);
       
       // Also refresh the docs list from storage to ensure UI consistency
       setTimeout(async () => {
@@ -562,9 +563,6 @@ const slugFileName = (s: string) =>
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(finalPath, 600);
       const entry = { name: savedName, url: signed?.signedUrl || '#', updatedAt: new Date().toISOString() };
       
-      // Always add new files to Recent section regardless of save location
-      setDocs((prev) => [entry, ...prev]);
-      
       // Update the appropriate document list based on folder selection
       if (selectedFolder) {
         // If saved to a folder, refresh folder contents if that folder is currently open
@@ -575,6 +573,10 @@ const slugFileName = (s: string) =>
       } else {
         toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
       }
+      
+      // ALWAYS add new files to Recent sections (both sidebar and main) regardless of save location
+      const updatedDocs = [entry, ...docs.filter(d => d.name !== entry.name)];
+      setDocs(updatedDocs);
       
       // Also refresh the docs list from storage to ensure UI consistency
       setTimeout(async () => {
