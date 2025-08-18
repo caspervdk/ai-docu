@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import PreviewModal from "@/components/PreviewModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -1777,23 +1778,24 @@ const getPlaceholder = (title: string) => {
                               </div>
                               <div className="h-[calc(65vh-2.5rem)]">
                                 {isPdf(lastSavedPair.original.name) ? (
-                                  <object 
-                                    data={lastSavedPair.original.url} 
-                                    type="application/pdf"
+                                  <iframe 
+                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(lastSavedPair.original.url)}&embedded=true`}
                                     className="w-full h-full"
-                                  >
-                                    <div className="flex items-center justify-center h-full bg-muted">
-                                      <div className="text-center">
-                                        <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                        <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                                        <Button variant="outline" size="sm" asChild>
-                                          <a href={lastSavedPair.original.url} target="_blank" rel="noopener noreferrer">
-                                            Open PDF in new tab
-                                          </a>
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </object>
+                                    title={`Preview of ${lastSavedPair.original.name}`}
+                                  />
+                                ) : isImage(lastSavedPair.original.name) ? (
+                                  <img 
+                                    src={lastSavedPair.original.url} 
+                                    alt={lastSavedPair.original.name} 
+                                    className="w-full h-full object-contain" 
+                                  />
+                                ) : (
+                                  <iframe 
+                                    src={lastSavedPair.original.url} 
+                                    className="w-full h-full" 
+                                  />
+                                )}
+                              </div>
                                 ) : isImage(lastSavedPair.original.name) ? (
                                   <img 
                                     src={lastSavedPair.original.url} 
@@ -1814,23 +1816,24 @@ const getPlaceholder = (title: string) => {
                               </div>
                               <div className="h-[calc(65vh-2.5rem)]">
                                 {isPdf(lastSavedPair.output.name) ? (
-                                  <object 
-                                    data={lastSavedPair.output.url} 
-                                    type="application/pdf"
+                                  <iframe 
+                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(lastSavedPair.output.url)}&embedded=true`}
                                     className="w-full h-full"
-                                  >
-                                    <div className="flex items-center justify-center h-full bg-muted">
-                                      <div className="text-center">
-                                        <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                        <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                                        <Button variant="outline" size="sm" asChild>
-                                          <a href={lastSavedPair.output.url} target="_blank" rel="noopener noreferrer">
-                                            Open PDF in new tab
-                                          </a>
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </object>
+                                    title={`Preview of ${lastSavedPair.output.name}`}
+                                  />
+                                ) : isImage(lastSavedPair.output.name) ? (
+                                  <img 
+                                    src={lastSavedPair.output.url} 
+                                    alt={lastSavedPair.output.name} 
+                                    className="w-full h-full object-contain" 
+                                  />
+                                ) : (
+                                  <iframe 
+                                    src={lastSavedPair.output.url} 
+                                    className="w-full h-full" 
+                                  />
+                                )}
+                              </div>
                                 ) : isImage(lastSavedPair.output.name) ? (
                                   <img 
                                     src={lastSavedPair.output.url} 
@@ -1854,23 +1857,24 @@ const getPlaceholder = (title: string) => {
                             </div>
                             <div className="h-[calc(65vh-2.5rem)]">
                               {isPdf(lastSavedPair.original.name) ? (
-                                <object 
-                                  data={lastSavedPair.original.url} 
-                                  type="application/pdf"
+                                <iframe 
+                                  src={`https://docs.google.com/gview?url=${encodeURIComponent(lastSavedPair.original.url)}&embedded=true`}
                                   className="w-full h-full"
-                                >
-                                  <div className="flex items-center justify-center h-full bg-muted">
-                                    <div className="text-center">
-                                      <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                      <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                                      <Button variant="outline" size="sm" asChild>
-                                        <a href={lastSavedPair.original.url} target="_blank" rel="noopener noreferrer">
-                                          Open PDF in new tab
-                                        </a>
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </object>
+                                  title={`Preview of ${lastSavedPair.original.name}`}
+                                />
+                              ) : isImage(lastSavedPair.original.name) ? (
+                                <img 
+                                  src={lastSavedPair.original.url} 
+                                  alt={lastSavedPair.original.name} 
+                                  className="w-full h-full object-contain" 
+                                />
+                              ) : (
+                                <iframe 
+                                  src={lastSavedPair.original.url} 
+                                  className="w-full h-full" 
+                                />
+                              )}
+                            </div>
                               ) : isImage(lastSavedPair.original.name) ? (
                                 <img 
                                   src={lastSavedPair.original.url} 
@@ -1893,23 +1897,24 @@ const getPlaceholder = (title: string) => {
                             </div>
                             <div className="h-[calc(65vh-2.5rem)]">
                               {isPdf(lastSavedPair.output.name) ? (
-                                <object 
-                                  data={lastSavedPair.output.url} 
-                                  type="application/pdf"
+                                <iframe 
+                                  src={`https://docs.google.com/gview?url=${encodeURIComponent(lastSavedPair.output.url)}&embedded=true`}
                                   className="w-full h-full"
-                                >
-                                  <div className="flex items-center justify-center h-full bg-muted">
-                                    <div className="text-center">
-                                      <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                      <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                                      <Button variant="outline" size="sm" asChild>
-                                        <a href={lastSavedPair.output.url} target="_blank" rel="noopener noreferrer">
-                                          Open PDF in new tab
-                                        </a>
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </object>
+                                  title={`Preview of ${lastSavedPair.output.name}`}
+                                />
+                              ) : isImage(lastSavedPair.output.name) ? (
+                                <img 
+                                  src={lastSavedPair.output.url} 
+                                  alt={lastSavedPair.output.name} 
+                                  className="w-full h-full object-contain" 
+                                />
+                              ) : (
+                                <iframe 
+                                  src={lastSavedPair.output.url} 
+                                  className="w-full h-full" 
+                                />
+                              )}
+                            </div>
                               ) : isImage(lastSavedPair.output.name) ? (
                                 <img 
                                   src={lastSavedPair.output.url} 
@@ -1932,23 +1937,17 @@ const getPlaceholder = (title: string) => {
                     return (
                       <div className="h-[65vh]">
                         {isPdf(previewDoc.name) ? (
-                          <object 
-                            data={previewDoc.url} 
-                            type="application/pdf"
+                          <iframe 
+                            src={`https://docs.google.com/gview?url=${encodeURIComponent(previewDoc.url)}&embedded=true`}
                             className="w-full h-full rounded-md border"
-                          >
-                            <div className="flex items-center justify-center h-full bg-muted rounded-md border">
-                              <div className="text-center">
-                                <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                                <Button variant="outline" size="sm" asChild>
-                                  <a href={previewDoc.url} target="_blank" rel="noopener noreferrer">
-                                    Open PDF in new tab
-                                  </a>
-                                </Button>
-                              </div>
-                            </div>
-                          </object>
+                            title={`Preview of ${previewDoc.name}`}
+                          />
+                        ) : isImage(previewDoc.name) ? (
+                          <img src={previewDoc.url} alt={previewDoc.name} className="max-h-full w-full object-contain rounded-md border" />
+                        ) : (
+                          <iframe src={previewDoc.url} className="w-full h-full rounded-md border" />
+                        )}
+                      </div>
                         ) : isImage(previewDoc.name) ? (
                           <img src={previewDoc.url} alt={previewDoc.name} className="max-h-full w-full object-contain rounded-md border" />
                         ) : (
@@ -1962,23 +1961,11 @@ const getPlaceholder = (title: string) => {
               {previewDoc && !lastSavedPair && (
                 <div className="h-[65vh]">
                   {isPdf(previewDoc.name) ? (
-                    <object 
-                      data={previewDoc.url} 
-                      type="application/pdf"
+                    <iframe 
+                      src={`https://docs.google.com/gview?url=${encodeURIComponent(previewDoc.url)}&embedded=true`}
                       className="w-full h-full rounded-md border"
-                    >
-                      <div className="flex items-center justify-center h-full bg-muted rounded-md border">
-                        <div className="text-center">
-                          <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground mb-2">PDF preview not available</p>
-                          <Button variant="outline" size="sm" asChild>
-                            <a href={previewDoc.url} target="_blank" rel="noopener noreferrer">
-                              Open PDF in new tab
-                            </a>
-                          </Button>
-                        </div>
-                      </div>
-                    </object>
+                      title={`Preview of ${previewDoc.name}`}
+                    />
                   ) : isImage(previewDoc.name) ? (
                     <img src={previewDoc.url} alt={previewDoc.name} className="max-h-full w-full object-contain rounded-md border" />
                   ) : (
