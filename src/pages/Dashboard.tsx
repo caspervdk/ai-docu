@@ -437,26 +437,6 @@ const slugFileName = (s: string) =>
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
 
-        // If saved to a folder, also save copies to root directory for Recent section
-        if (selectedFolder) {
-          try {
-            // Save copy of merged PDF to root for Recent
-            const rootOutputPath = `${userId}/${outputFilename}`;
-            await supabase.storage
-              .from('documents')
-              .upload(rootOutputPath, mergedBlob, { contentType: 'application/pdf', upsert: true });
-            
-            // Save copy of original to root if it exists
-            if (originalEntry) {
-              const rootOriginalPath = `${userId}/${originalEntry.name}`;
-              await supabase.storage
-                .from('documents')
-                .upload(rootOriginalPath, selectedFile, { upsert: true });
-            }
-          } catch (copyErr) {
-            console.warn('Failed to copy files to root directory:', copyErr);
-          }
-        }
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
         const outputFilename = base.endsWith('.txt') ? base : `${base}.txt`;
@@ -495,26 +475,6 @@ const slugFileName = (s: string) =>
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
 
-        // If saved to a folder, also save copies to root directory for Recent section
-        if (selectedFolder) {
-          try {
-            // Save copy of output text file to root for Recent
-            const rootOutputPath = `${userId}/${outputFilename}`;
-            await supabase.storage
-              .from('documents')
-              .upload(rootOutputPath, outputBlob, { contentType: 'text/plain', upsert: true });
-            
-            // Save copy of original to root if it exists
-            if (originalEntry) {
-              const rootOriginalPath = `${userId}/${originalEntry.name}`;
-              await supabase.storage
-                .from('documents')
-                .upload(rootOriginalPath, selectedFile, { upsert: true });
-            }
-          } catch (copyErr) {
-            console.warn('Failed to copy files to root directory:', copyErr);
-          }
-        }
       }
 
       // Update the appropriate document list based on folder selection
@@ -527,32 +487,6 @@ const slugFileName = (s: string) =>
       } else {
         toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
       }
-      
-      // ALWAYS add new files to Recent sections (both sidebar and main) regardless of save location
-      const updatedDocs = [...newEntries, ...docs.filter(d => !newEntries.some(ne => ne.name === d.name))];
-      setDocs(updatedDocs);
-      
-      // Also refresh the docs list from storage to ensure UI consistency
-      setTimeout(async () => {
-        const { data: files } = await supabase.storage
-          .from('documents')
-          .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
-        if (files) {
-          const visible = files.filter((f: any) => {
-            if (!f.name) return false;
-            if (f.name === 'trash') return false;
-            if (f.name.endsWith('/')) return false;
-            if (f.name === '.keep') return false;
-            return f.name.includes('.') || f.name.match(/^[^.]+$/);
-          });
-          const items = await Promise.all(visible.map(async (f: any) => {
-            const path = `${userId}/${f.name}`;
-            const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-            return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
-          }));
-          setDocs(items);
-        }
-      }, 1000);
       
       setLastSavedPair({ original: originalEntry, output: outputEntry });
       setSaveToFolderId(null);
@@ -621,16 +555,6 @@ const slugFileName = (s: string) =>
       const finalPath = `${pathPrefix}/${savedName}`;
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(finalPath, 600);
       const entry = { name: savedName, url: signed?.signedUrl || '#', updatedAt: new Date().toISOString() };
-      
-      // Also save copy to root directory for Recent section
-      try {
-        const rootPath = `${userId}/${savedName}`;
-        await supabase.storage
-          .from('documents')
-          .upload(rootPath, newFile, { upsert: true });
-      } catch (copyErr) {
-        console.warn('Failed to copy file to root directory for Recent:', copyErr);
-      }
       // Update the appropriate document list based on folder selection
       if (selectedFolder) {
         // If saved to a folder, refresh folder contents if that folder is currently open
@@ -641,32 +565,6 @@ const slugFileName = (s: string) =>
       } else {
         toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
       }
-      
-      // ALWAYS add new files to Recent sections (both sidebar and main) regardless of save location
-      const updatedDocs = [entry, ...docs.filter(d => d.name !== entry.name)];
-      setDocs(updatedDocs);
-      
-      // Also refresh the docs list from storage to ensure UI consistency
-      setTimeout(async () => {
-        const { data: files } = await supabase.storage
-          .from('documents')
-          .list(userId, { limit: 50, sortBy: { column: 'updated_at', order: 'desc' } });
-        if (files) {
-          const visible = files.filter((f: any) => {
-            if (!f.name) return false;
-            if (f.name === 'trash') return false;
-            if (f.name.endsWith('/')) return false;
-            if (f.name === '.keep') return false;
-            return f.name.includes('.') || f.name.match(/^[^.]+$/);
-          });
-          const items = await Promise.all(visible.map(async (f: any) => {
-            const path = `${userId}/${f.name}`;
-            const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-            return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
-          }));
-          setDocs(items);
-        }
-      }, 1000);
       
       setNewOpen(false);
       setNewFile(null);
