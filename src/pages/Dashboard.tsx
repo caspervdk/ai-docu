@@ -433,6 +433,27 @@ const slugFileName = (s: string) =>
 
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
+
+        // If saved to a folder, also save copies to root directory for Recent section
+        if (selectedFolder) {
+          try {
+            // Save copy of merged PDF to root for Recent
+            const rootOutputPath = `${userId}/${outputFilename}`;
+            await supabase.storage
+              .from('documents')
+              .upload(rootOutputPath, mergedBlob, { contentType: 'application/pdf', upsert: true });
+            
+            // Save copy of original to root if it exists
+            if (originalEntry) {
+              const rootOriginalPath = `${userId}/${originalEntry.name}`;
+              await supabase.storage
+                .from('documents')
+                .upload(rootOriginalPath, selectedFile, { upsert: true });
+            }
+          } catch (copyErr) {
+            console.warn('Failed to copy files to root directory:', copyErr);
+          }
+        }
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
         const outputFilename = base.endsWith('.txt') ? base : `${base}.txt`;
@@ -470,6 +491,27 @@ const slugFileName = (s: string) =>
 
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
+
+        // If saved to a folder, also save copies to root directory for Recent section
+        if (selectedFolder) {
+          try {
+            // Save copy of output text file to root for Recent
+            const rootOutputPath = `${userId}/${outputFilename}`;
+            await supabase.storage
+              .from('documents')
+              .upload(rootOutputPath, outputBlob, { contentType: 'text/plain', upsert: true });
+            
+            // Save copy of original to root if it exists
+            if (originalEntry) {
+              const rootOriginalPath = `${userId}/${originalEntry.name}`;
+              await supabase.storage
+                .from('documents')
+                .upload(rootOriginalPath, selectedFile, { upsert: true });
+            }
+          } catch (copyErr) {
+            console.warn('Failed to copy files to root directory:', copyErr);
+          }
+        }
       }
 
       // Update the appropriate document list based on folder selection
@@ -577,6 +619,15 @@ const slugFileName = (s: string) =>
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(finalPath, 600);
       const entry = { name: savedName, url: signed?.signedUrl || '#', updatedAt: new Date().toISOString() };
       
+      // Also save copy to root directory for Recent section
+      try {
+        const rootPath = `${userId}/${savedName}`;
+        await supabase.storage
+          .from('documents')
+          .upload(rootPath, newFile, { upsert: true });
+      } catch (copyErr) {
+        console.warn('Failed to copy file to root directory for Recent:', copyErr);
+      }
       // Update the appropriate document list based on folder selection
       if (selectedFolder) {
         // If saved to a folder, refresh folder contents if that folder is currently open
