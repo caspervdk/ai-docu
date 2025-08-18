@@ -725,19 +725,24 @@ const slugFileName = (s: string) =>
       return;
     }
 
+    console.log('performDelete called with:', { doc: doc.name, isTrash, folder: folder?.name, fromStorage });
+
     // Determine the correct source path based on whether the file is in a folder
     let fromPath: string;
     if (folder) {
       // File is in a folder
       const folderPath = folder.storage_path.replace('/.keep', '');
       fromPath = `${folderPath}/${doc.name}`;
+      console.log('Deleting from folder path:', fromPath);
     } else {
       // File is in root directory
       fromPath = `${userId}/${doc.name}`;
+      console.log('Deleting from root path:', fromPath);
     }
     
     let toName = doc.name;
     let toPath = `${userId}/trash/${toName}`;
+    console.log('Moving to trash path:', toPath);
 
     const tryMove = async (dst: string) => {
       return await supabase.storage.from('documents').move(fromPath, dst);
@@ -745,6 +750,7 @@ const slugFileName = (s: string) =>
 
     let { error: moveError } = await tryMove(toPath);
     if (moveError) {
+      console.log('Move error:', moveError);
       const msg = String((moveError as any).message || '').toLowerCase();
       if (msg.includes('exists')) {
         const dot = toName.lastIndexOf('.');
@@ -756,6 +762,7 @@ const slugFileName = (s: string) =>
 
         const { error: moveError2 } = await tryMove(toPath);
         if (moveError2) {
+          console.log('Second move error:', moveError2);
           toast({ title: 'Could not move to Trash', description: (moveError2 as any).message || 'Unknown error', variant: 'destructive' } as any);
           return;
         }
@@ -765,18 +772,27 @@ const slugFileName = (s: string) =>
       }
     }
 
+    console.log('File moved successfully, updating UI...');
+
     // Update UI state - remove from main docs list if it was there
     setDocs((prev) => prev.filter((d) => d.name !== doc.name));
     
     // If deleting from a folder, refresh the folder contents
     if (folder && openFolder && openFolder.id === folder.id) {
+      console.log('Refreshing folder contents...');
       await fetchFolderDocs(folder.storage_path.replace('/.keep', ''));
     }
     
     // Immediately remove from allFiles for instant feedback in storage popup
-    setAllFiles((prev) => prev.filter((f) => f.name !== doc.name));
+    console.log('Removing from allFiles...');
+    setAllFiles((prev) => {
+      const filtered = prev.filter((f) => f.name !== doc.name);
+      console.log('AllFiles before:', prev.length, 'after:', filtered.length);
+      return filtered;
+    });
     
     // Refresh the allFiles list for storage popup as backup
+    console.log('Refreshing all files...');
     await refreshAllFiles();
     
     toast({ title: 'Moved to Trash', description: doc.name });
