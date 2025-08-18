@@ -107,20 +107,25 @@ export default function Account() {
     if (!userId) return;
     
     setSaving(true);
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({
-        id: userId,
-        ...formData
-      });
-      
-    if (error) {
-      toast({
-        title: "Error saving profile",
-        description: error.message,
-        variant: "destructive"
-      });
-    } else {
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          ...formData
+        });
+        
+      if (error) {
+        toast({
+          title: "Error saving profile",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Success - show toast and refresh data
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated."
@@ -131,15 +136,24 @@ export default function Account() {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
         
       if (data) {
         setProfile(data);
       }
       
+      // Always return to normal view after successful save
       setIsEditing(false);
+      
+    } catch (error: any) {
+      toast({
+        title: "Error saving profile",
+        description: error.message || "Something went wrong",
+        variant: "destructive"
+      });
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
   
   const handleCancel = () => {
