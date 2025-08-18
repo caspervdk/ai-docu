@@ -700,13 +700,25 @@ const slugFileName = (s: string) =>
     try {
       const { doc, selectedFolder } = moveDocDialog;
       const fromPath = `${userId}/${doc.name}`;
-      const toPath = selectedFolder ? `${userId}/${selectedFolder}/${doc.name}` : `${userId}/${doc.name}`;
+      
+      // Find the selected folder's storage path
+      const targetFolder = selectedFolder ? folders.find(f => f.name === selectedFolder) : null;
+      const toPath = targetFolder 
+        ? `${targetFolder.storage_path}/${doc.name}` 
+        : `${userId}/${doc.name}`;
       
       const { error } = await supabase.storage.from('documents').move(fromPath, toPath);
       if (error) throw error;
       
+      // Remove from current docs list
       setDocs(prev => prev.filter(d => d.name !== doc.name));
-      toast({ title: 'File moved', description: `${doc.name} moved to ${selectedFolder || 'documents'}` });
+      
+      // If moving to a folder that's currently open, refresh its contents
+      if (openFolder && targetFolder && openFolder.id === targetFolder.id) {
+        await fetchFolderDocs(targetFolder.storage_path);
+      }
+      
+      toast({ title: 'File moved', description: `${doc.name} moved to ${selectedFolder || 'My Documents'}` });
       setMoveDocDialog(null);
     } catch (error: any) {
       toast({ title: 'Move failed', description: error.message, variant: 'destructive' });
