@@ -1297,13 +1297,34 @@ const getPlaceholder = (title: string) => {
                   <select 
                     id="new-save-location" 
                     value={newFileSaveToFolderId || ''} 
-                    onChange={(e) => setNewFileSaveToFolderId(e.target.value || null)}
+                    onChange={(e) => {
+                      if (e.target.value === 'create-new') {
+                        // Trigger folder creation
+                        const folderName = prompt('Enter folder name:');
+                        if (folderName && folderName.trim()) {
+                          setNewFolderName(folderName.trim());
+                          createFolder().then(() => {
+                            // After folder is created, it will be added to the folders list
+                            // and we can set it as the selected folder
+                            setTimeout(() => {
+                              const newFolder = folders.find(f => f.name === slugFileName(folderName.trim()));
+                              if (newFolder) {
+                                setNewFileSaveToFolderId(newFolder.id);
+                              }
+                            }, 500);
+                          });
+                        }
+                      } else {
+                        setNewFileSaveToFolderId(e.target.value || null);
+                      }
+                    }}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <option value="" disabled>Select a folder</option>
                     {folders.map((folder) => (
                       <option key={folder.id} value={folder.id}>{folder.name}</option>
                     ))}
+                    <option value="create-new">+ Create folder</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {newFileSaveToFolderId ? `Will be saved in the selected folder.` : `Please select a folder to save your file.`}
@@ -1477,13 +1498,34 @@ const getPlaceholder = (title: string) => {
                 <select 
                   id="save-location" 
                   value={saveToFolderId || ''} 
-                  onChange={(e) => setSaveToFolderId(e.target.value || null)}
+                  onChange={(e) => {
+                    if (e.target.value === 'create-new') {
+                      // Trigger folder creation
+                      const folderName = prompt('Enter folder name:');
+                      if (folderName && folderName.trim()) {
+                        setNewFolderName(folderName.trim());
+                        createFolder().then(() => {
+                          // After folder is created, it will be added to the folders list
+                          // and we can set it as the selected folder
+                          setTimeout(() => {
+                            const newFolder = folders.find(f => f.name === slugFileName(folderName.trim()));
+                            if (newFolder) {
+                              setSaveToFolderId(newFolder.id);
+                            }
+                          }, 500);
+                        });
+                      }
+                    } else {
+                      setSaveToFolderId(e.target.value || null);
+                    }
+                  }}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="" disabled>Select a folder</option>
                   {folders.map((folder) => (
                     <option key={folder.id} value={folder.id}>{folder.name}</option>
                   ))}
+                  <option value="create-new">+ Create folder</option>
                 </select>
                 <p className="text-xs text-muted-foreground">
                   {saveToFolderId ? `Will be saved in the selected folder.` : `Please select a folder to save your document.`}
