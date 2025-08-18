@@ -1086,7 +1086,7 @@ const getPlaceholder = (title: string) => {
                           .map((d) => (
                           <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
-                               <FileNameDisplay fileName={d.name} className="block max-w-[9rem]" />
+                               <FileNameDisplay fileName={d.name} className="block" />
                               {d.updatedAt && (
                                 <span className="block text-[11px] text-muted-foreground">
                                   {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
