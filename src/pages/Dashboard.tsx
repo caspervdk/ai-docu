@@ -83,6 +83,9 @@ const Dashboard = () => {
   const [renameDocDialog, setRenameDocDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; newName: string } | null>(null);
   // Upgrade modal state
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  // Save to folder state
+  const [saveToFolderId, setSaveToFolderId] = useState<string | null>(null);
+  const [newFileSaveToFolderId, setNewFileSaveToFolderId] = useState<string | null>(null);
   // Folder view state
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
   const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
@@ -290,6 +293,10 @@ const slugFileName = (s: string) =>
         return;
       }
 
+      // Determine save path based on folder selection
+      const selectedFolder = saveToFolderId ? folders.find(f => f.id === saveToFolderId) : null;
+      const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
+
       let originalEntry: { name: string; url: string; updatedAt?: string } | undefined;
       let outputEntry: { name: string; url: string; updatedAt?: string } | undefined;
       const newEntries: { name: string; url: string; updatedAt?: string }[] = [];
@@ -345,7 +352,7 @@ const slugFileName = (s: string) =>
         const mergedBytes = await pdfDoc.save();
         const mergedBlob = new Blob([mergedBytes], { type: 'application/pdf' });
         const outputFilename = base.endsWith('.pdf') ? base : `${base}.pdf`;
-        const outputPath = `${userId}/${outputFilename}`;
+        const outputPath = `${pathPrefix}/${outputFilename}`;
         const { error: outputErr } = await supabase.storage
           .from('documents')
           .upload(outputPath, mergedBlob, { contentType: 'application/pdf', upsert: false });
@@ -357,7 +364,7 @@ const slugFileName = (s: string) =>
         // Also save the original upload as-is for reference
         try {
           const originalName = slugFileName(selectedFile.name);
-          const originalPath = `${userId}/${originalName}`;
+          const originalPath = `${pathPrefix}/${originalName}`;
           const { error: originalErr } = await supabase.storage
             .from('documents')
             .upload(originalPath, selectedFile, { upsert: false });
@@ -379,7 +386,7 @@ const slugFileName = (s: string) =>
       } else {
         // Fallback: save AI output as a text file and optionally the original non-PDF
         const outputFilename = base.endsWith('.txt') ? base : `${base}.txt`;
-        const outputPath = `${userId}/${outputFilename}`;
+        const outputPath = `${pathPrefix}/${outputFilename}`;
         const outputBlob = new Blob([output], { type: 'text/plain;charset=utf-8' });
         const { error: outputErr } = await supabase.storage
           .from('documents')
@@ -393,7 +400,7 @@ const slugFileName = (s: string) =>
         if (selectedFile) {
           try {
             const originalName = slugFileName(selectedFile.name);
-            const originalPath = `${userId}/${originalName}`;
+            const originalPath = `${pathPrefix}/${originalName}`;
             const { error: originalErr } = await supabase.storage
               .from('documents')
               .upload(originalPath, selectedFile, { upsert: false });
@@ -415,9 +422,21 @@ const slugFileName = (s: string) =>
         newEntries.push(outputEntry);
       }
 
-      setDocs((prev) => [...newEntries, ...prev]);
+      // Update the appropriate document list based on folder selection
+      if (selectedFolder) {
+        // If saved to a folder, refresh folder contents if that folder is currently open
+        if (openFolder && openFolder.id === selectedFolder.id) {
+          await fetchFolderDocs(selectedFolder.storage_path.replace('/.keep', ''));
+        }
+        toast({ title: 'Saved to folder', description: `${newEntries.length} item(s) added to ${selectedFolder.name}` });
+      } else {
+        // If saved to root, update the main documents list
+        setDocs((prev) => [...newEntries, ...prev]);
+        toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
+      }
+      
       setLastSavedPair({ original: originalEntry, output: outputEntry });
-      toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
+      setSaveToFolderId(null);
       handleClose();
     } catch (e: any) {
       toast({ title: 'Save failed', description: e?.message || 'Could not save document.', variant: 'destructive' } as any);
@@ -448,7 +467,11 @@ const slugFileName = (s: string) =>
     if (!finalName) { toast({ title: 'Name required', description: 'Enter a file name.' }); return; }
     if (ext && !finalName.endsWith(ext)) finalName += ext;
 
-    const pathBase = `${userId}/${finalName}`;
+    // Determine save path based on folder selection
+    const selectedFolder = newFileSaveToFolderId ? folders.find(f => f.id === newFileSaveToFolderId) : null;
+    const pathPrefix = selectedFolder ? selectedFolder.storage_path.replace('/.keep', '') : userId;
+    const pathBase = `${pathPrefix}/${finalName}`;
+    
     try {
       setNewSaving(true);
       let { error: upErr } = await supabase.storage.from('documents').upload(pathBase, newFile, { upsert: false });
@@ -460,27 +483,40 @@ const slugFileName = (s: string) =>
           const base2 = dot2 >= 0 ? finalName.slice(0, dot2) : finalName;
           const ext2 = dot2 >= 0 ? finalName.slice(dot2) : '';
           savedName = `${base2} (${Date.now()})${ext2}`;
-          const altPath = `${userId}/${savedName}`;
+          const altPath = `${pathPrefix}/${savedName}`;
           const { error: upErr2 } = await supabase.storage.from('documents').upload(altPath, newFile, { upsert: false });
           if (upErr2) throw upErr2;
         } else {
           throw upErr;
         }
       }
-      const finalPath = `${userId}/${savedName}`;
+      const finalPath = `${pathPrefix}/${savedName}`;
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(finalPath, 600);
       const entry = { name: savedName, url: signed?.signedUrl || '#', updatedAt: new Date().toISOString() };
-      setDocs((prev) => [entry, ...prev]);
-      toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
+      
+      // Update the appropriate document list based on folder selection
+      if (selectedFolder) {
+        // If saved to a folder, refresh folder contents if that folder is currently open
+        if (openFolder && openFolder.id === selectedFolder.id) {
+          await fetchFolderDocs(selectedFolder.storage_path.replace('/.keep', ''));
+        }
+        toast({ title: 'Uploaded to folder', description: `${savedName} saved to ${selectedFolder.name}` });
+      } else {
+        // If saved to root, update the main documents list
+        setDocs((prev) => [entry, ...prev]);
+        toast({ title: 'Uploaded', description: `${savedName} saved to My documents` });
+      }
+      
       setNewOpen(false);
       setNewFile(null);
       setNewFileName('');
+      setNewFileSaveToFolderId(null);
     } catch (e: any) {
       toast({ title: 'Upload failed', description: e?.message || 'Could not upload.', variant: 'destructive' } as any);
     } finally {
       setNewSaving(false);
     }
-  }; 
+  };
 
   const createFolder = async () => {
     if (!userId) { toast({ title: 'Log in required', description: 'Please log in to create folders.' }); return; }
@@ -1180,10 +1216,30 @@ const getPlaceholder = (title: string) => {
                   <Input id="new-name" placeholder="Enter file name" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
                   <p className="text-xs text-muted-foreground">We’ll keep the original extension.</p>
                 </div>
+                
+                <div className="space-y-1">
+                  <Label htmlFor="new-save-location">Save location</Label>
+                  <select 
+                    id="new-save-location" 
+                    value={newFileSaveToFolderId || ''} 
+                    onChange={(e) => setNewFileSaveToFolderId(e.target.value || null)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="">My Documents (Root)</option>
+                    {folders.map((folder) => (
+                      <option key={folder.id} value={folder.id}>{folder.name}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    {newFileSaveToFolderId ? `Will be saved in the selected folder.` : `Will be saved in My documents.`}
+                  </p>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setNewOpen(false)}>Cancel</Button>
-                <Button onClick={saveNewUpload} disabled={!newFile || !userId || newSaving || !newFileName.trim()}>{newSaving ? "Saving..." : "Save to My documents"}</Button>
+                <Button onClick={saveNewUpload} disabled={!newFile || !userId || newSaving || !newFileName.trim()}>
+                  {newSaving ? "Saving..." : newFileSaveToFolderId ? "Save to folder" : "Save to My documents"}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -1339,13 +1395,30 @@ const getPlaceholder = (title: string) => {
               <div className="space-y-2">
                 <Label htmlFor="doc-name">Document name</Label>
                 <Input id="doc-name" placeholder="Give your document a name" value={docName} onChange={(e) => setDocName(e.target.value)} />
-                <p className="text-xs text-muted-foreground">Will be saved in My documents.</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="save-location">Save location</Label>
+                <select 
+                  id="save-location" 
+                  value={saveToFolderId || ''} 
+                  onChange={(e) => setSaveToFolderId(e.target.value || null)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">My Documents (Root)</option>
+                  {folders.map((folder) => (
+                    <option key={folder.id} value={folder.id}>{folder.name}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  {saveToFolderId ? `Will be saved in the selected folder.` : `Will be saved in My documents.`}
+                </p>
               </div>
             </div>
 
             <DialogFooter className="flex items-center justify-between">
               <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim()}>
-                {isSaving ? "Saving..." : "Save to My documents"}
+                {isSaving ? "Saving..." : saveToFolderId ? "Save to folder" : "Save to My documents"}
               </Button>
               <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)}>Feedback</Button>
             </DialogFooter>
