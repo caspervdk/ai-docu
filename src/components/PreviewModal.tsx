@@ -1,6 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Copy, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import PDFPreview from "./PDFPreview";
 
 interface PreviewModalProps {
@@ -22,7 +25,38 @@ export default function PreviewModal({
   aiToolUsed,
   analysisResult 
 }: PreviewModalProps) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
+  
   if (!previewDoc) return null;
+
+  const copyToClipboard = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(id);
+      toast({
+        title: "Copied to clipboard",
+        description: "Analysis result has been copied to your clipboard.",
+      });
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      toast({
+        title: "Copy failed",
+        description: "Unable to copy to clipboard. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getAnalysisText = () => {
+    if (!analysisResult) return "";
+    try {
+      const parsed = JSON.parse(analysisResult);
+      return parsed.output || analysisResult;
+    } catch {
+      return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+    }
+  };
 
   const isPrevOrig = lastSavedPair?.original && previewDoc.name === lastSavedPair.original.name;
   const isPrevOut = lastSavedPair?.output && previewDoc.name === lastSavedPair.output.name;
@@ -180,29 +214,45 @@ export default function PreviewModal({
                   <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
-                          <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
-                            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                            AI Translation & Localization Results
-                          </h4>
-                          {analysisResult ? (
-                            <div className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                              <div className="whitespace-pre-wrap font-sans">{(() => {
-                                try {
-                                  const parsed = JSON.parse(analysisResult);
-                                  return parsed.output || analysisResult;
-                                } catch {
-                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
-                                }
-                              })()}</div>
-                            </div>
-                          ) : (
-                            <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                              Your document has been processed with AI-powered translation and localization technology. 
-                              The content has been adapted for regional preferences and cultural context.
-                            </p>
-                          )}
-                        </div>
+                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                           <div className="flex items-center justify-between mb-3">
+                             <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
+                               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                               AI Translation & Localization Results
+                             </h4>
+                             {analysisResult && (
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={() => copyToClipboard(getAnalysisText(), 'translate-result')}
+                                 className="h-8 w-8 p-0 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/20"
+                               >
+                                 {copiedId === 'translate-result' ? (
+                                   <Check className="h-3 w-3 md:h-4 md:w-4" />
+                                 ) : (
+                                   <Copy className="h-3 w-3 md:h-4 md:w-4" />
+                                 )}
+                               </Button>
+                             )}
+                           </div>
+                           {analysisResult ? (
+                             <div className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                               <div className="whitespace-pre-wrap font-sans">{(() => {
+                                 try {
+                                   const parsed = JSON.parse(analysisResult);
+                                   return parsed.output || analysisResult;
+                                 } catch {
+                                   return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                 }
+                               })()}</div>
+                             </div>
+                           ) : (
+                             <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                               Your document has been processed with AI-powered translation and localization technology. 
+                               The content has been adapted for regional preferences and cultural context.
+                             </p>
+                           )}
+                         </div>
                         
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
@@ -217,29 +267,45 @@ export default function PreviewModal({
                       </>
                     ) : aiToolUsed === 'Cross-Doc Linker' ? (
                       <>
-                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
-                          <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
-                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            Cross-Document Analysis Results
-                          </h4>
-                          {analysisResult ? (
-                            <div className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
-                              <div className="whitespace-pre-wrap font-sans">{(() => {
-                                try {
-                                  const parsed = JSON.parse(analysisResult);
-                                  return parsed.output || analysisResult;
-                                } catch {
-                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
-                                }
-                              })()}</div>
-                            </div>
-                          ) : (
-                            <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
-                              AI has analyzed this document and identified connections with related content. 
-                              Key relationships and supporting evidence have been mapped across your document collection.
-                            </p>
-                          )}
-                        </div>
+                         <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
+                           <div className="flex items-center justify-between mb-3">
+                             <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 flex items-center gap-2">
+                               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                               Cross-Document Analysis Results
+                             </h4>
+                             {analysisResult && (
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={() => copyToClipboard(getAnalysisText(), 'crossdoc-result')}
+                                 className="h-8 w-8 p-0 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/20"
+                               >
+                                 {copiedId === 'crossdoc-result' ? (
+                                   <Check className="h-3 w-3 md:h-4 md:w-4" />
+                                 ) : (
+                                   <Copy className="h-3 w-3 md:h-4 md:w-4" />
+                                 )}
+                               </Button>
+                             )}
+                           </div>
+                           {analysisResult ? (
+                             <div className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                               <div className="whitespace-pre-wrap font-sans">{(() => {
+                                 try {
+                                   const parsed = JSON.parse(analysisResult);
+                                   return parsed.output || analysisResult;
+                                 } catch {
+                                   return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                 }
+                               })()}</div>
+                             </div>
+                           ) : (
+                             <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                               AI has analyzed this document and identified connections with related content. 
+                               Key relationships and supporting evidence have been mapped across your document collection.
+                             </p>
+                           )}
+                         </div>
                         
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
@@ -254,27 +320,43 @@ export default function PreviewModal({
                     ) : (
                       <>
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
-                          <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            AI Summary Results
-                          </h4>
-                          {analysisResult ? (
-                            <div className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                              <div className="whitespace-pre-wrap font-sans">{(() => {
-                                try {
-                                  const parsed = JSON.parse(analysisResult);
-                                  return parsed.output || analysisResult;
-                                } catch {
-                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
-                                }
-                              })()}</div>
-                            </div>
-                          ) : (
-                            <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                              This document has been processed with AI-powered summarization to extract key insights and important information.
-                            </p>
-                          )}
-                        </div>
+                           <div className="flex items-center justify-between mb-3">
+                             <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 flex items-center gap-2">
+                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                               AI Summary Results
+                             </h4>
+                             {analysisResult && (
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={() => copyToClipboard(getAnalysisText(), 'summary-result')}
+                                 className="h-8 w-8 p-0 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/20"
+                               >
+                                 {copiedId === 'summary-result' ? (
+                                   <Check className="h-3 w-3 md:h-4 md:w-4" />
+                                 ) : (
+                                   <Copy className="h-3 w-3 md:h-4 md:w-4" />
+                                 )}
+                               </Button>
+                             )}
+                           </div>
+                           {analysisResult ? (
+                             <div className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                               <div className="whitespace-pre-wrap font-sans">{(() => {
+                                 try {
+                                   const parsed = JSON.parse(analysisResult);
+                                   return parsed.output || analysisResult;
+                                 } catch {
+                                   return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                 }
+                               })()}</div>
+                             </div>
+                           ) : (
+                             <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                               This document has been processed with AI-powered summarization to extract key insights and important information.
+                             </p>
+                           )}
+                         </div>
                         
                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
