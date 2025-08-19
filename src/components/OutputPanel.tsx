@@ -16,8 +16,10 @@ type OutputPanelProps = {
 export function OutputPanel({ title = "AI summary", content, emptyText = "Results will appear here." }: OutputPanelProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
+  const [savedContent, setSavedContent] = useState<string | null>(null);
   
-  const raw = (content || "").trim();
+  // Use saved content if available, otherwise use original content
+  const raw = (savedContent || content || "").trim();
   let isEmpty = raw.length === 0;
 
   let displayValue = raw;
@@ -65,8 +67,8 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
   };
 
   const handleSave = () => {
-    // Here you could add logic to save the edited content
-    // For now, we'll just update the display
+    // Save the edited content and exit editing mode
+    setSavedContent(editedContent);
     setIsEditing(false);
     toast.success("Changes saved successfully");
   };
