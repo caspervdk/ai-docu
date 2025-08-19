@@ -231,7 +231,7 @@ const Dashboard = () => {
     }
   };
 
-  const t = (key: string) => {
+  const translate = (key: string) => {
     return translations[currentLanguage as keyof typeof translations]?.[key] || key;
   };
 
@@ -1710,7 +1710,7 @@ const Dashboard = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="hidden md:inline-flex">
                     <Languages className="mr-2 h-4 w-4" />
-                    {t("Translate")}
+                    {translate("Translate")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50">
@@ -1728,8 +1728,8 @@ const Dashboard = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />{t("My account")}</Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />{t("Log out")}</Button>
+              <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />{translate("My account")}</Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />{translate("Log out")}</Button>
 
               {/* Mobile dropdown */}
               <DropdownMenu>
@@ -1760,17 +1760,17 @@ const Dashboard = () => {
       <div className="container grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 py-6">
         <aside className="space-y-6">
           <div>
-            <Button className="w-full" onClick={() => setNewOpen(true)}>{t("New File")}</Button>
+            <Button className="w-full" onClick={() => setNewOpen(true)}>{translate("New File")}</Button>
           </div>
 
           <nav className="space-y-2">
             <section aria-label="My Drive" className="md:rounded-lg md:border md:p-4">
-              <div className="text-sm font-medium mb-2">{t("My Drive")}</div>
+              <div className="text-sm font-medium mb-2">{translate("My Drive")}</div>
               <Accordion type="multiple" className="w-full">
 
                 <AccordionItem value="folders" id="folders">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Folders">
-                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span>{t("Folders")}</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span>{translate("Folders")}</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     <div className="space-y-2">
@@ -1871,10 +1871,10 @@ const Dashboard = () => {
 
                 <AccordionItem value="trash" id="trash">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Trash">
-                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span>{t("Trash")}</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span>{translate("Trash")}</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
-                    {trashDocs.length === 0 ? <div className="text-xs text-muted-foreground">{t("No items in Trash.")}</div> : <ul className="space-y-2">
+                    {trashDocs.length === 0 ? <div className="text-xs text-muted-foreground">{translate("No items in Trash.")}</div> : <ul className="space-y-2">
                         {trashDocs.slice(0, 10).map(d => <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
                               <FileNameDisplay fileName={d.name} className="block" />
@@ -1937,21 +1937,21 @@ const Dashboard = () => {
                      <tool.icon className="h-6 w-6 text-primary" />
                    </div>
                    <div className="mt-2 flex items-center gap-2">
-                     <CardTitle className="text-lg">{t(tool.title)}</CardTitle>
-                     {tool.proOnly && <>
-                         <Badge variant="secondary">PRO</Badge>
-                         <Button variant="pro" size="sm" className="absolute right-4 top-4 inline-flex" onClick={() => setUpgradeModalOpen(true)} aria-label="Upgrade to Pro">
-                           <Rocket className="size-4 mr-2" aria-hidden="true" />
-                           {t("Upgrade to Pro")}
-                         </Button>
-                       </>}
-                   </div>
-                   <CardDescription>
-                     {t(tool.desc)} {tool.proOnly && <span className="ml-1">({t("Upgrade to Pro")} to use)</span>}
-                   </CardDescription>
-                 </CardHeader>
-                 <CardContent>
-                   <Button variant="outline" size="sm" onClick={() => tool.proOnly ? setProPromptTool(tool) : setActiveTool(tool)}>{tool.cta ? t(tool.cta) : t("Open AI tool")}</Button>
+                      <CardTitle className="text-lg">{translate(tool.title)}</CardTitle>
+                      {tool.proOnly && <>
+                          <Badge variant="secondary">PRO</Badge>
+                          <Button variant="pro" size="sm" className="absolute right-4 top-4 inline-flex" onClick={() => setUpgradeModalOpen(true)} aria-label="Upgrade to Pro">
+                            <Rocket className="size-4 mr-2" aria-hidden="true" />
+                            {translate("Upgrade to Pro")}
+                          </Button>
+                        </>}
+                    </div>
+                    <CardDescription>
+                      {translate(tool.desc)} {tool.proOnly && <span className="ml-1">({translate("Upgrade to Pro")} to use)</span>}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" size="sm" onClick={() => tool.proOnly ? setProPromptTool(tool) : setActiveTool(tool)}>{tool.cta ? translate(tool.cta) : translate("Open AI tool")}</Button>
                  </CardContent>
                </Card>)}
           </section>
@@ -2016,9 +2016,9 @@ const Dashboard = () => {
         }}>
           <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
-               <DialogTitle>{activeTool ? t(activeTool.title) : ""}</DialogTitle>
+               <DialogTitle>{activeTool ? translate(activeTool.title) : ""}</DialogTitle>
                <DialogDescription>
-                 Use this AI tool to {activeTool ? t(activeTool.desc).toLowerCase() : ""}. Note: Please import PDF files.
+                 Use this AI tool to {activeTool ? translate(activeTool.desc).toLowerCase() : ""}. Note: Please import PDF files.
                </DialogDescription>
             </DialogHeader>
 
