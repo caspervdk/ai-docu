@@ -1567,7 +1567,7 @@ const Dashboard = () => {
       </Helmet>
 
       <header className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <nav className="container flex items-center justify-between md:justify-between justify-center py-4 relative">
+        <nav className="container flex items-center justify-between md:justify-between justify-center py-4 pt-8 relative">
           <div className="flex items-center gap-2 md:static absolute left-1/2 transform -translate-x-1/2 md:transform-none">
             <img src="/lovable-uploads/aeb94335-ceda-46db-bf06-7e2f0a5d17c8.png" alt="AI-DOCU logo" className="h-14 w-auto" />
             <h1 className="text-xl font-semibold hidden md:block"></h1>
