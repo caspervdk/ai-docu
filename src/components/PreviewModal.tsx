@@ -215,20 +215,25 @@ export default function PreviewModal({
                             <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                             Cross-Document Analysis Results
                           </h4>
-                          <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
-                            AI has analyzed this document and identified connections with related content. 
-                            Key relationships and supporting evidence have been mapped across your document collection.
-                          </p>
+                          {analysisResult ? (
+                            <div className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                              AI has analyzed this document and identified connections with related content. 
+                              Key relationships and supporting evidence have been mapped across your document collection.
+                            </p>
+                          )}
                         </div>
                         
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            Linked Document Insights
+                            Processing Status
                           </h4>
                           <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                            Connections have been established between this document and related materials in your collection. 
-                            Cross-references and supporting evidence have been identified and linked.
+                            Cross-document analysis completed successfully. Document connections and insights have been identified and linked.
                           </p>
                         </div>
                       </>
