@@ -47,7 +47,67 @@ const Index = () => {
       "Pricing": "Pricing",
       "Log in": "Log in",
       "Dashboard": "Dashboard",
-      "Translate": "Translate"
+      "Translate": "Translate",
+      
+      // Hero section
+      "Smarter Documents. Powered by AI.": "Smarter Documents. Powered by AI.",
+      "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.": "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.",
+      "Try for Free": "Try for Free",
+      "Upgrade to AI-Docu Pro": "Upgrade to AI-Docu Pro",
+      "Trusted by 1,000+ teams": "Trusted by 1,000+ teams",
+      
+      // AI Tools section
+      "AI Document Tool": "AI Document Tool",
+      "Upload your document and choose an AI-powered action:": "Upload your document and choose an AI-powered action:",
+      "Supports PDF, DOCX, and TXT — no training needed.": "Supports PDF, DOCX, and TXT — no training needed.",
+      "Get started": "Get started",
+      "Choose a tool below, then upload your document and Start AI.": "Choose a tool below, then upload your document and Start AI.",
+      "Show All PRO AI Tools": "Show All PRO AI Tools",
+      "Log in required": "Log in required",
+      "You must log in to use the AI tools.": "You must log in to use the AI tools.",
+      
+      // Action buttons/labels
+      "Summarize Long Documents": "Summarize Long Documents",
+      "Cross-Doc Linker": "Cross-Doc Linker", 
+      "Translate & Localize": "Translate & Localize",
+      "Contract Analysis & Risk Detection": "Contract Analysis & Risk Detection",
+      "Smart Error Detection": "Smart Error Detection",
+      
+      // How it works
+      "Go from upload to insights in four simple steps.": "Go from upload to insights in four simple steps.",
+      "Upload Your Document": "Upload Your Document",
+      "Choose an AI Processing Option": "Choose an AI Processing Option", 
+      "AI Processes Your Document": "AI Processes Your Document",
+      "Review Your Results": "Review Your Results",
+      
+      // Pricing
+      "Simple pricing": "Simple pricing",
+      "Switch to yearly and save.": "Switch to yearly and save.",
+      "Monthly": "Monthly",
+      "Yearly": "Yearly",
+      "Free": "Free",
+      "For growing teams": "For growing teams",
+      "Pro": "Pro",
+      "Team": "Team",
+      "Contact us": "Contact us", 
+      "Upgrade to Pro": "Upgrade to Pro",
+      "Get unlimited access and more features.": "Get unlimited access and more features.",
+      "Great to try things out": "Great to try things out",
+      "Best value": "Best value",
+      "Everything in Free, plus": "Everything in Free, plus",
+      "Upgrade Now": "Upgrade Now",
+      
+      // Contact form
+      "Get in touch": "Get in touch",
+      "Contact our team": "Contact our team",
+      "Questions about pricing, features, or onboarding? Send us a message and we'll reply within 1 business day.": "Questions about pricing, features, or onboarding? Send us a message and we'll reply within 1 business day.",
+      "Your name": "Your name",
+      "Email": "Email", 
+      "Subject": "Subject",
+      "How can we help?": "How can we help?",
+      "Message": "Message",
+      "Tell us a bit about your question...": "Tell us a bit about your question...",
+      "Send message": "Send message"
     },
     Dutch: {
       "AI tool": "AI-tool",
@@ -55,7 +115,67 @@ const Index = () => {
       "Pricing": "Prijzen", 
       "Log in": "Inloggen",
       "Dashboard": "Dashboard",
-      "Translate": "Vertalen"
+      "Translate": "Vertalen",
+      
+      // Hero section
+      "Smarter Documents. Powered by AI.": "Slimmere Documenten. Aangedreven door AI.",
+      "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.": "Upload contracten, rapporten of notities — en laat AI het lezen, denken en herschrijven doen.",
+      "Try for Free": "Gratis Proberen",
+      "Upgrade to AI-Docu Pro": "Upgrade naar AI-Docu Pro",
+      "Trusted by 1,000+ teams": "Vertrouwd door 1.000+ teams",
+      
+      // AI Tools section
+      "AI Document Tool": "AI Document Tool",
+      "Upload your document and choose an AI-powered action:": "Upload je document en kies een AI-actie:",
+      "Supports PDF, DOCX, and TXT — no training needed.": "Ondersteunt PDF, DOCX en TXT — geen training nodig.",
+      "Get started": "Aan de slag",
+      "Choose a tool below, then upload your document and Start AI.": "Kies een tool hieronder, upload je document en start AI.",
+      "Show All PRO AI Tools": "Toon Alle PRO AI Tools",
+      "Log in required": "Inloggen vereist",
+      "You must log in to use the AI tools.": "Je moet inloggen om de AI-tools te gebruiken.",
+      
+      // Action buttons/labels
+      "Summarize Long Documents": "Lange Documenten Samenvatten",
+      "Cross-Doc Linker": "Cross-Document Linker",
+      "Translate & Localize": "Vertalen & Lokaliseren", 
+      "Contract Analysis & Risk Detection": "Contract Analyse & Risicodetectie",
+      "Smart Error Detection": "Slimme Foutdetectie",
+      
+      // How it works
+      "Go from upload to insights in four simple steps.": "Van upload naar inzichten in vier eenvoudige stappen.",
+      "Upload Your Document": "Upload Je Document",
+      "Choose an AI Processing Option": "Kies een AI Verwerkingsoptie",
+      "AI Processes Your Document": "AI Verwerkt Je Document", 
+      "Review Your Results": "Bekijk Je Resultaten",
+      
+      // Pricing
+      "Simple pricing": "Eenvoudige prijzen",
+      "Switch to yearly and save.": "Schakel over naar jaarlijks en bespaar.",
+      "Monthly": "Maandelijks",
+      "Yearly": "Jaarlijks", 
+      "Free": "Gratis",
+      "For growing teams": "Voor groeiende teams",
+      "Pro": "Pro",
+      "Team": "Team",
+      "Contact us": "Neem contact op",
+      "Upgrade to Pro": "Upgrade naar Pro", 
+      "Get unlimited access and more features.": "Krijg onbeperkte toegang en meer functies.",
+      "Great to try things out": "Geweldig om dingen uit te proberen",
+      "Best value": "Beste waarde",
+      "Everything in Free, plus": "Alles in Gratis, plus",
+      "Upgrade Now": "Nu Upgraden",
+      
+      // Contact form
+      "Get in touch": "Neem contact op",
+      "Contact our team": "Neem contact op met ons team", 
+      "Questions about pricing, features, or onboarding? Send us a message and we'll reply within 1 business day.": "Vragen over prijzen, functies of onboarding? Stuur ons een bericht en we antwoorden binnen 1 werkdag.",
+      "Your name": "Je naam",
+      "Email": "E-mail",
+      "Subject": "Onderwerp", 
+      "How can we help?": "Hoe kunnen we helpen?",
+      "Message": "Bericht",
+      "Tell us a bit about your question...": "Vertel ons iets over je vraag...",
+      "Send message": "Bericht versturen"
     }
   };
 
@@ -482,16 +602,16 @@ const onStartAI = async (overrideAction?: string) => {
         <section className="container py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center bg-gradient-subtle rounded-2xl">
           <div className="space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-primary mb-6 md:mb-8">
-              Smarter Documents. Powered by AI.
+              {getTranslation("Smarter Documents. Powered by AI.")}
             </h1>
             <p className="mt-3 text-lg text-muted-foreground max-w-prose">
-              Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.
+              {getTranslation("Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Try for Free</Button>
-              <Button size="lg" variant="pro" onClick={() => { setYearly(false); document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}><Rocket className="size-4" aria-hidden="true" /> Upgrade to AI-Docu Pro</Button>
+              <Button size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{getTranslation("Try for Free")}</Button>
+              <Button size="lg" variant="pro" onClick={() => { setYearly(false); document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}><Rocket className="size-4" aria-hidden="true" /> {getTranslation("Upgrade to AI-Docu Pro")}</Button>
             </div>
-            <p className="text-sm text-muted-foreground">Trusted by 1,000+ teams</p>
+            <p className="text-sm text-muted-foreground">{getTranslation("Trusted by 1,000+ teams")}</p>
           </div>
           <div className="relative">
             <img
@@ -506,32 +626,32 @@ const onStartAI = async (overrideAction?: string) => {
         {/* Features */}
         <section id="features" className="container py-12 md:py-20 rounded-2xl border bg-gradient-subtle shadow-glow">
           <div className="mx-auto max-w-3xl text-center mb-6">
-            <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">AI Document Tool</span>
-            <h2 className="mt-4 text-3xl font-semibold">Upload your document and choose an AI-powered action:</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Supports PDF, DOCX, and TXT — no training needed.</p>
+            <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">{getTranslation("AI Document Tool")}</span>
+            <h2 className="mt-4 text-3xl font-semibold">{getTranslation("Upload your document and choose an AI-powered action:")}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{getTranslation("Supports PDF, DOCX, and TXT — no training needed.")}</p>
           </div>
 
           <Card className="mx-auto max-w-5xl shadow-sm animate-fade-in">
             <CardHeader className="pb-2 md:pb-4">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div>
-                  <CardTitle id="get-started" className="text-xl">Get started</CardTitle>
-                  <CardDescription>Choose a tool below, then upload your document and Start AI.</CardDescription>
+                  <CardTitle id="get-started" className="text-xl">{getTranslation("Get started")}</CardTitle>
+                  <CardDescription>{getTranslation("Choose a tool below, then upload your document and Start AI.")}</CardDescription>
                 </div>
                 <Button size="sm" variant="pro">
                   <Rocket className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Show All PRO AI Tools
+                  {getTranslation("Show All PRO AI Tools")}
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-6 md:gap-8">
               {!isAuthed && (
                 <Alert className="border-dashed">
-                  <AlertTitle>Log in required</AlertTitle>
+                  <AlertTitle>{getTranslation("Log in required")}</AlertTitle>
                   <AlertDescription>
-                    You must log in to use the AI tools.
+                    {getTranslation("You must log in to use the AI tools.")}
                     <Button size="sm" className="ml-2" asChild>
-                      <a href="/login">Log in</a>
+                      <a href="/login">{getTranslation("Log in")}</a>
                     </Button>
                   </AlertDescription>
                 </Alert>
@@ -553,7 +673,7 @@ const onStartAI = async (overrideAction?: string) => {
                             <FileText className="size-4" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium">Summarize Long Documents</p>
+                            <p className="font-medium">{getTranslation("Summarize Long Documents")}</p>
                           </div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
@@ -616,7 +736,7 @@ const onStartAI = async (overrideAction?: string) => {
                             <Upload className="size-4" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium">Cross-Doc Linker</p>
+                            <p className="font-medium">{getTranslation("Cross-Doc Linker")}</p>
                           </div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
@@ -671,7 +791,7 @@ const onStartAI = async (overrideAction?: string) => {
                             <Languages className="size-4" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium">Translate & Localize</p>
+                            <p className="font-medium">{getTranslation("Translate & Localize")}</p>
                           </div>
                           <Plus className="size-4 text-muted-foreground transition-transform" />
                         </button>
@@ -742,7 +862,7 @@ const onStartAI = async (overrideAction?: string) => {
                           </div>
 <div className="flex-1">
   <div className="flex items-center gap-2">
-    <p className="font-medium">Contract Analysis & Risk Detection</p>
+    <p className="font-medium">{getTranslation("Contract Analysis & Risk Detection")}</p>
     <Badge variant="secondary">PRO</Badge>
   </div>
 </div>
@@ -800,7 +920,7 @@ const onStartAI = async (overrideAction?: string) => {
                           </div>
 <div className="flex-1">
   <div className="flex items-center gap-2">
-    <p className="font-medium">Smart Error Detection</p>
+    <p className="font-medium">{getTranslation("Smart Error Detection")}</p>
     <Badge variant="secondary">PRO</Badge>
   </div>
 </div>
@@ -856,8 +976,8 @@ const onStartAI = async (overrideAction?: string) => {
         {/* Workflow */}
         <section id="how-it-works" className="container py-12 md:py-20">
           <div className="mx-auto max-w-3xl text-center mb-10 animate-fade-in">
-            <h2 className="text-3xl font-semibold">How it works</h2>
-            <p className="text-muted-foreground">Go from upload to insights in four simple steps.</p>
+            <h2 className="text-3xl font-semibold">{getTranslation("How it works")}</h2>
+            <p className="text-muted-foreground">{getTranslation("Go from upload to insights in four simple steps.")}</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-4">
@@ -866,7 +986,7 @@ const onStartAI = async (overrideAction?: string) => {
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">1</span>
                 <Upload className="size-4 text-primary" aria-hidden="true" />
               </div>
-              <h3 className="font-medium">Upload Your Document</h3>
+              <h3 className="font-medium">{getTranslation("Upload Your Document")}</h3>
             </article>
 
             <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:60ms]">
@@ -874,7 +994,7 @@ const onStartAI = async (overrideAction?: string) => {
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">2</span>
                 <FileText className="size-4 text-primary" aria-hidden="true" />
               </div>
-              <h3 className="font-medium">Choose an AI Processing Option</h3>
+              <h3 className="font-medium">{getTranslation("Choose an AI Processing Option")}</h3>
             </article>
 
             <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:120ms]">
@@ -882,7 +1002,7 @@ const onStartAI = async (overrideAction?: string) => {
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">3</span>
                 <ShieldCheck className="size-4 text-primary" aria-hidden="true" />
               </div>
-              <h3 className="font-medium">AI Processes Your Document</h3>
+              <h3 className="font-medium">{getTranslation("AI Processes Your Document")}</h3>
             </article>
 
             <article className="rounded-xl border bg-card text-card-foreground p-6 hover-scale animate-fade-in [animation-delay:180ms]">
@@ -890,7 +1010,7 @@ const onStartAI = async (overrideAction?: string) => {
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20 font-semibold">4</span>
                 <PenLine className="size-4 text-primary" aria-hidden="true" />
               </div>
-              <h3 className="font-medium">Review Your Results</h3>
+              <h3 className="font-medium">{getTranslation("Review Your Results")}</h3>
             </article>
           </div>
         </section>
@@ -898,12 +1018,12 @@ const onStartAI = async (overrideAction?: string) => {
         {/* Pricing */}
         <section id="pricing" className="container py-12 md:py-20">
           <div className="mx-auto max-w-3xl text-center mb-10">
-            <h2 className="text-3xl font-semibold">Simple pricing</h2>
-            <p className="text-muted-foreground">Switch to yearly and save.</p>
+            <h2 className="text-3xl font-semibold">{getTranslation("Simple pricing")}</h2>
+            <p className="text-muted-foreground">{getTranslation("Switch to yearly and save.")}</p>
             <div className="mt-4 flex items-center justify-center gap-3">
-              <span className={`text-sm ${!yearly ? 'font-semibold' : 'text-muted-foreground'}`}>Monthly</span>
+              <span className={`text-sm ${!yearly ? 'font-semibold' : 'text-muted-foreground'}`}>{getTranslation("Monthly")}</span>
               <Switch checked={yearly} onCheckedChange={setYearly} aria-label="Toggle yearly pricing" />
-              <span className={`text-sm ${yearly ? 'font-semibold' : 'text-muted-foreground'}`}>Yearly</span>
+              <span className={`text-sm ${yearly ? 'font-semibold' : 'text-muted-foreground'}`}>{getTranslation("Yearly")}</span>
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -996,23 +1116,23 @@ const onStartAI = async (overrideAction?: string) => {
                 <form onSubmit={onContactSubmit} className="space-y-4" aria-label="Contact form">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="contact-name">Your name</Label>
+                      <Label htmlFor="contact-name">{getTranslation("Your name")}</Label>
                       <Input id="contact-name" name="name" placeholder="Jane Doe" required />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="contact-email">Email</Label>
+                      <Label htmlFor="contact-email">{getTranslation("Email")}</Label>
                       <Input id="contact-email" name="email" type="email" placeholder="you@example.com" required />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="contact-subject">Subject</Label>
-                    <Input id="contact-subject" name="subject" placeholder="How can we help?" />
+                    <Label htmlFor="contact-subject">{getTranslation("Subject")}</Label>
+                    <Input id="contact-subject" name="subject" placeholder={getTranslation("How can we help?")} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="contact-message">Message</Label>
-                    <Textarea id="contact-message" name="message" placeholder="Tell us a bit about your question..." rows={5} required />
+                    <Label htmlFor="contact-message">{getTranslation("Message")}</Label>
+                    <Textarea id="contact-message" name="message" placeholder={getTranslation("Tell us a bit about your question...")} rows={5} required />
                   </div>
-                  <Button type="submit" className="w-full hover-scale">Send message</Button>
+                  <Button type="submit" className="w-full hover-scale">{getTranslation("Send message")}</Button>
                 </form>
               </CardContent>
             </Card>
