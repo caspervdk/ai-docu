@@ -445,10 +445,6 @@ const onStartAI = async (overrideAction?: string) => {
             <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" />
           </a>
           <div className="flex items-center gap-4">
-            <a href="#features" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("AI tool")}</a>
-            <a href="#how-it-works" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("How it works")}</a>
-            <a href="#pricing" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("Pricing")}</a>
-            
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -467,6 +463,10 @@ const onStartAI = async (overrideAction?: string) => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            
+            <a href="#features" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("AI tool")}</a>
+            <a href="#how-it-works" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("How it works")}</a>
+            <a href="#pricing" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("Pricing")}</a>
             
             {isAuthed ? (
               <Button variant="outline" asChild><a href="/dashboard">{getTranslation("Dashboard")}</a></Button>
