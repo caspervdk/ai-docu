@@ -237,22 +237,26 @@ export default function PreviewModal({
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            Document Analysis
+                            AI Summary Results
                           </h4>
-                          <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                            Dit is een eenvoudige PDF die is aangemaakt voor testdoeleinden. Gebruik dit document om 
-                            te controleren of downloads, opslag en weergave van PDF-bestanden in jouw app goed werken.
-                          </p>
+                          {analysisResult ? (
+                            <div className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                              This document has been processed with AI-powered summarization to extract key insights and important information.
+                            </p>
+                          )}
                         </div>
                         
                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                            Content Summary
+                            Processing Status
                           </h4>
                           <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                            In dit document staan een titel, een subtitel, een datum en enkele voorbeeldparagrafen. Je 
-                            kunt deze tekst later vervangen door dynamische content uit je applicatie.
+                            Document analysis completed successfully. Key content has been extracted and summarized for easy review.
                           </p>
                         </div>
                       </>
@@ -264,14 +268,16 @@ export default function PreviewModal({
                   <div className="text-center p-8">
                     <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-                        <path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4"/>
-                        <path d="M11 5h4l2 2-2 2h-4V5z"/>
-                        <path d="M19 13h-6v8l6-8z"/>
+                        <path d="14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                        <polyline points="14,2 14,8 20,8"/>
                       </svg>
                     </div>
-                    <h4 className="text-lg font-semibold text-foreground mb-2">AI Analysis Results</h4>
+                    <h4 className="text-lg font-semibold text-foreground mb-2">Document Preview</h4>
                     <p className="text-sm text-muted-foreground max-w-sm">
-                      Upload and process a document to see detailed AI analysis results here
+                      {!aiToolUsed 
+                        ? "This document was uploaded directly. Use an AI tool to analyze and get insights about your document."
+                        : "Process the document with an AI tool to see detailed analysis results here"
+                      }
                     </p>
                   </div>
                 </div>
