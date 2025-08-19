@@ -37,6 +37,42 @@ const Index = () => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
   
+  // Language and translation system
+  const [currentLanguage, setCurrentLanguage] = useState<string>("English");
+  
+  const languageData = {
+    English: {
+      "AI tool": "AI tool",
+      "How it works": "How it works", 
+      "Pricing": "Pricing",
+      "Log in": "Log in",
+      "Dashboard": "Dashboard",
+      "Translate": "Translate"
+    },
+    Dutch: {
+      "AI tool": "AI-tool",
+      "How it works": "Hoe het werkt",
+      "Pricing": "Prijzen", 
+      "Log in": "Inloggen",
+      "Dashboard": "Dashboard",
+      "Translate": "Vertalen"
+    }
+  };
+
+  const getTranslation = (key: string): string => {
+    try {
+      const result = languageData[currentLanguage as keyof typeof languageData]?.[key] || key;
+      return result;
+    } catch (error) {
+      console.error('Translation error for key:', key, error);
+      return key;
+    }
+  };
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language);
+  };
+  
   const ACTIONS = [
     { id: 'summarize', label: 'Summarize Long Documents' },
     { id: 'ocr', label: 'Cross-Doc Linker' },
@@ -409,13 +445,33 @@ const onStartAI = async (overrideAction?: string) => {
             <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" />
           </a>
           <div className="flex items-center gap-4">
-            <a href="#features" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
-            <a href="#how-it-works" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
-            <a href="#pricing" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+            <a href="#features" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("AI tool")}</a>
+            <a href="#how-it-works" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("How it works")}</a>
+            <a href="#pricing" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">{getTranslation("Pricing")}</a>
+            
+            {/* Language Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2" aria-label="Select language">
+                  <Languages className="h-4 w-4" />
+                  <span className="hidden sm:inline">{getTranslation("Translate")}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="z-50">
+                <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => handleLanguageChange("English")}>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("Dutch")}>
+                  Nederlands
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
             {isAuthed ? (
-              <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
+              <Button variant="outline" asChild><a href="/dashboard">{getTranslation("Dashboard")}</a></Button>
             ) : (
-              <Button variant="outline" asChild><a href="/login">Log in</a></Button>
+              <Button variant="outline" asChild><a href="/login">{getTranslation("Log in")}</a></Button>
             )}
           </div>
         </nav>
