@@ -194,7 +194,14 @@ const Dashboard = () => {
       "Save to folder": "Save to folder",
       "Saving...": "Saving...",
       "Sending...": "Sending...",
-      "Feedback": "Feedback"
+      "Feedback": "Feedback",
+      
+      // Additional dialog text
+      "Use this AI tool to": "Use this AI tool to",
+      "Note: Please import PDF files.": "Note: Please import PDF files.",
+      "Document": "Document",
+      "Input": "Input",
+      "Output": "Output"
     },
     Dutch: {
       // Navigation
@@ -272,7 +279,14 @@ const Dashboard = () => {
       "Save to folder": "Opslaan in map",
       "Saving...": "Opslaan...",
       "Sending...": "Verzenden...",
-      "Feedback": "Feedback"
+      "Feedback": "Feedback",
+      
+      // Additional dialog text
+      "Use this AI tool to": "Gebruik deze AI-tool om",
+      "Note: Please import PDF files.": "Let op: Upload alleen PDF-bestanden.",
+      "Document": "Document", 
+      "Input": "Invoer",
+      "Output": "Uitvoer"
     }
   };
 
@@ -2069,14 +2083,14 @@ const Dashboard = () => {
           <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
                <DialogTitle>{activeTool ? getTranslation(activeTool.title) : ""}</DialogTitle>
-               <DialogDescription>
-                 Use this AI tool to {activeTool ? getTranslation(activeTool.desc).toLowerCase() : ""}. Note: Please import PDF files.
-               </DialogDescription>
+                <DialogDescription>
+                  {getTranslation("Use this AI tool to")} {activeTool ? getTranslation(activeTool.desc).toLowerCase() : ""}. {getTranslation("Note: Please import PDF files.")}
+                </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                {activeTool?.title === "Cross-Doc Linker" ? null : <Label htmlFor="tool-input">{activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents" ? "Document" : "Input"}</Label>}
+                {activeTool?.title === "Cross-Doc Linker" ? null : <Label htmlFor="tool-input">{activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents" ? getTranslation("Document") : getTranslation("Input")}</Label>}
                 {activeTool?.title === "Translate & Localize" || activeTool?.title === "Summarize Long Documents" ? <div role="button" tabIndex={0} onClick={triggerFileDialog} onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') triggerFileDialog();
                 }} onDragOver={e => {
@@ -2128,7 +2142,7 @@ const Dashboard = () => {
               <div className="space-y-2">
                 <input id="tool-file" ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
                 {activeTool?.title !== "Translate & Localize" && activeTool?.title !== "Summarize Long Documents" && <>
-                    <Label htmlFor="tool-file">Document</Label>
+                    <Label htmlFor="tool-file">{getTranslation("Document")}</Label>
                     <div role="button" tabIndex={0} onClick={triggerFileDialog} onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') triggerFileDialog();
                   }} onDragOver={e => {
@@ -2165,7 +2179,7 @@ const Dashboard = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Output</Label>
+                <Label>{getTranslation("Output")}</Label>
                 <OutputPanel title={activeTool?.title === "Cross-Doc Linker" ? getTranslation("AI CROSS-DOC LINKER") : activeTool?.title === "Translate & Localize" ? getTranslation("AI TRANSLATE & LOCALIZE") : getTranslation("AI SUMMARY")} content={output} emptyText={getTranslation("Results will appear here.")} />
               </div>
 
