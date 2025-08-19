@@ -593,7 +593,7 @@ const onStartAI = async (overrideAction?: string) => {
                   onClick={() => handleLanguageChange("English")}
                   className={`cursor-pointer hover:bg-primary/10 ${currentLanguage === "English" ? "bg-primary/5 text-primary font-medium" : ""}`}
                 >
-                  <span className="mr-2">🇺🇸</span>
+                  <span className="mr-2">🇬🇧</span>
                   English
                   {currentLanguage === "English" && <span className="ml-auto text-primary">✓</span>}
                 </DropdownMenuItem>
