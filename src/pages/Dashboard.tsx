@@ -1577,10 +1577,28 @@ const Dashboard = () => {
           </div>
             <div className="flex items-center gap-2 md:static absolute right-4">
               {/* Desktop actions */}
-              <Button variant="outline" size="sm" className="hidden md:inline-flex">
-                <Languages className="mr-2 h-4 w-4" />
-                Translate: Dutch, English, German and Spanish
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="hidden md:inline-flex">
+                    <Languages className="mr-2 h-4 w-4" />
+                    Translate
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-50">
+                  <DropdownMenuItem>
+                    <span>Dutch</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <span>English</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <span>German</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <span>Spanish</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />Log out</Button>
 
