@@ -110,6 +110,93 @@ const tools: readonly Tool[] = [{
 }] as const;
 const Dashboard = () => {
   const navigate = useNavigate();
+  
+  // Language state and translations
+  const [currentLanguage, setCurrentLanguage] = useState<string>("English");
+  
+  const translations = {
+    English: {
+      // Navigation
+      "My Drive": "My Drive",
+      "Folders": "Folders", 
+      "Trash": "Trash",
+      "New File": "+ New File",
+      "My account": "My account",
+      "Log out": "Log out",
+      "Translate": "Translate",
+      
+      // Tools
+      "Summarize": "Summarize",
+      "Analyze": "Analyze", 
+      "Translate Document": "Translate Document",
+      "Data Extraction": "Data Extraction",
+      "Contract Analysis": "Contract Analysis",
+      "Privacy Audit": "Privacy Audit",
+      "Compliance Check": "Compliance Check",
+      "Content Generation": "Content Generation",
+      "Presentation Builder": "Presentation Builder",
+      
+      // Descriptions
+      "Get quick summaries": "Get quick summaries",
+      "Deep analysis": "Deep analysis",
+      "Multi-language support": "Multi-language support", 
+      "Extract key information": "Extract key information",
+      "Legal document review": "Legal document review",
+      "Privacy compliance": "Privacy compliance",
+      "Regulatory compliance": "Regulatory compliance",
+      "AI-powered content": "AI-powered content",
+      "Create presentations": "Create presentations",
+      
+      // Other UI
+      "No items in Trash.": "No items in Trash.",
+      "Upload": "Upload"
+    },
+    Dutch: {
+      // Navigation
+      "My Drive": "Mijn Drive",
+      "Folders": "Mappen",
+      "Trash": "Prullenbak", 
+      "New File": "+ Nieuw Bestand",
+      "My account": "Mijn account",
+      "Log out": "Uitloggen",
+      "Translate": "Vertalen",
+      
+      // Tools
+      "Summarize": "Samenvatten",
+      "Analyze": "Analyseren",
+      "Translate Document": "Document Vertalen", 
+      "Data Extraction": "Data Extractie",
+      "Contract Analysis": "Contract Analyse",
+      "Privacy Audit": "Privacy Audit",
+      "Compliance Check": "Compliance Controle",
+      "Content Generation": "Content Generatie",
+      "Presentation Builder": "Presentatie Maker",
+      
+      // Descriptions  
+      "Get quick summaries": "Krijg snelle samenvattingen",
+      "Deep analysis": "Diepgaande analyse",
+      "Multi-language support": "Meertalige ondersteuning",
+      "Extract key information": "Haal belangrijke informatie eruit",
+      "Legal document review": "Juridische document beoordeling", 
+      "Privacy compliance": "Privacy naleving",
+      "Regulatory compliance": "Regelgevingsnaleving",
+      "AI-powered content": "AI-aangedreven content",
+      "Create presentations": "Maak presentaties",
+      
+      // Other UI
+      "No items in Trash.": "Geen items in prullenbak.",
+      "Upload": "Uploaden"
+    }
+  };
+
+  const t = (key: string) => {
+    return translations[currentLanguage as keyof typeof translations]?.[key] || key;
+  };
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language);
+  };
+
   const [activeTool, setActiveTool] = useState<(typeof tools)[number] | null>(null);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -1581,26 +1668,26 @@ const Dashboard = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="hidden md:inline-flex">
                     <Languages className="mr-2 h-4 w-4" />
-                    Translate
+                    {t("Translate")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("Dutch")}>
                     <span>Dutch</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("English")}>
                     <span>English</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("German")}>
                     <span>German</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("Spanish")}>
                     <span>Spanish</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />My account</Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />Log out</Button>
+              <Button variant="secondary" size="sm" onClick={handleMyAccount} className="hidden md:inline-flex"><User2 className="mr-2 h-4 w-4" />{t("My account")}</Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex"><LogOut className="mr-2 h-4 w-4" />{t("Log out")}</Button>
 
               {/* Mobile dropdown */}
               <DropdownMenu>
@@ -1631,17 +1718,17 @@ const Dashboard = () => {
       <div className="container grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 py-6">
         <aside className="space-y-6">
           <div>
-            <Button className="w-full" onClick={() => setNewOpen(true)}>+ New File</Button>
+            <Button className="w-full" onClick={() => setNewOpen(true)}>{t("New File")}</Button>
           </div>
 
           <nav className="space-y-2">
             <section aria-label="My Drive" className="md:rounded-lg md:border md:p-4">
-              <div className="text-sm font-medium mb-2">My Drive</div>
+              <div className="text-sm font-medium mb-2">{t("My Drive")}</div>
               <Accordion type="multiple" className="w-full">
 
                 <AccordionItem value="folders" id="folders">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Folders">
-                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span>Folders</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span>{t("Folders")}</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     <div className="space-y-2">
@@ -1742,10 +1829,10 @@ const Dashboard = () => {
 
                 <AccordionItem value="trash" id="trash">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Trash">
-                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span>Trash</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span>{t("Trash")}</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
-                    {trashDocs.length === 0 ? <div className="text-xs text-muted-foreground">No items in Trash.</div> : <ul className="space-y-2">
+                    {trashDocs.length === 0 ? <div className="text-xs text-muted-foreground">{t("No items in Trash.")}</div> : <ul className="space-y-2">
                         {trashDocs.slice(0, 10).map(d => <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
                             <div className="min-w-0 flex-1">
                               <FileNameDisplay fileName={d.name} className="block" />
