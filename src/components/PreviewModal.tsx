@@ -76,7 +76,7 @@ export default function PreviewModal({
 
   return (
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-[80vw] h-[80vh] p-0 gap-0">
+      <DialogContent className="max-w-[95vw] md:max-w-[80vw] h-[95vh] md:h-[80vh] p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b bg-background">
           <div className="flex items-center justify-between">
             <div>
@@ -98,46 +98,46 @@ export default function PreviewModal({
           </div>
         </DialogHeader>
         
-        <div className="flex h-[calc(80vh-120px)]">
+        <div className="flex md:flex-row flex-col h-[calc(95vh-120px)] md:h-[calc(80vh-120px)]">
           {/* PDF Viewer Side - Wider */}
-          <div className="flex-[2] bg-slate-800 relative">
+          <div className="flex-[2] md:flex-[2] bg-slate-800 relative min-h-[50vh] md:min-h-0">
             {/* PDF Controls Bar */}
-            <div className="absolute top-0 left-0 right-0 z-10 bg-slate-700/95 backdrop-blur-sm px-4 py-3 flex items-center justify-between border-b border-slate-600/50">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-white/90">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="absolute top-0 left-0 right-0 z-10 bg-slate-700/95 backdrop-blur-sm px-2 md:px-4 py-2 md:py-3 flex items-center justify-between border-b border-slate-600/50">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-center gap-1 md:gap-2 text-white/90">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 md:w-5 md:h-5">
                     <path d="14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
                     <polyline points="14,2 14,8 20,8"/>
                   </svg>
-                  <span className="text-sm font-medium">
+                  <span className="text-xs md:text-sm font-medium truncate max-w-[120px] md:max-w-none">
                     {previewDoc.name.replace(/\.[^/.]+$/, "")}
                   </span>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 bg-slate-600/50 rounded-lg px-4 py-2">
-                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="flex items-center gap-1 md:gap-2 bg-slate-600/50 rounded-lg px-2 md:px-4 py-1 md:py-2">
+                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <polyline points="15,18 9,12 15,6"/>
                   </svg>
                 </button>
-                <span className="text-white text-sm font-medium px-2">1 / 2</span>
-                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <span className="text-white text-xs md:text-sm font-medium px-1 md:px-2">1 / 2</span>
+                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <polyline points="9,18 15,12 9,6"/>
                   </svg>
                 </button>
-                <div className="w-px h-4 bg-white/20 mx-2"></div>
-                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <div className="w-px h-3 md:h-4 bg-white/20 mx-1 md:mx-2"></div>
+                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <circle cx="11" cy="11" r="8"/>
                     <path d="21 21l-4.35-4.35"/>
                     <line x1="9" x2="13" y1="11" y2="11"/>
                   </svg>
                 </button>
-                <span className="text-white/70 text-sm">52%</span>
-                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <span className="text-white/70 text-xs md:text-sm">52%</span>
+                <button className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <circle cx="11" cy="11" r="8"/>
                     <path d="21 21l-4.35-4.35"/>
                     <line x1="9" x2="9" y1="9" y2="13"/>
@@ -147,16 +147,16 @@ export default function PreviewModal({
                 </button>
               </div>
               
-              <div className="flex items-center gap-2">
-                <button className="text-white/70 hover:text-white p-2 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="flex items-center gap-1 md:gap-2">
+                <button className="text-white/70 hover:text-white p-1 md:p-2 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <path d="21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                     <polyline points="7,10 12,15 17,10"/>
                     <line x1="12" x2="12" y1="15" y2="3"/>
                   </svg>
                 </button>
-                <button className="text-white/70 hover:text-white p-2 hover:bg-white/10 rounded transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <button className="text-white/70 hover:text-white p-1 md:p-2 hover:bg-white/10 rounded transition-colors touch-manipulation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
                     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
                   </svg>
@@ -165,7 +165,7 @@ export default function PreviewModal({
             </div>
             
             {/* PDF Content - Full size */}
-            <div className="h-full pt-16 p-6">
+            <div className="h-full pt-12 md:pt-16 p-3 md:p-6">
               <div className="h-full bg-white rounded-lg shadow-2xl overflow-hidden">
                 {renderDocument(previewDoc, "w-full h-full")}
               </div>
@@ -173,10 +173,10 @@ export default function PreviewModal({
           </div>
           
           {/* Output Panel Side - Bigger and Better */}
-          <div className="flex-[1.2] bg-background border-l flex flex-col">
+          <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
             <div className="flex-1 overflow-y-auto">
               {lastSavedPair?.output ? (
-                <div className="p-6 space-y-6">
+                <div className="p-3 md:p-6 space-y-4 md:space-y-6">
                   <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
