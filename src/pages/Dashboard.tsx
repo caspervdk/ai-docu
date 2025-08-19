@@ -243,25 +243,6 @@ const Dashboard = () => {
     isTrash?: boolean;
   } | null>(null);
 
-  // Credits state for tracking analyzed files
-  const [analyzedFilesCount, setAnalyzedFilesCount] = useState(0);
-
-  // Fetch analyzed files count for credits
-  const fetchAnalyzedFilesCount = async () => {
-    if (!userId) return;
-    try {
-      const { count, error } = await supabase
-        .from('analyzed_files')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId);
-      
-      if (!error && count !== null) {
-        setAnalyzedFilesCount(count);
-      }
-    } catch (err) {
-      console.error('Error fetching analyzed files count:', err);
-    }
-  };
   const handleClose = () => {
     setActiveTool(null);
     setInput("");
@@ -580,24 +561,7 @@ const Dashboard = () => {
     fetchDocs();
   }, [userId]);
 
-  // Fetch analyzed files count for credits tracking
-  useEffect(() => {
-    if (userId) {
-      fetchAnalyzedFilesCount();
-    }
-  }, [userId]);
   const summarizeWithAI = async (overrideFile?: File) => {
-    // Check credits limit
-    if (analyzedFilesCount >= 10) {
-      setOutput("Credit limit reached. You have used all 10 analysis credits.");
-      toast({
-        title: "Credit Limit Reached",
-        description: "You have used all 10 analysis credits. Please upgrade to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const file = overrideFile ?? selectedFile;
     if (!file && !input.trim()) {
       setOutput("Please provide text or upload a document.");
@@ -630,17 +594,6 @@ const Dashboard = () => {
 
   // Send uploaded document to the Translate & Localize webhook and put response into Output
   const analyzeDocWithWebhook = async () => {
-    // Check credits limit
-    if (analyzedFilesCount >= 10) {
-      setOutput("Credit limit reached. You have used all 10 analysis credits.");
-      toast({
-        title: "Credit Limit Reached",
-        description: "You have used all 10 analysis credits. Please upgrade to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const file = selectedFile;
     if (!file) {
       setOutput("Please select a file to upload.");
@@ -900,11 +853,6 @@ const Dashboard = () => {
           console.error('Failed to save to database:', dbErr);
           // Don't fail the whole process if DB save fails
         }
-      }
-
-      // Refresh analyzed files count after successful save
-      if (newEntries.length > 0) {
-        await fetchAnalyzedFilesCount();
       }
 
       // Update the appropriate document list based on folder selection
