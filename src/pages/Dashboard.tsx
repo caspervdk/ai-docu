@@ -242,6 +242,26 @@ const Dashboard = () => {
     };
     isTrash?: boolean;
   } | null>(null);
+
+  // Credits state for tracking analyzed files
+  const [analyzedFilesCount, setAnalyzedFilesCount] = useState(0);
+
+  // Fetch analyzed files count for credits
+  const fetchAnalyzedFilesCount = async () => {
+    if (!userId) return;
+    try {
+      const { count, error } = await supabase
+        .from('analyzed_files')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+      
+      if (!error && count !== null) {
+        setAnalyzedFilesCount(count);
+      }
+    } catch (err) {
+      console.error('Error fetching analyzed files count:', err);
+    }
+  };
   const handleClose = () => {
     setActiveTool(null);
     setInput("");
@@ -559,7 +579,25 @@ const Dashboard = () => {
     };
     fetchDocs();
   }, [userId]);
+
+  // Fetch analyzed files count for credits tracking
+  useEffect(() => {
+    if (userId) {
+      fetchAnalyzedFilesCount();
+    }
+  }, [userId]);
   const summarizeWithAI = async (overrideFile?: File) => {
+    // Check credits limit
+    if (analyzedFilesCount >= 10) {
+      setOutput("Credit limit reached. You have used all 10 analysis credits.");
+      toast({
+        title: "Credit Limit Reached",
+        description: "You have used all 10 analysis credits. Please upgrade to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const file = overrideFile ?? selectedFile;
     if (!file && !input.trim()) {
       setOutput("Please provide text or upload a document.");
@@ -592,6 +630,17 @@ const Dashboard = () => {
 
   // Send uploaded document to the Translate & Localize webhook and put response into Output
   const analyzeDocWithWebhook = async () => {
+    // Check credits limit
+    if (analyzedFilesCount >= 10) {
+      setOutput("Credit limit reached. You have used all 10 analysis credits.");
+      toast({
+        title: "Credit Limit Reached",
+        description: "You have used all 10 analysis credits. Please upgrade to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const file = selectedFile;
     if (!file) {
       setOutput("Please select a file to upload.");
@@ -851,6 +900,11 @@ const Dashboard = () => {
           console.error('Failed to save to database:', dbErr);
           // Don't fail the whole process if DB save fails
         }
+      }
+
+      // Refresh analyzed files count after successful save
+      if (newEntries.length > 0) {
+        await fetchAnalyzedFilesCount();
       }
 
       // Update the appropriate document list based on folder selection
@@ -1611,6 +1665,39 @@ const Dashboard = () => {
         <aside className="space-y-6">
           <div>
             <Button className="w-full" onClick={() => setNewOpen(true)}>+ New File</Button>
+          </div>
+
+          {/* Credits Section */}
+          <div className="rounded-lg border bg-card p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium">Analysis Credits</h3>
+              <div className="flex items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="12 6v6l4 2"/>
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Remaining</span>
+                <span className="text-sm font-medium text-primary">
+                  {10 - analyzedFilesCount} / 10
+                </span>
+              </div>
+              <div className="w-full bg-secondary rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${Math.max(0, (10 - analyzedFilesCount) / 10 * 100)}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {analyzedFilesCount >= 10 
+                  ? "No credits remaining" 
+                  : `${10 - analyzedFilesCount} analyses remaining`
+                }
+              </p>
+            </div>
           </div>
 
           <nav className="space-y-2">
