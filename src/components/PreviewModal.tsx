@@ -9,6 +9,7 @@ interface PreviewModalProps {
   onClose: () => void;
   isPdf: (filename: string) => boolean;
   isImage: (filename: string) => boolean;
+  aiToolUsed?: string | null;
 }
 
 export default function PreviewModal({ 
@@ -16,13 +17,50 @@ export default function PreviewModal({
   lastSavedPair, 
   onClose, 
   isPdf, 
-  isImage 
+  isImage,
+  aiToolUsed 
 }: PreviewModalProps) {
   if (!previewDoc) return null;
 
   const isPrevOrig = lastSavedPair?.original && previewDoc.name === lastSavedPair.original.name;
   const isPrevOut = lastSavedPair?.output && previewDoc.name === lastSavedPair.output.name;
   const hasInputOutput = lastSavedPair?.original && lastSavedPair?.output;
+
+  // Get AI tool styling based on the tool used
+  const getAiToolStyling = () => {
+    switch (aiToolUsed) {
+      case 'Summarize Long Documents':
+        return {
+          bgClass: "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20",
+          borderClass: "border-blue-200/50 dark:border-blue-800/50",
+          textClass: "text-blue-700 dark:text-blue-300",
+          dotClass: "bg-blue-500"
+        };
+      case 'Cross-Doc Linker':
+        return {
+          bgClass: "bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20",
+          borderClass: "border-purple-200/50 dark:border-purple-800/50",
+          textClass: "text-purple-700 dark:text-purple-300",
+          dotClass: "bg-purple-500"
+        };
+      case 'Translate & Localize':
+        return {
+          bgClass: "bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20",
+          borderClass: "border-emerald-200/50 dark:border-emerald-800/50",
+          textClass: "text-emerald-700 dark:text-emerald-300",
+          dotClass: "bg-emerald-500"
+        };
+      default:
+        return {
+          bgClass: "bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-950/20 dark:to-slate-950/20",
+          borderClass: "border-gray-200/50 dark:border-gray-800/50",
+          textClass: "text-gray-700 dark:text-gray-300",
+          dotClass: "bg-gray-500"
+        };
+    }
+  };
+
+  const aiToolStyling = getAiToolStyling();
 
   const renderDocument = (doc: { name: string; url: string }, className = "") => {
     if (isPdf(doc.name)) {
@@ -47,12 +85,14 @@ export default function PreviewModal({
                 {previewDoc.name}
               </DialogDescription>
             </div>
-            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 px-4 py-2 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                Summarize Long Documents AI
-              </span>
-            </div>
+            {aiToolUsed && (
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${aiToolStyling.bgClass} ${aiToolStyling.borderClass}`}>
+                <div className={`w-2 h-2 rounded-full animate-pulse ${aiToolStyling.dotClass}`}></div>
+                <span className={`text-sm font-medium ${aiToolStyling.textClass}`}>
+                  {aiToolUsed}
+                </span>
+              </div>
+            )}
           </div>
         </DialogHeader>
         

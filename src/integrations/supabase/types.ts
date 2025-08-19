@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       analyzed_files: {
         Row: {
+          ai_tool_used: string | null
           analysis_result: string | null
           analysis_type: string
           created_at: string
@@ -26,6 +27,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_tool_used?: string | null
           analysis_result?: string | null
           analysis_type: string
           created_at?: string
@@ -36,48 +38,13 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_tool_used?: string | null
           analysis_result?: string | null
           analysis_type?: string
           created_at?: string
           file_name?: string
           file_path?: string | null
           id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      documents: {
-        Row: {
-          ai_tool_used: string | null
-          created_at: string
-          filename: string
-          id: string
-          original_url: string | null
-          processed_url: string | null
-          processing_status: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          ai_tool_used?: string | null
-          created_at?: string
-          filename: string
-          id?: string
-          original_url?: string | null
-          processed_url?: string | null
-          processing_status?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          ai_tool_used?: string | null
-          created_at?: string
-          filename?: string
-          id?: string
-          original_url?: string | null
-          processed_url?: string | null
-          processing_status?: string | null
           updated_at?: string
           user_id?: string
         }
