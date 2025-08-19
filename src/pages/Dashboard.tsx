@@ -1625,20 +1625,30 @@ const Dashboard = () => {
                       <Menu className="ml-2 h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="z-50 w-56">
-                    <DropdownMenuItem onClick={() => document.getElementById('recent')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                  })}>Recent</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => document.getElementById('trash')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                  })}>Trash</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => document.getElementById('folders')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                  })}>Folders</DropdownMenuItem>
-                  </DropdownMenuContent>
+                   <DropdownMenuContent align="start" className="z-50 w-56">
+                     <DropdownMenuItem onClick={() => {
+                       // Navigate to Recent (main documents view)
+                       handleCloseFolder();
+                       setShowAllDocs(false);
+                       document.querySelector('main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                     }}>Recent</DropdownMenuItem>
+                     <DropdownMenuItem onClick={() => {
+                       // Navigate to Trash section
+                       handleCloseFolder();
+                       document.getElementById('trash')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                       // Expand trash accordion if it exists
+                       const trashTrigger = document.querySelector('[data-state="closed"] + [data-state="closed"] #trash .accordion-trigger') as HTMLElement;
+                       trashTrigger?.click();
+                     }}>Trash</DropdownMenuItem>
+                     <DropdownMenuItem onClick={() => {
+                       // Navigate to Folders section
+                       handleCloseFolder();
+                       document.getElementById('folders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                       // Expand folders accordion if it exists
+                       const foldersTrigger = document.querySelector('#folders .accordion-trigger') as HTMLElement;
+                       foldersTrigger?.click();
+                     }}>Folders</DropdownMenuItem>
+                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
               <Accordion type="multiple" className="w-full hidden md:block">
