@@ -3,7 +3,7 @@ import PreviewModal from "@/components/PreviewModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Search, Languages, ShieldAlert, Bug, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Users, Clock, Star, Trash2, Tags } from "lucide-react";
+import { FileText, Search, Languages, ShieldAlert, Bug, User2, LogOut, Rocket, Files, BarChart3, Menu, EyeOff, Table, FileDiff, Presentation, MessageSquare, WandSparkles, FileSearch, Check, Folder, Clock, Trash2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -1341,25 +1341,6 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="shared-with-me" id="shared-with-me">
-                  <AccordionTrigger className="justify-start gap-2" aria-label="Shared with me">
-                    <span className="inline-flex items-center" aria-hidden="false"><Users className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Shared with me</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Files others have shared with you.
-                  </AccordionContent>
-                </AccordionItem>
-
-
-                <AccordionItem value="starred" id="starred">
-                  <AccordionTrigger className="justify-start gap-2" aria-label="Starred">
-                    <span className="inline-flex items-center" aria-hidden="false"><Star className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Starred</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm text-muted-foreground">
-                    Your favorites in one place.
-                  </AccordionContent>
-                </AccordionItem>
-
                 <AccordionItem value="trash" id="trash">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Trash">
                     <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Trash</span></span>
@@ -1398,27 +1379,6 @@ const getPlaceholder = (title: string) => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="tags" id="tags">
-                  <AccordionTrigger className="justify-start gap-2" aria-label="Tags">
-                    <span className="inline-flex items-center" aria-hidden="false"><Tags className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Tags</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent className="animate-fade-in text-sm">
-                    <div className="space-y-2">
-                      <div className="text-muted-foreground">Organize and filter files with tags, or create your own folders.</div>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          placeholder="New folder name"
-                          value={newFolderName}
-                          onChange={(e) => setNewFolderName(e.target.value)}
-                        />
-                        <Button size="sm" onClick={() => createFolder()} disabled={!userId || creatingFolder || !newFolderName.trim()}>
-                          {creatingFolder ? 'Creating...' : 'Create folder'}
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Folders appear in My documents; you can use them later to organize files.</p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
               </Accordion>
             </section>
           </nav>
