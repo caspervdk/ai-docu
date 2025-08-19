@@ -172,32 +172,83 @@ export default function PreviewModal({
           
           {/* Output Panel Side - Bigger and Better */}
           <div className="flex-[1.2] bg-background border-l flex flex-col">
-            {/* Content Area */}
             <div className="flex-1 overflow-y-auto">
               {lastSavedPair?.output ? (
                 <div className="p-6 space-y-6">
                   <div className="prose prose-sm max-w-none">
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
-                      <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        Document Analysis
-                      </h4>
-                      <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                        Dit is een eenvoudige PDF die is aangemaakt voor testdoeleinden. Gebruik dit document om 
-                        te controleren of downloads, opslag en weergave van PDF-bestanden in jouw app goed werken.
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
-                      <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                        Content Summary
-                      </h4>
-                      <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                        In dit document staan een titel, een subtitel, een datum en enkele voorbeeldparagrafen. Je 
-                        kunt deze tekst later vervangen door dynamische content uit je applicatie.
-                      </p>
-                    </div>
+                    {aiToolUsed === 'Translate & Localize' ? (
+                      <>
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                          <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                            AI Translation & Localization Results
+                          </h4>
+                          <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                            Your document has been processed with AI-powered translation and localization technology. 
+                            The content has been adapted for regional preferences and cultural context.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                          <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            Translated Content Summary
+                          </h4>
+                          <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                            The document content has been successfully translated while preserving the original meaning, 
+                            structure, and formatting. Regional adaptations have been applied where appropriate.
+                          </p>
+                        </div>
+                      </>
+                    ) : aiToolUsed === 'Cross-Doc Linker' ? (
+                      <>
+                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
+                          <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            Cross-Document Analysis Results
+                          </h4>
+                          <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                            AI has analyzed this document and identified connections with related content. 
+                            Key relationships and supporting evidence have been mapped across your document collection.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                          <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            Linked Document Insights
+                          </h4>
+                          <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                            Connections have been established between this document and related materials in your collection. 
+                            Cross-references and supporting evidence have been identified and linked.
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                          <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            Document Analysis
+                          </h4>
+                          <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+                            Dit is een eenvoudige PDF die is aangemaakt voor testdoeleinden. Gebruik dit document om 
+                            te controleren of downloads, opslag en weergave van PDF-bestanden in jouw app goed werken.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                          <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                            Content Summary
+                          </h4>
+                          <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                            In dit document staan een titel, een subtitel, een datum en enkele voorbeeldparagrafen. Je 
+                            kunt deze tekst later vervangen door dynamische content uit je applicatie.
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (
