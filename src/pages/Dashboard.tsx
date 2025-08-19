@@ -162,10 +162,22 @@ const Dashboard = () => {
   // Enhanced preview function that includes analysis result
   const openDocumentPreview = async (doc: { name: string; url: string; aiToolUsed?: string }) => {
     const analysisData = await fetchAnalysisResult(doc.name);
+    
+    // Parse the analysis result to extract the output content
+    let parsedAnalysisResult = null;
+    if (analysisData?.analysis_result) {
+      try {
+        const parsed = JSON.parse(analysisData.analysis_result);
+        parsedAnalysisResult = parsed.output || analysisData.analysis_result;
+      } catch {
+        parsedAnalysisResult = analysisData.analysis_result;
+      }
+    }
+    
     setPreviewDoc({
       ...doc,
       aiToolUsed: analysisData?.ai_tool_used || doc.aiToolUsed,
-      analysisResult: analysisData?.analysis_result || null
+      analysisResult: parsedAnalysisResult
     });
   };
 
