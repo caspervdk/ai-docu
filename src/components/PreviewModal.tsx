@@ -36,67 +36,115 @@ export default function PreviewModal({
 
   return (
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="sm:max-w-6xl">
-        <DialogHeader>
-          <DialogTitle>{previewDoc.name}</DialogTitle>
-          <DialogDescription>Preview</DialogDescription>
+      <DialogContent className="sm:max-w-7xl bg-gradient-subtle">
+        <DialogHeader className="text-center space-y-3 pb-6 border-b border-border/50">
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+            Document Preview
+          </DialogTitle>
+          <DialogDescription className="text-base text-muted-foreground font-medium">
+            {previewDoc.name}
+          </DialogDescription>
         </DialogHeader>
         
-        <div className="min-h-[70vh] relative">
+        <div className="min-h-[75vh] relative">
           {hasInputOutput && (isPrevOrig || isPrevOut) ? (
-            <Tabs defaultValue="split" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="split">Input & Output</TabsTrigger>
-                <TabsTrigger value="input">Input Only</TabsTrigger>
-                <TabsTrigger value="output">Output Only</TabsTrigger>
+            <Tabs defaultValue="split" className="w-full space-y-6">
+              <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1.5 rounded-xl shadow-sm">
+                <TabsTrigger 
+                  value="split" 
+                  className="rounded-lg font-semibold data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-300"
+                >
+                  📊 Input & Output
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="input" 
+                  className="rounded-lg font-semibold data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-300"
+                >
+                  📄 Input Only
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="output" 
+                  className="rounded-lg font-semibold data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-300"
+                >
+                  ✨ Output Only
+                </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="split" className="mt-4">
-                <div className="grid grid-cols-2 gap-4 h-[65vh]">
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
-                      Input: {lastSavedPair.original?.name}
+              <TabsContent value="split" className="space-y-4">
+                <div className="grid grid-cols-2 gap-6 h-[65vh]">
+                  <div className="group bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 px-4 py-3 border-b border-border/30">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-semibold text-foreground/80">Input Document</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">{lastSavedPair.original?.name}</p>
                     </div>
-                    <div className="h-[calc(65vh-2.5rem)]">
+                    <div className="h-[calc(65vh-4rem)] p-2">
+                      <div className="h-full rounded-lg overflow-hidden border border-border/20">
+                        {lastSavedPair.original && renderDocument(lastSavedPair.original)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="group bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="bg-gradient-to-r from-emerald-500/10 to-green-500/10 px-4 py-3 border-b border-border/30">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-semibold text-foreground/80">AI Generated Output</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">{lastSavedPair.output?.name}</p>
+                    </div>
+                    <div className="h-[calc(65vh-4rem)] p-2">
+                      <div className="h-full rounded-lg overflow-hidden border border-border/20 bg-gradient-to-br from-background via-background/95 to-primary/5">
+                        {lastSavedPair.output && renderDocument(lastSavedPair.output)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="input" className="space-y-4">
+                <div className="h-[65vh] bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden shadow-sm">
+                  <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 px-4 py-3 border-b border-border/30">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold text-foreground/80">Input Document</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 truncate">{lastSavedPair.original?.name}</p>
+                  </div>
+                  <div className="h-[calc(65vh-4rem)] p-2">
+                    <div className="h-full rounded-lg overflow-hidden border border-border/20">
                       {lastSavedPair.original && renderDocument(lastSavedPair.original)}
                     </div>
                   </div>
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
-                      Output: {lastSavedPair.output?.name}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="output" className="space-y-4">
+                <div className="h-[65vh] bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden shadow-sm">
+                  <div className="bg-gradient-to-r from-emerald-500/10 to-green-500/10 px-4 py-3 border-b border-border/30">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold text-foreground/80">AI Generated Output</span>
                     </div>
-                    <div className="h-[calc(65vh-2.5rem)]">
+                    <p className="text-xs text-muted-foreground mt-1 truncate">{lastSavedPair.output?.name}</p>
+                  </div>
+                  <div className="h-[calc(65vh-4rem)] p-2">
+                    <div className="h-full rounded-lg overflow-hidden border border-border/20 bg-gradient-to-br from-background via-background/95 to-primary/5">
                       {lastSavedPair.output && renderDocument(lastSavedPair.output)}
                     </div>
                   </div>
                 </div>
               </TabsContent>
-              
-              <TabsContent value="input" className="mt-4">
-                <div className="h-[65vh] border rounded-lg overflow-hidden">
-                  <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
-                    Input: {lastSavedPair.original?.name}
-                  </div>
-                  <div className="h-[calc(65vh-2.5rem)]">
-                    {lastSavedPair.original && renderDocument(lastSavedPair.original)}
-                  </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="output" className="mt-4">
-                <div className="h-[65vh] border rounded-lg overflow-hidden">
-                  <div className="bg-muted px-3 py-2 text-sm font-medium border-b">
-                    Output: {lastSavedPair.output?.name}
-                  </div>
-                  <div className="h-[calc(65vh-2.5rem)]">
-                    {lastSavedPair.output && renderDocument(lastSavedPair.output)}
-                  </div>
-                </div>
-              </TabsContent>
             </Tabs>
           ) : (
-            <div className="h-[65vh]">
-              {renderDocument(previewDoc, "rounded-md border")}
+            <div className="h-[65vh] bg-background/50 backdrop-blur-sm rounded-xl border border-border/50 shadow-sm overflow-hidden">
+              <div className="h-full p-2">
+                <div className="h-full rounded-lg overflow-hidden border border-border/20">
+                  {renderDocument(previewDoc)}
+                </div>
+              </div>
             </div>
           )}
         </div>
