@@ -290,16 +290,16 @@ export default function PreviewModal({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center p-8">
-                    <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
+                <div className="flex items-center justify-center h-full px-4 md:px-0">
+                  <div className="text-center p-4 md:p-8">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary w-6 h-6 md:w-8 md:h-8">
                         <path d="14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
                         <polyline points="14,2 14,8 20,8"/>
                       </svg>
                     </div>
-                    <h4 className="text-lg font-semibold text-foreground mb-2">Document Preview</h4>
-                    <p className="text-sm text-muted-foreground max-w-sm">
+                    <h4 className="text-base md:text-lg font-semibold text-foreground mb-2">Document Preview</h4>
+                    <p className="text-xs md:text-sm text-muted-foreground max-w-xs md:max-w-sm mx-auto leading-relaxed">
                       {!aiToolUsed 
                         ? "This document was uploaded directly. Use an AI tool to analyze and get insights about your document."
                         : "Process the document with an AI tool to see detailed analysis results here"
