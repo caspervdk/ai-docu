@@ -126,30 +126,51 @@ const Dashboard = () => {
       "Translate": "Translate",
       
       // Tools
-      "Summarize": "Summarize",
-      "Analyze": "Analyze", 
-      "Translate Document": "Translate Document",
-      "Data Extraction": "Data Extraction",
-      "Contract Analysis": "Contract Analysis",
-      "Privacy Audit": "Privacy Audit",
-      "Compliance Check": "Compliance Check",
-      "Content Generation": "Content Generation",
-      "Presentation Builder": "Presentation Builder",
+      "Summarize Long Documents": "Summarize Long Documents",
+      "Cross-Doc Linker": "Cross-Doc Linker",
+      "Translate & Localize": "Translate & Localize",
+      "Contract Analysis & Risk Detection": "Contract Analysis & Risk Detection",
+      "Smart Error Detection": "Smart Error Detection",
+      "Merge documents": "Merge documents",
+      "Analyze data from a file": "Analyze data from a file",
+      "PII Redaction & Anonymization": "PII Redaction & Anonymization",
+      "Table & Invoice Extraction": "Table & Invoice Extraction",
+      "Version Diff & Change Summary": "Version Diff & Change Summary",
+      "Doc-to-Slides Generator": "Doc-to-Slides Generator",
+      "Ask-Your-Docs Q&A": "Ask-Your-Docs Q&A",
+      "Data Cleaning & Normalization": "Data Cleaning & Normalization",
+      "Clause Finder & Policy Checker": "Clause Finder & Policy Checker",
       
       // Descriptions
-      "Get quick summaries": "Get quick summaries",
-      "Deep analysis": "Deep analysis",
-      "Multi-language support": "Multi-language support", 
-      "Extract key information": "Extract key information",
-      "Legal document review": "Legal document review",
-      "Privacy compliance": "Privacy compliance",
-      "Regulatory compliance": "Regulatory compliance",
-      "AI-powered content": "AI-powered content",
-      "Create presentations": "Create presentations",
+      "Condense long docs into key points.": "Condense long docs into key points.",
+      "Find related documents and link supporting evidence.": "Find related documents and link supporting evidence.",
+      "Translate content and adapt for regions.": "Translate content and adapt for regions.",
+      "Spot risks and clauses at a glance.": "Spot risks and clauses at a glance.",
+      "Identify issues and suggest fixes.": "Identify issues and suggest fixes.",
+      "Combine multiple documents into a single file.": "Combine multiple documents into a single file.",
+      "Extract insights and metrics from your dataset.": "Extract insights and metrics from your dataset.",
+      "Remove personal data and return a clean copy + audit log. Formats: PDF, DOCX, TXT, PNG/JPG (OCR)": "Remove personal data and return a clean copy + audit log. Formats: PDF, DOCX, TXT, PNG/JPG (OCR)",
+      "Detect tables and export structured CSV/JSON (invoice no., date, totals, VAT). Formats: PDF, PNG/JPG, DOCX": "Detect tables and export structured CSV/JSON (invoice no., date, totals, VAT). Formats: PDF, PNG/JPG, DOCX",
+      "Compare two documents and generate a human-readable changelog. Formats: PDF, DOCX, TXT": "Compare two documents and generate a human-readable changelog. Formats: PDF, DOCX, TXT",
+      "Turn a long document into presentation slides with notes. Formats: DOCX, PDF, TXT → PPTX/Google Slides": "Turn a long document into presentation slides with notes. Formats: DOCX, PDF, TXT → PPTX/Google Slides",
+      "Chat with documents; answers include citations. Formats: PDF, DOCX, TXT, HTML": "Chat with documents; answers include citations. Formats: PDF, DOCX, TXT, HTML",
+      "Fix missing values, outliers, duplicates; standardize columns. Formats: CSV, XLS/XLSX": "Fix missing values, outliers, duplicates; standardize columns. Formats: CSV, XLS/XLSX",
+      "Locate key clauses and score against a checklist. Formats: PDF, DOCX, TXT": "Locate key clauses and score against a checklist. Formats: PDF, DOCX, TXT",
+      
+      // CTAs
+      "Redact my file": "Redact my file",
+      "Extract tables": "Extract tables", 
+      "Compare versions": "Compare versions",
+      "Create slides": "Create slides",
+      "Start Q&A": "Start Q&A",
+      "Clean my data": "Clean my data",
+      "Scan for clauses": "Scan for clauses",
       
       // Other UI
       "No items in Trash.": "No items in Trash.",
-      "Upload": "Upload"
+      "Upload": "Upload",
+      "Upgrade to Pro": "Upgrade to Pro",
+      "Open AI tool": "Open AI tool"
     },
     Dutch: {
       // Navigation
@@ -162,30 +183,51 @@ const Dashboard = () => {
       "Translate": "Vertalen",
       
       // Tools
-      "Summarize": "Samenvatten",
-      "Analyze": "Analyseren",
-      "Translate Document": "Document Vertalen", 
-      "Data Extraction": "Data Extractie",
-      "Contract Analysis": "Contract Analyse",
-      "Privacy Audit": "Privacy Audit",
-      "Compliance Check": "Compliance Controle",
-      "Content Generation": "Content Generatie",
-      "Presentation Builder": "Presentatie Maker",
+      "Summarize Long Documents": "Lange Documenten Samenvatten",
+      "Cross-Doc Linker": "Cross-Document Linker",
+      "Translate & Localize": "Vertalen & Lokaliseren",
+      "Contract Analysis & Risk Detection": "Contract Analyse & Risicodetectie",
+      "Smart Error Detection": "Slimme Foutdetectie",
+      "Merge documents": "Documenten Samenvoegen",
+      "Analyze data from a file": "Data Analyseren uit Bestand",
+      "PII Redaction & Anonymization": "PII Redactie & Anonimisering",
+      "Table & Invoice Extraction": "Tabel & Factuur Extractie",
+      "Version Diff & Change Summary": "Versieverschil & Wijzigingsoverzicht",
+      "Doc-to-Slides Generator": "Document naar Presentatie Generator",
+      "Ask-Your-Docs Q&A": "Vraag-je-Documenten Q&A",
+      "Data Cleaning & Normalization": "Data Opschoning & Normalisatie",
+      "Clause Finder & Policy Checker": "Clausule Zoeker & Beleid Checker",
       
       // Descriptions  
-      "Get quick summaries": "Krijg snelle samenvattingen",
-      "Deep analysis": "Diepgaande analyse",
-      "Multi-language support": "Meertalige ondersteuning",
-      "Extract key information": "Haal belangrijke informatie eruit",
-      "Legal document review": "Juridische document beoordeling", 
-      "Privacy compliance": "Privacy naleving",
-      "Regulatory compliance": "Regelgevingsnaleving",
-      "AI-powered content": "AI-aangedreven content",
-      "Create presentations": "Maak presentaties",
+      "Condense long docs into key points.": "Lange documenten samenvatten tot kernpunten.",
+      "Find related documents and link supporting evidence.": "Gerelateerde documenten vinden en ondersteunend bewijs linken.",
+      "Translate content and adapt for regions.": "Content vertalen en aanpassen voor regio's.",
+      "Spot risks and clauses at a glance.": "Risico's en clausules in één oogopslag herkennen.",
+      "Identify issues and suggest fixes.": "Problemen identificeren en oplossingen voorstellen.",
+      "Combine multiple documents into a single file.": "Meerdere documenten samenvoegen tot één bestand.",
+      "Extract insights and metrics from your dataset.": "Inzichten en statistieken uit je dataset halen.",
+      "Remove personal data and return a clean copy + audit log. Formats: PDF, DOCX, TXT, PNG/JPG (OCR)": "Persoonlijke gegevens verwijderen en een schone kopie + auditlog retourneren. Formaten: PDF, DOCX, TXT, PNG/JPG (OCR)",
+      "Detect tables and export structured CSV/JSON (invoice no., date, totals, VAT). Formats: PDF, PNG/JPG, DOCX": "Tabellen detecteren en gestructureerde CSV/JSON exporteren (factuurnr., datum, totalen, BTW). Formaten: PDF, PNG/JPG, DOCX",
+      "Compare two documents and generate a human-readable changelog. Formats: PDF, DOCX, TXT": "Twee documenten vergelijken en een leesbaar wijzigingsoverzicht genereren. Formaten: PDF, DOCX, TXT",
+      "Turn a long document into presentation slides with notes. Formats: DOCX, PDF, TXT → PPTX/Google Slides": "Een lang document omzetten naar presentatieslides met notities. Formaten: DOCX, PDF, TXT → PPTX/Google Slides",
+      "Chat with documents; answers include citations. Formats: PDF, DOCX, TXT, HTML": "Chat met documenten; antwoorden bevatten citaties. Formaten: PDF, DOCX, TXT, HTML",
+      "Fix missing values, outliers, duplicates; standardize columns. Formats: CSV, XLS/XLSX": "Ontbrekende waarden, uitbijters, duplicaten oplossen; kolommen standaardiseren. Formaten: CSV, XLS/XLSX",
+      "Locate key clauses and score against a checklist. Formats: PDF, DOCX, TXT": "Belangrijke clausules lokaliseren en beoordelen tegen een checklist. Formaten: PDF, DOCX, TXT",
+      
+      // CTAs
+      "Redact my file": "Mijn bestand redigeren",
+      "Extract tables": "Tabellen extraheren",
+      "Compare versions": "Versies vergelijken", 
+      "Create slides": "Slides maken",
+      "Start Q&A": "Start Q&A",
+      "Clean my data": "Mijn data opschonen",
+      "Scan for clauses": "Scan voor clausules",
       
       // Other UI
       "No items in Trash.": "Geen items in prullenbak.",
-      "Upload": "Uploaden"
+      "Upload": "Uploaden",
+      "Upgrade to Pro": "Upgrade naar Pro",
+      "Open AI tool": "Open AI tool"
     }
   };
 
@@ -1889,29 +1931,29 @@ const Dashboard = () => {
 
         <main>
           <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map(t => <Card key={t.title} className="hover:shadow-md transition-shadow">
-                <CardHeader className="relative">
-                  <div className="size-12 rounded-full bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-                    <t.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <CardTitle className="text-lg">{t.title}</CardTitle>
-                    {t.proOnly && <>
-                        <Badge variant="secondary">PRO</Badge>
-                        <Button variant="pro" size="sm" className="absolute right-4 top-4 inline-flex" onClick={() => setUpgradeModalOpen(true)} aria-label="Upgrade to Pro">
-                          <Rocket className="size-4 mr-2" aria-hidden="true" />
-                          Upgrade to Pro
-                        </Button>
-                      </>}
-                  </div>
-                  <CardDescription>
-                    {t.desc} {t.proOnly && <span className="ml-1">(Upgrade to Pro to use)</span>}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" size="sm" onClick={() => t.proOnly ? setProPromptTool(t) : setActiveTool(t)}>{t.cta ?? "Open AI tool"}</Button>
-                </CardContent>
-              </Card>)}
+             {tools.map(tool => <Card key={tool.title} className="hover:shadow-md transition-shadow">
+                 <CardHeader className="relative">
+                   <div className="size-12 rounded-full bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+                     <tool.icon className="h-6 w-6 text-primary" />
+                   </div>
+                   <div className="mt-2 flex items-center gap-2">
+                     <CardTitle className="text-lg">{t(tool.title)}</CardTitle>
+                     {tool.proOnly && <>
+                         <Badge variant="secondary">PRO</Badge>
+                         <Button variant="pro" size="sm" className="absolute right-4 top-4 inline-flex" onClick={() => setUpgradeModalOpen(true)} aria-label="Upgrade to Pro">
+                           <Rocket className="size-4 mr-2" aria-hidden="true" />
+                           {t("Upgrade to Pro")}
+                         </Button>
+                       </>}
+                   </div>
+                   <CardDescription>
+                     {t(tool.desc)} {tool.proOnly && <span className="ml-1">({t("Upgrade to Pro")} to use)</span>}
+                   </CardDescription>
+                 </CardHeader>
+                 <CardContent>
+                   <Button variant="outline" size="sm" onClick={() => tool.proOnly ? setProPromptTool(tool) : setActiveTool(tool)}>{tool.cta ? t(tool.cta) : t("Open AI tool")}</Button>
+                 </CardContent>
+               </Card>)}
           </section>
 
           {/* New File upload dialog */}
@@ -1974,10 +2016,10 @@ const Dashboard = () => {
         }}>
           <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{activeTool?.title}</DialogTitle>
-              <DialogDescription>
-                Use this AI tool to {activeTool?.desc?.toLowerCase()}. Note: Please import PDF files.
-              </DialogDescription>
+               <DialogTitle>{activeTool ? t(activeTool.title) : ""}</DialogTitle>
+               <DialogDescription>
+                 Use this AI tool to {activeTool ? t(activeTool.desc).toLowerCase() : ""}. Note: Please import PDF files.
+               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
