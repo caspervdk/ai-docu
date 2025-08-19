@@ -1680,9 +1680,9 @@ const Dashboard = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Remaining</span>
+                <span className="text-xs text-muted-foreground">Credits Available</span>
                 <span className="text-sm font-medium text-primary">
-                  {10 - analyzedFilesCount} / 10
+                  {10 - analyzedFilesCount} of 10
                 </span>
               </div>
               <div className="w-full bg-secondary rounded-full h-2">
@@ -1692,9 +1692,11 @@ const Dashboard = () => {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                {analyzedFilesCount >= 10 
-                  ? "No credits remaining" 
-                  : `${10 - analyzedFilesCount} analyses remaining`
+                {analyzedFilesCount === 0 
+                  ? "Start with 10 free analysis credits" 
+                  : analyzedFilesCount >= 10 
+                    ? "All credits used - upgrade for more" 
+                    : `${10 - analyzedFilesCount} credits remaining`
                 }
               </p>
             </div>
