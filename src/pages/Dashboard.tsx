@@ -61,12 +61,12 @@ const Dashboard = () => {
   const [docName, setDocName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
-  const [allFiles, setAllFiles] = useState<{ name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string } }[]>([]);
+  const [docs, setDocs] = useState<{ name: string; url: string; updatedAt?: string; aiToolUsed?: string }[]>([]);
+  const [allFiles, setAllFiles] = useState<{ name: string; url: string; updatedAt?: string; folder?: { id: string; name: string; storage_path: string }; aiToolUsed?: string }[]>([]);
   const [folders, setFolders] = useState<{ id: string; name: string; storage_path: string; created_at: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
-  const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
-  const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string } | null>(null);
+  const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string; aiToolUsed?: string }[]>([]);
+  const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string; aiToolUsed?: string } | null>(null);
   const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
   const [translateLang, setTranslateLang] = useState("en->nl");
@@ -97,7 +97,7 @@ const Dashboard = () => {
   const [storagePopupOpen, setStoragePopupOpen] = useState(false);
   // Folder view state
   const [openFolder, setOpenFolder] = useState<{ id: string; name: string; storage_path: string } | null>(null);
-  const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string }[]>([]);
+  const [folderDocs, setFolderDocs] = useState<{ name: string; url: string; updatedAt?: string; aiToolUsed?: string }[]>([]);
   // Delete confirmation dialog state
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{ doc: { name: string; url: string; updatedAt?: string }; isTrash?: boolean; folder?: { id: string; name: string; storage_path: string }; fromStorage?: boolean } | null>(null);
   // Delete forever confirmation dialog state
@@ -157,7 +157,23 @@ const Dashboard = () => {
     const items = await Promise.all(visible.map(async (f: any) => {
       const path = `${folderStoragePath}/${f.name}`;
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-      return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+      
+      // Query analyzed_files to get AI tool information
+      const { data: analysisData } = await supabase
+        .from('analyzed_files')
+        .select('ai_tool_used')
+        .eq('user_id', userId)
+        .eq('file_name', f.name)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      return { 
+        name: f.name, 
+        url: signed?.signedUrl || '#', 
+        updatedAt: f.updated_at || f.created_at,
+        aiToolUsed: analysisData?.ai_tool_used || null
+      };
     }));
     
     console.log('Folder docs items:', items);
@@ -201,7 +217,23 @@ const Dashboard = () => {
         items = await Promise.all(visible.map(async (f: any) => {
           const path = `${userId}/${f.name}`;
           const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
-          return { name: f.name, url: signed?.signedUrl || '#', updatedAt: f.updated_at || f.created_at };
+          
+          // Query analyzed_files to get AI tool information
+          const { data: analysisData } = await supabase
+            .from('analyzed_files')
+            .select('ai_tool_used')
+            .eq('user_id', userId)
+            .eq('file_name', f.name)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+          
+          return { 
+            name: f.name, 
+            url: signed?.signedUrl || '#', 
+            updatedAt: f.updated_at || f.created_at,
+            aiToolUsed: analysisData?.ai_tool_used || null
+          };
         }));
         setDocs(items);
       }
@@ -537,15 +569,43 @@ const slugFileName = (s: string) =>
 
       }
 
+      // Save to database with AI tool information
+      if (newEntries.length > 0) {
+        try {
+          for (const entry of newEntries) {
+            const { error: dbError } = await supabase
+              .from('analyzed_files')
+              .insert({
+                user_id: userId,
+                file_name: entry.name,
+                file_path: entry.url,
+                analysis_type: activeTool?.title || 'Unknown',
+                ai_tool_used: activeTool?.title || 'Unknown',
+                analysis_result: outputEntry?.name === entry.name ? output : null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              });
+
+            if (dbError) {
+              console.error('Database save error:', dbError);
+              // Don't fail the whole process if DB save fails
+            }
+          }
+        } catch (dbErr: any) {
+          console.error('Failed to save to database:', dbErr);
+          // Don't fail the whole process if DB save fails
+        }
+      }
+
       // Update the appropriate document list based on folder selection
       if (selectedFolder) {
         // If saved to a folder, refresh folder contents if that folder is currently open
         if (openFolder && openFolder.id === selectedFolder.id) {
           await fetchFolderDocs(selectedFolder.storage_path.replace('/.keep', ''));
         }
-        toast({ title: 'Saved to folder', description: `${newEntries.length} item(s) added to ${selectedFolder.name}` });
+        toast({ title: 'Saved to folder', description: `${newEntries.length} item(s) added to ${selectedFolder.name} with ${activeTool?.title || 'AI tool'} analysis` });
       } else {
-        toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added` });
+        toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added with ${activeTool?.title || 'AI tool'} analysis` });
       }
       
       setLastSavedPair({ original: originalEntry, output: outputEntry });
@@ -1755,6 +1815,7 @@ const getPlaceholder = (title: string) => {
           onClose={() => setPreviewDoc(null)}
           isPdf={isPdf}
           isImage={isImage}
+          aiToolUsed={previewDoc?.aiToolUsed}
         />
         <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
           <DialogContent className="sm:max-w-md">
