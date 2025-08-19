@@ -1196,6 +1196,132 @@ const getPlaceholder = (title: string) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+              {/* Mobile sections */}
+              <div className="md:hidden space-y-4">
+                <section id="my-documents" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">My Documents</div>
+                  {docs.length === 0 ? (
+                    <div className="text-xs text-muted-foreground">No documents yet.</div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {docs.filter(d => d.name.includes('.')).slice(0, 10).map((d) => (
+                        <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                          <div className="min-w-0 flex-1">
+                            <FileNameDisplay fileName={d.name} className="block" />
+                            {d.updatedAt && (
+                              <span className="block text-[11px] text-muted-foreground">
+                                {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
+                              </span>
+                            )}
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" aria-label="Options">
+                                <Menu className="h-4 w-4" aria-hidden="true" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="z-50">
+                              <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+
+                <section id="shared-with-me" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">Shared with me</div>
+                  <div className="text-xs text-muted-foreground">Files others have shared with you.</div>
+                </section>
+
+                <section id="starred" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">Starred</div>
+                  <div className="text-xs text-muted-foreground">Your favorites in one place.</div>
+                </section>
+
+                <section id="trash" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">Trash</div>
+                  {trashDocs.length === 0 ? (
+                    <div className="text-xs text-muted-foreground">No items in Trash.</div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {trashDocs.slice(0, 10).map((d) => (
+                        <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
+                          <div className="min-w-0 flex-1">
+                            <FileNameDisplay fileName={d.name} className="block" />
+                            {d.updatedAt && (
+                              <span className="block text-[11px] text-muted-foreground">
+                                {formatDistanceToNow(new Date(d.updatedAt), { addSuffix: true })}
+                              </span>
+                            )}
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" aria-label="Options">
+                                <Menu className="h-4 w-4" aria-hidden="true" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="z-50">
+                              <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDocAction('delete-forever', d, true)}>Delete forever</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+
+                <section id="folders" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">Folders</div>
+                  <div className="space-y-2">
+                    <div className="text-sm text-muted-foreground">Create and manage folders to organize your documents.</div>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        placeholder="New folder name"
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                        className="text-sm"
+                      />
+                      <Button size="sm" onClick={() => createFolder()} disabled={!userId || creatingFolder || !newFolderName.trim()}>
+                        {creatingFolder ? 'Creating...' : 'Create'}
+                      </Button>
+                    </div>
+                    {folders.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        <div className="text-sm font-medium">Your Folders</div>
+                        <ul className="space-y-1">
+                          {folders.slice(0, 5).map((folder) => (
+                            <li key={folder.id} className="flex items-center justify-between gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors">
+                              <div className="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onClick={() => handleOpenFolder(folder)}>
+                                <Folder className="h-4 w-4 text-primary flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-medium text-foreground truncate">{folder.name}</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {formatDistanceToNow(new Date(folder.created_at), { addSuffix: true })}
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                <section id="tags" className="rounded-lg border p-4">
+                  <div className="text-sm font-medium mb-2">Tags</div>
+                  <div className="text-sm text-muted-foreground">Organize and filter files with tags, or create your own folders.</div>
+                </section>
+              </div>
+
               <Accordion type="multiple" className="w-full hidden md:block">
 
                 <AccordionItem value="folders" id="folders">
@@ -1419,7 +1545,7 @@ const getPlaceholder = (title: string) => {
           </section>
 
 
-          <section aria-label="Recent" className="rounded-lg border p-4">
+          <section aria-label="Recent" className="rounded-lg border p-4" id="recent">
             <div className="text-sm font-medium mb-2">Recent</div>
             {docs.length === 0 ? (
               <div className="text-xs text-muted-foreground">No documents yet.</div>
