@@ -38,12 +38,8 @@ export default function PreviewModal({
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="sm:max-w-6xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            {previewDoc.name}
-          </DialogTitle>
-          <DialogDescription className="text-lg text-muted-foreground">
-            Advanced AI-powered document preview with intelligent analysis
-          </DialogDescription>
+          <DialogTitle>{previewDoc.name}</DialogTitle>
+          <DialogDescription>Preview</DialogDescription>
         </DialogHeader>
         
         <div className="min-h-[70vh] relative">
