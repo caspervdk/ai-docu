@@ -752,45 +752,45 @@ export default function Account() {
             
             {/* Delete Account Section */}
             <Card className="border-destructive/20">
-              <CardHeader>
-                <CardTitle className="text-destructive">Delete Account</CardTitle>
-                <CardDescription>
-                  Permanently delete your account and all associated data. This action cannot be undone.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" disabled={isDeleting} className="flex items-center gap-2">
-                      <Trash2 className="h-4 w-4" />
-                      {isDeleting ? "Deleting..." : "Delete Account"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove all your data from our servers including:
-                        <ul className="list-disc list-inside mt-2 space-y-1">
-                          <li>Profile information</li>
-                          <li>Uploaded documents and analysis results</li>
-                          <li>Account preferences and settings</li>
-                        </ul>
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleDeleteAccount}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        disabled={isDeleting}
-                      >
-                        {isDeleting ? "Deleting..." : "Yes, delete account"}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+              <CardContent className="pt-4 pb-4">
+                <div className="space-y-3">
+                  <div>
+                    <h3 className="text-sm font-medium text-destructive">Delete Account</h3>
+                    <p className="text-xs text-muted-foreground">Permanently delete your account and all data.</p>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" disabled={isDeleting} className="h-8 text-xs">
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        {isDeleting ? "Deleting..." : "Delete Account"}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your account
+                          and remove all your data from our servers including:
+                          <ul className="list-disc list-inside mt-2 space-y-1">
+                            <li>Profile information</li>
+                            <li>Uploaded documents and analysis results</li>
+                            <li>Account preferences and settings</li>
+                          </ul>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteAccount}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          disabled={isDeleting}
+                        >
+                          {isDeleting ? "Deleting..." : "Yes, delete account"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </CardContent>
             </Card>
           </div>
