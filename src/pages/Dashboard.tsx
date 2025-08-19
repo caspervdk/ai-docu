@@ -1701,12 +1701,6 @@ const Dashboard = () => {
                                         <DropdownMenuItem onClick={() => openDocumentPreview(doc)}>
                                           Preview
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setMoveDocDialog({
-                                  doc,
-                                  selectedFolder: 'Documents'
-                                })}>
-                                          Move to Documents
-                                        </DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => setRenameDocDialog({
                                   doc,
                                   newName: doc.name
