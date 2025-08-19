@@ -49,6 +49,9 @@ const Index = () => {
       "Dashboard": "Dashboard",
       "Translate": "Translate",
       
+      // Dialog labels
+      "Select Language": "Select Language",
+      
       // Hero section
       "Smarter Documents. Powered by AI.": "Smarter Documents. Powered by AI.",
       "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.": "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.",
@@ -116,6 +119,9 @@ const Index = () => {
       "Log in": "Inloggen",
       "Dashboard": "Dashboard",
       "Translate": "Vertalen",
+      
+      // Dialog labels  
+      "Select Language": "Selecteer Taal",
       
       // Hero section
       "Smarter Documents. Powered by AI.": "Slimmere Documenten. Aangedreven door AI.",
@@ -568,18 +574,36 @@ const onStartAI = async (overrideAction?: string) => {
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2" aria-label="Select language">
-                  <Languages className="h-4 w-4" />
-                  <span className="hidden sm:inline">{getTranslation("Translate")}</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 hover-scale border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-md" 
+                  aria-label="Select language"
+                >
+                  <Languages className="h-4 w-4 text-primary animate-pulse" />
+                  <span className="hidden sm:inline font-medium text-primary">{getTranslation("Translate")}</span>
+                  <span className="text-xs opacity-60 hidden md:inline">
+                    {currentLanguage === "English" ? "EN" : "NL"}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="z-50">
-                <DropdownMenuLabel>Select Language</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => handleLanguageChange("English")}>
+              <DropdownMenuContent align="end" className="z-50 min-w-[160px] bg-background/95 backdrop-blur-md border-primary/20 shadow-xl">
+                <DropdownMenuLabel className="text-primary font-semibold">{getTranslation("Select Language")}</DropdownMenuLabel>
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange("English")}
+                  className={`cursor-pointer hover:bg-primary/10 ${currentLanguage === "English" ? "bg-primary/5 text-primary font-medium" : ""}`}
+                >
+                  <span className="mr-2">🇺🇸</span>
                   English
+                  {currentLanguage === "English" && <span className="ml-auto text-primary">✓</span>}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleLanguageChange("Dutch")}>
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange("Dutch")}
+                  className={`cursor-pointer hover:bg-primary/10 ${currentLanguage === "Dutch" ? "bg-primary/5 text-primary font-medium" : ""}`}
+                >
+                  <span className="mr-2">🇳🇱</span>
                   Nederlands
+                  {currentLanguage === "Dutch" && <span className="ml-auto text-primary">✓</span>}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
