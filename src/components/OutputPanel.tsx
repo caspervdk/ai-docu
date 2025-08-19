@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { WandSparkles, Copy, Edit3, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
+// Force refresh to clear any caching issues
+console.log("OutputPanel loaded with Sonner toast");
 
 type OutputPanelProps = {
   title?: string;
