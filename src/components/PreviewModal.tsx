@@ -394,10 +394,10 @@ export default function PreviewModal({
           </div>
         </div>
         
-        <DialogFooter className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto px-4 md:px-6 py-3 md:py-4 border-t bg-background/95 md:bg-muted/20 backdrop-blur-sm md:backdrop-blur-none z-20 flex-row gap-2 md:gap-4">
-          <Button variant="outline" asChild className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm">
-            <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1 md:gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
+        <DialogFooter className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto px-6 md:px-8 py-4 md:py-6 border-t border-border/50 bg-gradient-to-t from-background via-background/95 to-background/80 md:bg-card/50 backdrop-blur-lg md:backdrop-blur-sm shadow-lg md:shadow-none z-20 flex-row gap-3 md:gap-4">
+          <Button variant="outline" asChild className="flex-1 md:flex-initial h-11 md:h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200 border-border/60 hover:border-border bg-background/50 hover:bg-background/80 backdrop-blur-sm">
+            <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4 opacity-70">
                 <path d="18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15,3 21,3 21,9"/>
                 <line x1="10" x2="21" y1="14" y2="3"/>
@@ -406,15 +406,16 @@ export default function PreviewModal({
               <span className="md:hidden">Open</span>
             </a>
           </Button>
-          <Button variant="default" className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm gap-1 md:gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
-              <path d="M19 21H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <Button variant="default" className="flex-1 md:flex-initial h-11 md:h-10 text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 bg-primary hover:bg-primary/90 gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
               <polyline points="17,21 17,13 7,13 7,21"/>
               <polyline points="7,3 7,8 15,8"/>
             </svg>
-            Save
+            <span className="hidden sm:inline">Save Document</span>
+            <span className="sm:hidden">Save</span>
           </Button>
-          <Button onClick={onClose} className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm gap-1 md:gap-2">
+          <Button onClick={onClose} variant="ghost" className="flex-1 md:flex-initial h-11 md:h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200 hover:bg-muted/80 gap-2">
             <span className="hidden md:inline">Close Preview</span>
             <span className="md:hidden">Close</span>
           </Button>
