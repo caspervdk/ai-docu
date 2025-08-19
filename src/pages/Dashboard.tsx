@@ -2046,11 +2046,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <DialogFooter className="flex items-center justify-between">
+            <DialogFooter className="flex items-center">
               <Button variant="secondary" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim() || !saveToFolderId}>
                 {isSaving ? "Saving..." : "Save to folder"}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)}>Feedback</Button>
+              <div className="flex-1"></div>
+              <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)} className="ml-auto">Feedback</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
