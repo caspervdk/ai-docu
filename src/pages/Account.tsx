@@ -590,18 +590,6 @@ export default function Account() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Ranking</span>
-                    <span className="text-base font-semibold">8,6</span>
-                    <div className="flex text-primary">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-primary/60" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
                 <Tabs defaultValue="about" className="w-full">
                   <TabsList>
                     <TabsTrigger value="timeline">Timeline</TabsTrigger>
