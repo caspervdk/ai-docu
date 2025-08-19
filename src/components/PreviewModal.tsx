@@ -358,15 +358,15 @@ export default function PreviewModal({
                            )}
                          </div>
                         
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
-                          <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
-                            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                            Processing Status
-                          </h4>
-                          <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                            Document analysis completed successfully. Key content has been extracted and summarized for easy review.
-                          </p>
-                        </div>
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50 mt-6">
+                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
+                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                             Processing Status
+                           </h4>
+                           <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                             Document analysis completed successfully. Key content has been extracted and summarized for easy review.
+                           </p>
+                         </div>
                       </>
                     )}
                   </div>
