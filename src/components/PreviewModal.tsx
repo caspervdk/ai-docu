@@ -10,6 +10,7 @@ interface PreviewModalProps {
   isPdf: (filename: string) => boolean;
   isImage: (filename: string) => boolean;
   aiToolUsed?: string | null;
+  analysisResult?: string | null;
 }
 
 export default function PreviewModal({ 
@@ -18,7 +19,8 @@ export default function PreviewModal({
   onClose, 
   isPdf, 
   isImage,
-  aiToolUsed 
+  aiToolUsed,
+  analysisResult 
 }: PreviewModalProps) {
   if (!previewDoc) return null;
 
@@ -183,20 +185,26 @@ export default function PreviewModal({
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                             AI Translation & Localization Results
                           </h4>
-                          <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                            Your document has been processed with AI-powered translation and localization technology. 
-                            The content has been adapted for regional preferences and cultural context.
-                          </p>
+                          {analysisResult ? (
+                            <div className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
+                              Your document has been processed with AI-powered translation and localization technology. 
+                              The content has been adapted for regional preferences and cultural context.
+                            </p>
+                          )}
                         </div>
                         
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            Translated Content Summary
+                            Processing Status
                           </h4>
                           <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                            The document content has been successfully translated while preserving the original meaning, 
-                            structure, and formatting. Regional adaptations have been applied where appropriate.
+                            Translation completed successfully. The document content has been processed while preserving 
+                            the original meaning, structure, and formatting.
                           </p>
                         </div>
                       </>

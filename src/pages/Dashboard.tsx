@@ -66,7 +66,7 @@ const Dashboard = () => {
   const [folders, setFolders] = useState<{ id: string; name: string; storage_path: string; created_at: string }[]>([]);
   const [showAllDocs, setShowAllDocs] = useState(false);
   const [trashDocs, setTrashDocs] = useState<{ name: string; url: string; updatedAt?: string; aiToolUsed?: string }[]>([]);
-  const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string; aiToolUsed?: string } | null>(null);
+  const [previewDoc, setPreviewDoc] = useState<{ name: string; url: string; aiToolUsed?: string; analysisResult?: string } | null>(null);
   const [lastSavedPair, setLastSavedPair] = useState<{ original?: { name: string; url: string }; output?: { name: string; url: string } } | null>(null);
   const [proPromptTool, setProPromptTool] = useState<(typeof tools)[number] | null>(null);
   const [translateLang, setTranslateLang] = useState("en->nl");
@@ -132,6 +132,42 @@ const Dashboard = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Helper function to fetch analysis result for a document
+  const fetchAnalysisResult = async (fileName: string) => {
+    if (!userId) return null;
+    
+    try {
+      const { data, error } = await supabase
+        .from('analyzed_files')
+        .select('analysis_result, ai_tool_used')
+        .eq('user_id', userId)
+        .eq('file_name', fileName)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (error) {
+        console.log('No analysis result found for:', fileName);
+        return null;
+      }
+      
+      return data;
+    } catch (err) {
+      console.error('Error fetching analysis result:', err);
+      return null;
+    }
+  };
+
+  // Enhanced preview function that includes analysis result
+  const openDocumentPreview = async (doc: { name: string; url: string; aiToolUsed?: string }) => {
+    const analysisData = await fetchAnalysisResult(doc.name);
+    setPreviewDoc({
+      ...doc,
+      aiToolUsed: analysisData?.ai_tool_used || doc.aiToolUsed,
+      analysisResult: analysisData?.analysis_result || null
+    });
+  };
 
   // Fetch folder contents
   const fetchFolderDocs = async (folderStoragePath: string) => {
@@ -1009,7 +1045,7 @@ const slugFileName = (s: string) =>
     }
     
     if (action === 'view') {
-      setPreviewDoc(doc);
+      await openDocumentPreview(doc);
       return;
     }
     if (action === 'share') {
@@ -1294,7 +1330,7 @@ const getPlaceholder = (title: string) => {
                                         </Button>
                                       </DropdownMenuTrigger>
                                       <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => setPreviewDoc(doc)}>
+                                        <DropdownMenuItem onClick={() => openDocumentPreview(doc)}>
                                           Preview
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => setMoveDocDialog({ doc, selectedFolder: 'Documents' })}>
@@ -1816,6 +1852,7 @@ const getPlaceholder = (title: string) => {
           isPdf={isPdf}
           isImage={isImage}
           aiToolUsed={previewDoc?.aiToolUsed}
+          analysisResult={previewDoc?.analysisResult}
         />
         <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
           <DialogContent className="sm:max-w-md">
@@ -2025,7 +2062,7 @@ const getPlaceholder = (title: string) => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="z-50">
-                              <DropdownMenuItem onClick={() => { setPreviewDoc(doc); setStoragePopupOpen(false); }}>
+                              <DropdownMenuItem onClick={() => { openDocumentPreview(doc); setStoragePopupOpen(false); }}>
                                 Preview
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleDocAction('share', doc)}>
