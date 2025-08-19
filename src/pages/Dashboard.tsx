@@ -804,9 +804,9 @@ const slugFileName = (s: string) =>
   const isPdf = (n: string) => /\.pdf$/i.test(n);
   const isImage = (n: string) => /\.(png|jpe?g|gif|webp|svg)$/i.test(n);
   
-  // Move document to trash (wrapper for handleDocAction)
-  const moveToTrash = (doc: { name: string; url: string; updatedAt?: string }) => {
-    handleDocAction('delete', doc);
+  // Move document to trash (directly without confirmation)
+  const moveToTrash = async (doc: { name: string; url: string; updatedAt?: string }) => {
+    await performDelete(doc, false, openFolder || undefined);
   };
 
   // Perform actual delete after confirmation
@@ -1330,7 +1330,7 @@ const getPlaceholder = (title: string) => {
                                           Rename
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => moveToTrash(doc)}>
-                                          Delete
+                                          Move to Trash
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
                                     </DropdownMenu>
@@ -1479,7 +1479,7 @@ const getPlaceholder = (title: string) => {
                           <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Delete</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Move to Trash</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </li>
