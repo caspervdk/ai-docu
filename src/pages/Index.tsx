@@ -408,10 +408,10 @@ const onStartAI = async (overrideAction?: string) => {
           <a href="#" className="flex items-center gap-2" aria-label="DocMind AI home">
             <img src="/lovable-uploads/e443a8b9-e81f-4b9a-815b-1b4745a36b86.png" alt="AI Docu logo" className="h-[3.6rem] w-auto" loading="eager" />
           </a>
-          <div className="hidden md:flex items-center gap-4">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+          <div className="flex items-center gap-4">
+            <a href="#features" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">AI tool</a>
+            <a href="#how-it-works" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
+            <a href="#pricing" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             {isAuthed ? (
               <Button variant="outline" asChild><a href="/dashboard">Dashboard</a></Button>
             ) : (
