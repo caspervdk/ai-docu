@@ -144,15 +144,15 @@ const Dashboard = () => {
         .eq('user_id', userId)
         .eq('file_name', fileName)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
       
-      if (error) {
+      if (error || !data || data.length === 0) {
         console.log('No analysis result found for:', fileName);
         return null;
       }
       
-      return data;
+      console.log('Analysis result found for:', fileName, data[0]);
+      return data[0];
     } catch (err) {
       console.error('Error fetching analysis result:', err);
       return null;
@@ -161,17 +161,23 @@ const Dashboard = () => {
 
   // Enhanced preview function that includes analysis result
   const openDocumentPreview = async (doc: { name: string; url: string; aiToolUsed?: string }) => {
+    console.log('Opening preview for:', doc.name, 'with aiToolUsed:', doc.aiToolUsed);
     const analysisData = await fetchAnalysisResult(doc.name);
     
     // Parse the analysis result to extract the output content
     let parsedAnalysisResult = null;
     if (analysisData?.analysis_result) {
+      console.log('Raw analysis result:', analysisData.analysis_result);
       try {
         const parsed = JSON.parse(analysisData.analysis_result);
         parsedAnalysisResult = parsed.output || analysisData.analysis_result;
+        console.log('Parsed analysis result:', parsedAnalysisResult);
       } catch {
         parsedAnalysisResult = analysisData.analysis_result;
+        console.log('Using raw analysis result:', parsedAnalysisResult);
       }
+    } else {
+      console.log('No analysis result available for:', doc.name);
     }
     
     setPreviewDoc({
