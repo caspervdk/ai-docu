@@ -26,7 +26,29 @@ export default function PreviewModal({
 }: PreviewModalProps) {
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
-  
+
+  const handleScroll = () => {
+    setIsScrolling(true);
+    
+    // Clear existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // Set timeout to reset scrolling state after scrolling stops
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (!previewDoc) return null;
 
   const isPrevOrig = lastSavedPair?.original && previewDoc.name === lastSavedPair.original.name;
@@ -68,28 +90,6 @@ export default function PreviewModal({
   };
 
   const aiToolStyling = getAiToolStyling();
-
-  const handleScroll = () => {
-    setIsScrolling(true);
-    
-    // Clear existing timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    // Set timeout to reset scrolling state after scrolling stops
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 150);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const renderDocument = (doc: { name: string; url: string }, className = "") => {
     if (isPdf(doc.name)) {
