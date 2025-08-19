@@ -195,14 +195,23 @@ const Dashboard = () => {
       const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
       
       // Query analyzed_files to get AI tool information
-      const { data: analysisData } = await supabase
-        .from('analyzed_files')
-        .select('ai_tool_used')
-        .eq('user_id', userId)
-        .eq('file_name', f.name)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      let analysisData = null;
+      try {
+        const { data, error } = await supabase
+          .from('analyzed_files')
+          .select('ai_tool_used')
+          .eq('user_id', userId)
+          .eq('file_name', f.name)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+        
+        if (!error) {
+          analysisData = data;
+        }
+      } catch (err) {
+        console.log('No analysis data found for:', f.name);
+      }
       
       return { 
         name: f.name, 
@@ -255,14 +264,23 @@ const Dashboard = () => {
           const { data: signed } = await supabase.storage.from('documents').createSignedUrl(path, 600);
           
           // Query analyzed_files to get AI tool information
-          const { data: analysisData } = await supabase
-            .from('analyzed_files')
-            .select('ai_tool_used')
-            .eq('user_id', userId)
-            .eq('file_name', f.name)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+          let analysisData = null;
+          try {
+            const { data, error } = await supabase
+              .from('analyzed_files')
+              .select('ai_tool_used')
+              .eq('user_id', userId)
+              .eq('file_name', f.name)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .single();
+            
+            if (!error) {
+              analysisData = data;
+            }
+          } catch (err) {
+            console.log('No analysis data found for:', f.name);
+          }
           
           return { 
             name: f.name, 
