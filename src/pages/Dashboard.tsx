@@ -1616,57 +1616,11 @@ const Dashboard = () => {
           <nav className="space-y-2">
             <section aria-label="My Drive" className="md:rounded-lg md:border md:p-4">
               <div className="text-sm font-medium mb-2">My Drive</div>
-              {/* Mobile dropdown for My Drive */}
-              <div className="md:hidden mb-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full" aria-label="Open My Drive menu">
-                      My Drive
-                      <Menu className="ml-2 h-4 w-4" aria-hidden="true" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                   <DropdownMenuContent align="start" className="z-50 w-56">
-                     <DropdownMenuItem onClick={() => {
-                       // Navigate to Recent (main documents view) 
-                       handleCloseFolder();
-                       setShowAllDocs(false);
-                       // Scroll to the main content area where documents are shown
-                       document.querySelector('main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                     }}>Recent</DropdownMenuItem>
-                     <DropdownMenuItem onClick={() => {
-                       // Navigate to and expand Trash section
-                       handleCloseFolder();
-                       // Find and click the trash accordion trigger to expand it
-                       const trashAccordion = document.querySelector('[value="trash"]');
-                       if (trashAccordion) {
-                         trashAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                         const trashTrigger = trashAccordion.querySelector('[data-state]') as HTMLButtonElement;
-                         if (trashTrigger && trashTrigger.getAttribute('data-state') === 'closed') {
-                           trashTrigger.click();
-                         }
-                       }
-                     }}>Trash</DropdownMenuItem>
-                     <DropdownMenuItem onClick={() => {
-                       // Navigate to and expand Folders section
-                       handleCloseFolder(); 
-                       // Find and click the folders accordion trigger to expand it
-                       const foldersAccordion = document.querySelector('[value="folders"]');
-                       if (foldersAccordion) {
-                         foldersAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                         const foldersTrigger = foldersAccordion.querySelector('[data-state]') as HTMLButtonElement;
-                         if (foldersTrigger && foldersTrigger.getAttribute('data-state') === 'closed') {
-                           foldersTrigger.click();
-                         }
-                       }
-                     }}>Folders</DropdownMenuItem>
-                   </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              <Accordion type="multiple" className="w-full hidden md:block">
+              <Accordion type="multiple" className="w-full">
 
                 <AccordionItem value="folders" id="folders">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Folders">
-                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Folders</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Folder className="mr-2 h-4 w-4" /> <span>Folders</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     <div className="space-y-2">
@@ -1774,7 +1728,7 @@ const Dashboard = () => {
 
                 <AccordionItem value="trash" id="trash">
                   <AccordionTrigger className="justify-start gap-2" aria-label="Trash">
-                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4 hidden md:inline" /> <span className="hidden md:inline">Trash</span></span>
+                    <span className="inline-flex items-center" aria-hidden="false"><Trash2 className="mr-2 h-4 w-4" /> <span>Trash</span></span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     {trashDocs.length === 0 ? <div className="text-xs text-muted-foreground">No items in Trash.</div> : <ul className="space-y-2">
