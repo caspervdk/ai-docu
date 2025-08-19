@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { WandSparkles, Copy, Edit3, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/sonner";
 
 type OutputPanelProps = {
   title?: string;
@@ -13,7 +13,6 @@ type OutputPanelProps = {
 export function OutputPanel({ title = "AI summary", content, emptyText = "Results will appear here." }: OutputPanelProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
-  const { toast } = useToast();
   
   const raw = (content || "").trim();
   let isEmpty = raw.length === 0;
@@ -51,18 +50,9 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
     const textToCopy = jsonPretty || displayValue;
     try {
       await navigator.clipboard.writeText(textToCopy);
-      toast({
-        title: "Copied!",
-        description: "Text copied to clipboard",
-        duration: 2000,
-      });
+      toast.success("Text copied to clipboard");
     } catch (error) {
-      toast({
-        title: "Copy failed",
-        description: "Could not copy text to clipboard",
-        variant: "destructive",
-        duration: 2000,
-      });
+      toast.error("Could not copy text to clipboard");
     }
   };
 
@@ -75,11 +65,7 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
     // Here you could add logic to save the edited content
     // For now, we'll just update the display
     setIsEditing(false);
-    toast({
-      title: "Saved!",
-      description: "Changes saved successfully",
-      duration: 2000,
-    });
+    toast.success("Changes saved successfully");
   };
 
   const handleCancel = () => {
