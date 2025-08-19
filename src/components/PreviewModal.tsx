@@ -113,9 +113,9 @@ export default function PreviewModal({
       <DialogContent className="w-full h-full md:max-w-[80vw] md:h-[80vh] p-0 gap-0 m-0 md:m-auto md:rounded-lg rounded-none">
         <DialogHeader className="px-6 py-4 border-b bg-background">
           <div className="flex items-center justify-between">
-            <div className="text-center flex-1">
+            <div>
               <DialogTitle className="text-xl font-semibold text-primary">
-                Document Preview and summarize Long
+                Document Preview
               </DialogTitle>
               <DialogDescription className="text-sm text-muted-foreground">
                 {previewDoc.name}
