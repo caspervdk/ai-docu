@@ -173,7 +173,28 @@ const Dashboard = () => {
       "No items in Trash.": "No items in Trash.",
       "Upload": "Upload",
       "Upgrade to Pro": "Upgrade to Pro",
-      "Open AI tool": "Open AI tool"
+      "Open AI tool": "Open AI tool",
+      
+      // Dialog content
+      "Drop your file here or click to upload": "Drop your file here or click to upload",
+      "Summarize with AI": "Summarize with AI",
+      "Translate with AI": "Translate with AI", 
+      "Search-Doc with AI": "Search-Doc with AI",
+      "Cancel": "Cancel",
+      "AI SUMMARY": "AI SUMMARY",
+      "AI CROSS-DOC LINKER": "AI CROSS-DOC LINKER",
+      "AI TRANSLATE & LOCALIZE": "AI TRANSLATE & LOCALIZE",
+      "Results will appear here.": "Results will appear here.",
+      "Document name": "Document name",
+      "Give your document a name": "Give your document a name",
+      "Save location": "Save location",
+      "Select a folder": "Select a folder",
+      "Please select a folder to save your document.": "Please select a folder to save your document.",
+      "Will be saved in the selected folder.": "Will be saved in the selected folder.",
+      "Save to folder": "Save to folder",
+      "Saving...": "Saving...",
+      "Sending...": "Sending...",
+      "Feedback": "Feedback"
     },
     Dutch: {
       // Navigation
@@ -230,7 +251,28 @@ const Dashboard = () => {
       "No items in Trash.": "Geen items in prullenbak.",
       "Upload": "Uploaden",
       "Upgrade to Pro": "Upgrade naar Pro",
-      "Open AI tool": "AI-tool openen"
+      "Open AI tool": "AI-tool openen",
+      
+      // Dialog content
+      "Drop your file here or click to upload": "Sleep je bestand hierheen of klik om te uploaden",
+      "Summarize with AI": "Samenvatten met AI",
+      "Translate with AI": "Vertalen met AI",
+      "Search-Doc with AI": "Zoeken in documenten met AI",
+      "Cancel": "Annuleren",
+      "AI SUMMARY": "AI SAMENVATTING",
+      "AI CROSS-DOC LINKER": "AI CROSS-DOCUMENT LINKER",
+      "AI TRANSLATE & LOCALIZE": "AI VERTALEN & LOKALISEREN", 
+      "Results will appear here.": "Resultaten verschijnen hier.",
+      "Document name": "Documentnaam",
+      "Give your document a name": "Geef je document een naam",
+      "Save location": "Opslaglocatie",
+      "Select a folder": "Selecteer een map",
+      "Please select a folder to save your document.": "Selecteer een map om je document op te slaan.",
+      "Will be saved in the selected folder.": "Wordt opgeslagen in de geselecteerde map.",
+      "Save to folder": "Opslaan in map",
+      "Saving...": "Opslaan...",
+      "Sending...": "Verzenden...",
+      "Feedback": "Feedback"
     }
   };
 
@@ -2045,7 +2087,7 @@ const Dashboard = () => {
                   setIsDragActive(false);
                   const f = e.dataTransfer.files?.[0];
                   if (f) setSelectedFile(f);
-                }} className={`flex w-full items-center justify-center rounded-md border text-sm transition cursor-pointer ${isDragActive ? 'border-primary bg-primary/5' : selectedFile ? 'border-border bg-muted/10 py-3' : 'h-28 border-dashed'} hover-scale`} aria-label="Drop your file here or click to upload">
+                 }} className={`flex w-full items-center justify-center rounded-md border text-sm transition cursor-pointer ${isDragActive ? 'border-primary bg-primary/5' : selectedFile ? 'border-border bg-muted/10 py-3' : 'h-28 border-dashed'} hover-scale`} aria-label={getTranslation("Drop your file here or click to upload")}>
                     {selectedFile ? <div className="w-full px-2 animate-fade-in">
                         <div className="flex items-center gap-3 rounded-md border bg-muted/30 px-3 py-2">
                           <div className="rounded-md bg-primary/10 p-2">
@@ -2060,7 +2102,7 @@ const Dashboard = () => {
                             <Button variant="ghost" size="sm" onClick={() => setSelectedFile(null)}>Remove</Button>
                           </div>
                         </div>
-                      </div> : <span className="text-muted-foreground">Drop your file here or click to upload</span>}
+                       </div> : <span className="text-muted-foreground">{getTranslation("Drop your file here or click to upload")}</span>}
                   </div> : activeTool?.title === "Cross-Doc Linker" ? null : <Textarea id="tool-input" placeholder={activeTool ? getPlaceholder(activeTool.title) : ""} value={input} onChange={e => setInput(e.target.value)} rows={6} />}
               </div>
 
@@ -2097,7 +2139,7 @@ const Dashboard = () => {
                     setIsDragActive(false);
                     const f = e.dataTransfer.files?.[0];
                     if (f) setSelectedFile(f);
-                  }} className={`flex w-full items-center justify-center rounded-md border text-sm transition cursor-pointer ${isDragActive ? 'border-primary bg-primary/5' : selectedFile ? 'border-border bg-muted/10 py-3' : 'h-28 border-dashed'} hover-scale`} aria-label="Drop your file here or click to upload">
+                  }} className={`flex w-full items-center justify-center rounded-md border text-sm transition cursor-pointer ${isDragActive ? 'border-primary bg-primary/5' : selectedFile ? 'border-border bg-muted/10 py-3' : 'h-28 border-dashed'} hover-scale`} aria-label={getTranslation("Drop your file here or click to upload")}>
                       {selectedFile ? <div className="w-full px-2 animate-fade-in">
                           <div className="flex items-center gap-3 rounded-md border bg-muted/30 px-3 py-2">
                             <div className="rounded-md bg-primary/10 p-2">
@@ -2112,28 +2154,28 @@ const Dashboard = () => {
                               <Button variant="ghost" size="sm" onClick={() => setSelectedFile(null)}>Remove</Button>
                             </div>
                           </div>
-                        </div> : <span className="text-muted-foreground">Drop your file here or click to upload</span>}
+                        </div> : <span className="text-muted-foreground">{getTranslation("Drop your file here or click to upload")}</span>}
                     </div>
                   </>}
               </div>
 
               <div className="flex items-center gap-2">
-                <Button onClick={() => summarizeWithAI()} disabled={isSending || !selectedFile && !input.trim()}>{isSending ? "Sending..." : activeTool?.title === "Translate & Localize" ? "Translate with AI" : activeTool?.title === "Cross-Doc Linker" ? "Search-Doc with AI" : "Summarize with AI"}</Button>
-                <Button variant="outline" onClick={handleClose}>Cancel</Button>
+                <Button onClick={() => summarizeWithAI()} disabled={isSending || !selectedFile && !input.trim()}>{isSending ? getTranslation("Sending...") : activeTool?.title === "Translate & Localize" ? getTranslation("Translate with AI") : activeTool?.title === "Cross-Doc Linker" ? getTranslation("Search-Doc with AI") : getTranslation("Summarize with AI")}</Button>
+                <Button variant="outline" onClick={handleClose}>{getTranslation("Cancel")}</Button>
               </div>
 
               <div className="space-y-2">
                 <Label>Output</Label>
-                <OutputPanel title={activeTool?.title === "Cross-Doc Linker" ? "AI CROSS-DOC LINKER" : activeTool?.title === "Translate & Localize" ? "AI TRANSLATE & LOCALIZE" : "AI SUMMARY"} content={output} emptyText="Results will appear here." />
+                <OutputPanel title={activeTool?.title === "Cross-Doc Linker" ? getTranslation("AI CROSS-DOC LINKER") : activeTool?.title === "Translate & Localize" ? getTranslation("AI TRANSLATE & LOCALIZE") : getTranslation("AI SUMMARY")} content={output} emptyText={getTranslation("Results will appear here.")} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="doc-name">Document name</Label>
-                <Input id="doc-name" placeholder="Give your document a name" value={docName} onChange={e => setDocName(e.target.value)} />
+                <Label htmlFor="doc-name">{getTranslation("Document name")}</Label>
+                <Input id="doc-name" placeholder={getTranslation("Give your document a name")} value={docName} onChange={e => setDocName(e.target.value)} />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="save-location">Save location</Label>
+                <Label htmlFor="save-location">{getTranslation("Save location")}</Label>
                 <select id="save-location" value={saveToFolderId || ''} onChange={e => {
                   if (e.target.value === 'create-new') {
                     setCreateFolderCallback((folderId: string) => setSaveToFolderId(folderId));
@@ -2142,24 +2184,24 @@ const Dashboard = () => {
                     setSaveToFolderId(e.target.value || null);
                   }
                 }} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                  <option value="" disabled>Select a folder</option>
+                   <option value="" disabled>{getTranslation("Select a folder")}</option>
                   {folders.map(folder => <option key={folder.id} value={folder.id}>{folder.name}</option>)}
                   <option value="create-new">+ Create folder</option>
                 </select>
                 <p className="text-xs text-muted-foreground">
-                  {saveToFolderId ? `Will be saved in the selected folder.` : `Please select a folder to save your document.`}
+                  {saveToFolderId ? getTranslation("Will be saved in the selected folder.") : getTranslation("Please select a folder to save your document.")}
                 </p>
               </div>
             </div>
 
             <DialogFooter className="flex items-center justify-between">
               <Button variant="secondary" size="lg" onClick={saveOutput} disabled={!output.trim() || !userId || isSaving || !docName.trim() || !saveToFolderId} className="w-full">
-                {isSaving ? "Saving..." : "Save to folder"}
+                {isSaving ? getTranslation("Saving...") : getTranslation("Save to folder")}
               </Button>
             </DialogFooter>
             
             <div className="px-6 pb-6">
-              <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)} className="w-32 mx-auto block">Feedback</Button>
+              <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)} className="w-32 mx-auto block">{getTranslation("Feedback")}</Button>
             </div>
           </DialogContent>
         </Dialog>
