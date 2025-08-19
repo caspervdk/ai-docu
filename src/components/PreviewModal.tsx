@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PDFPreview from "./PDFPreview";
+import { useState, useEffect, useRef } from "react";
 
 interface PreviewModalProps {
   previewDoc: { name: string; url: string } | null;
@@ -23,6 +24,9 @@ export default function PreviewModal({
   aiToolUsed,
   analysisResult 
 }: PreviewModalProps) {
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  
   if (!previewDoc) return null;
 
   const isPrevOrig = lastSavedPair?.original && previewDoc.name === lastSavedPair.original.name;
@@ -65,6 +69,28 @@ export default function PreviewModal({
 
   const aiToolStyling = getAiToolStyling();
 
+  const handleScroll = () => {
+    setIsScrolling(true);
+    
+    // Clear existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // Set timeout to reset scrolling state after scrolling stops
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const renderDocument = (doc: { name: string; url: string }, className = "") => {
     if (isPdf(doc.name)) {
       return <PDFPreview url={doc.url} fileName={doc.name} className={className} />;
@@ -100,8 +126,8 @@ export default function PreviewModal({
         </DialogHeader>
         
         <div className="flex md:flex-row flex-col h-[calc(95vh-120px)] md:h-[calc(80vh-120px)]">
-          {/* PDF Viewer Side - Wider */}
-          <div className="flex-[2] md:flex-[2] bg-slate-800 relative min-h-[50vh] md:min-h-0">
+          {/* PDF Viewer Side - Responsive to scrolling */}
+          <div className={`${isScrolling ? 'flex-[1] md:flex-[1]' : 'flex-[2] md:flex-[2]'} bg-slate-800 relative min-h-[50vh] md:min-h-0 transition-all duration-300 ease-in-out`}>
             {/* PDF Controls Bar */}
             <div className="absolute top-0 left-0 right-0 z-10 bg-slate-700/95 backdrop-blur-sm px-2 md:px-4 py-2 md:py-3 flex items-center justify-between border-b border-slate-600/50">
               <div className="flex items-center gap-2 md:gap-3">
@@ -173,9 +199,9 @@ export default function PreviewModal({
             </div>
           </div>
           
-          {/* Output Panel Side - Bigger and Better */}
-          <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
-            <ScrollArea className="flex-1 h-full">
+          {/* Output Panel Side - Responsive to scrolling */}
+          <div className={`${isScrolling ? 'flex-[2] md:flex-[2]' : 'flex-[1.2] md:flex-[1.2]'} bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0 transition-all duration-300 ease-in-out`}>
+            <ScrollArea className="flex-1 h-full" onScrollCapture={handleScroll}>
               {(lastSavedPair?.output || analysisResult) ? (
                 <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-8 md:pb-10" style={{ WebkitOverflowScrolling: 'touch' }}>
                   <div className="prose prose-sm max-w-none space-y-4 md:space-y-6">
