@@ -182,6 +182,148 @@ const Index = () => {
       "Message": "Bericht",
       "Tell us a bit about your question...": "Vertel ons iets over je vraag...",
       "Send message": "Bericht versturen"
+    },
+    German: {
+      "AI tool": "KI-Tool",
+      "How it works": "Wie es funktioniert",
+      "Pricing": "Preise", 
+      "Log in": "Anmelden",
+      "Dashboard": "Dashboard",
+      "Translate": "Übersetzen",
+      
+      // Dialog labels  
+      "Select Language": "Sprache auswählen",
+      
+      // Hero section
+      "Smarter Documents. Powered by AI.": "Intelligentere Dokumente. Angetrieben von KI.",
+      "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.": "Laden Sie Verträge, Berichte oder Notizen hoch — und lassen Sie die KI das Lesen, Denken und Umschreiben übernehmen.",
+      "Try for Free": "Kostenlos testen",
+      "Upgrade to AI-Docu Pro": "Auf AI-Docu Pro upgraden",
+      "Trusted by 1,000+ teams": "Vertraut von 1.000+ Teams",
+      
+      // AI Tools section
+      "AI Document Tool": "KI-Dokumenten-Tool",
+      "Upload your document and choose an AI-powered action:": "Laden Sie Ihr Dokument hoch und wählen Sie eine KI-Aktion:",
+      "Supports PDF, DOCX, and TXT — no training needed.": "Unterstützt PDF, DOCX und TXT — keine Schulung erforderlich.",
+      "Get started": "Loslegen",
+      "Choose a tool below, then upload your document and Start AI.": "Wählen Sie ein Tool unten, laden Sie Ihr Dokument hoch und starten Sie die KI.",
+      "Show All PRO AI Tools": "Alle PRO KI-Tools anzeigen",
+      "Log in required": "Anmeldung erforderlich",
+      "You must log in to use the AI tools.": "Sie müssen sich anmelden, um die KI-Tools zu verwenden.",
+      
+      // Action buttons/labels
+      "Summarize Long Documents": "Lange Dokumente zusammenfassen",
+      "Cross-Doc Linker": "Cross-Dokument-Verknüpfer",
+      "Translate & Localize": "Übersetzen & Lokalisieren", 
+      "Contract Analysis & Risk Detection": "Vertragsanalyse & Risikoerkennung",
+      "Smart Error Detection": "Intelligente Fehlererkennung",
+      
+      // How it works
+      "Go from upload to insights in four simple steps.": "Von Upload zu Erkenntnissen in vier einfachen Schritten.",
+      "Upload Your Document": "Dokument hochladen",
+      "Choose an AI Processing Option": "KI-Verarbeitungsoption wählen",
+      "AI Processes Your Document": "KI verarbeitet Ihr Dokument", 
+      "Review Your Results": "Ergebnisse überprüfen",
+      
+      // Pricing
+      "Simple pricing": "Einfache Preise",
+      "Switch to yearly and save.": "Auf jährlich umstellen und sparen.",
+      "Monthly": "Monatlich",
+      "Yearly": "Jährlich", 
+      "Free": "Kostenlos",
+      "For growing teams": "Für wachsende Teams",
+      "Pro": "Pro",
+      "Team": "Team",
+      "Contact us": "Kontakt aufnehmen",
+      "Upgrade to Pro": "Auf Pro upgraden", 
+      "Get unlimited access and more features.": "Erhalten Sie unbegrenzten Zugang und mehr Funktionen.",
+      "Great to try things out": "Großartig zum Ausprobieren",
+      "Best value": "Bester Wert",
+      "Everything in Free, plus": "Alles in Kostenlos, plus",
+      "Upgrade Now": "Jetzt upgraden",
+      
+      // Contact form
+      "Get in touch": "Kontakt aufnehmen",
+      "Contact our team": "Kontaktieren Sie unser Team", 
+      "Questions about pricing, features, or onboarding? Send us a message and we'll reply within 1 business day.": "Fragen zu Preisen, Funktionen oder Onboarding? Senden Sie uns eine Nachricht und wir antworten innerhalb von 1 Werktag.",
+      "Your name": "Ihr Name",
+      "Email": "E-Mail",
+      "Subject": "Betreff", 
+      "How can we help?": "Wie können wir helfen?",
+      "Message": "Nachricht",
+      "Tell us a bit about your question...": "Erzählen Sie uns etwas über Ihre Frage...",
+      "Send message": "Nachricht senden"
+    },
+    Spanish: {
+      "AI tool": "Herramienta IA",
+      "How it works": "Cómo funciona",
+      "Pricing": "Precios", 
+      "Log in": "Iniciar sesión",
+      "Dashboard": "Panel",
+      "Translate": "Traducir",
+      
+      // Dialog labels  
+      "Select Language": "Seleccionar idioma",
+      
+      // Hero section
+      "Smarter Documents. Powered by AI.": "Documentos más inteligentes. Impulsados por IA.",
+      "Upload contracts, reports, or notes — and let AI do the reading, thinking, and rewriting.": "Sube contratos, informes o notas — y deja que la IA haga la lectura, el análisis y la reescritura.",
+      "Try for Free": "Probar gratis",
+      "Upgrade to AI-Docu Pro": "Actualizar a AI-Docu Pro",
+      "Trusted by 1,000+ teams": "Confiado por 1,000+ equipos",
+      
+      // AI Tools section
+      "AI Document Tool": "Herramienta de Documentos IA",
+      "Upload your document and choose an AI-powered action:": "Sube tu documento y elige una acción impulsada por IA:",
+      "Supports PDF, DOCX, and TXT — no training needed.": "Soporta PDF, DOCX y TXT — no se requiere entrenamiento.",
+      "Get started": "Comenzar",
+      "Choose a tool below, then upload your document and Start AI.": "Elige una herramienta abajo, sube tu documento e inicia la IA.",
+      "Show All PRO AI Tools": "Mostrar todas las herramientas PRO de IA",
+      "Log in required": "Inicio de sesión requerido",
+      "You must log in to use the AI tools.": "Debes iniciar sesión para usar las herramientas de IA.",
+      
+      // Action buttons/labels
+      "Summarize Long Documents": "Resumir documentos largos",
+      "Cross-Doc Linker": "Enlazador entre documentos",
+      "Translate & Localize": "Traducir y localizar", 
+      "Contract Analysis & Risk Detection": "Análisis de contratos y detección de riesgos",
+      "Smart Error Detection": "Detección inteligente de errores",
+      
+      // How it works
+      "Go from upload to insights in four simple steps.": "De subida a insights en cuatro pasos simples.",
+      "Upload Your Document": "Sube tu documento",
+      "Choose an AI Processing Option": "Elige una opción de procesamiento IA",
+      "AI Processes Your Document": "La IA procesa tu documento", 
+      "Review Your Results": "Revisa tus resultados",
+      
+      // Pricing
+      "Simple pricing": "Precios simples",
+      "Switch to yearly and save.": "Cambia a anual y ahorra.",
+      "Monthly": "Mensual",
+      "Yearly": "Anual", 
+      "Free": "Gratis",
+      "For growing teams": "Para equipos en crecimiento",
+      "Pro": "Pro",
+      "Team": "Equipo",
+      "Contact us": "Contáctanos",
+      "Upgrade to Pro": "Actualizar a Pro", 
+      "Get unlimited access and more features.": "Obtén acceso ilimitado y más características.",
+      "Great to try things out": "Genial para probar cosas",
+      "Best value": "Mejor valor",
+      "Everything in Free, plus": "Todo en Gratis, más",
+      "Upgrade Now": "Actualizar ahora",
+      
+      // Contact form
+      "Get in touch": "Ponte en contacto",
+      "Contact our team": "Contacta nuestro equipo", 
+      "Questions about pricing, features, or onboarding? Send us a message and we'll reply within 1 business day.": "¿Preguntas sobre precios, características o incorporación? Envíanos un mensaje y responderemos dentro de 1 día hábil.",
+      "Your name": "Tu nombre",
+      "Email": "Correo electrónico",
+      "Subject": "Asunto", 
+      "How can we help?": "¿Cómo podemos ayudar?",
+      "Message": "Mensaje",
+      "Tell us a bit about your question...": "Cuéntanos un poco sobre tu pregunta...",
+      "Send message": "Enviar mensaje"
     }
   };
 
@@ -583,7 +725,10 @@ const onStartAI = async (overrideAction?: string) => {
                   <Languages className="h-4 w-4 text-primary animate-pulse" />
                   <span className="hidden sm:inline font-medium text-primary">{getTranslation("Translate")}</span>
                   <span className="text-xs opacity-60 hidden md:inline">
-                    {currentLanguage === "English" ? "EN" : "NL"}
+                    {currentLanguage === "English" ? "EN" : 
+                     currentLanguage === "Dutch" ? "NL" : 
+                     currentLanguage === "German" ? "DE" : 
+                     currentLanguage === "Spanish" ? "ES" : "EN"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -604,6 +749,22 @@ const onStartAI = async (overrideAction?: string) => {
                   <span className="mr-2">🇳🇱</span>
                   Nederlands
                   {currentLanguage === "Dutch" && <span className="ml-auto text-primary">✓</span>}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange("German")}
+                  className={`cursor-pointer hover:bg-primary/10 ${currentLanguage === "German" ? "bg-primary/5 text-primary font-medium" : ""}`}
+                >
+                  <span className="mr-2">🇩🇪</span>
+                  Deutsch
+                  {currentLanguage === "German" && <span className="ml-auto text-primary">✓</span>}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleLanguageChange("Spanish")}
+                  className={`cursor-pointer hover:bg-primary/10 ${currentLanguage === "Spanish" ? "bg-primary/5 text-primary font-medium" : ""}`}
+                >
+                  <span className="mr-2">🇪🇸</span>
+                  Español
+                  {currentLanguage === "Spanish" && <span className="ml-auto text-primary">✓</span>}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
