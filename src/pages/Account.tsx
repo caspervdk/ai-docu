@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera, Trash2 } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera, Trash2, BarChart3, Clock, ShieldAlert, User2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import AnalyzedFilesTimeline from "@/components/AnalyzedFilesTimeline";
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -747,6 +747,177 @@ export default function Account() {
                     </div>
                   </TabsContent>
                 </Tabs>
+              </CardContent>
+            </Card>
+            
+            {/* Account Statistics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Account Statistics
+                </CardTitle>
+                <CardDescription>Your activity overview</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Documents Analyzed</span>
+                      <span className="font-semibold">24</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">AI Tools Used</span>
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Storage Used</span>
+                      <span className="font-semibold">2.1 GB</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Folders Created</span>
+                      <span className="font-semibold">8</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Member Since</span>
+                      <span className="font-semibold">Jan 2024</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Plan</span>
+                      <span className="font-semibold text-primary">Free</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Recent Activity
+                </CardTitle>
+                <CardDescription>Your latest actions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">Analyzed document with Translate & Localize</p>
+                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">Created new folder "Legal Documents"</p>
+                      <p className="text-xs text-muted-foreground">1 day ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">Used Cross-Doc Linker on 3 files</p>
+                      <p className="text-xs text-muted-foreground">3 days ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">Profile information updated</p>
+                      <p className="text-xs text-muted-foreground">1 week ago</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Security & Privacy */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ShieldAlert className="h-5 w-5" />
+                  Security & Privacy
+                </CardTitle>
+                <CardDescription>Manage your account security</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Two-Factor Authentication</p>
+                      <p className="text-xs text-muted-foreground">Add an extra layer of security</p>
+                    </div>
+                    <Button variant="outline" size="sm">Enable</Button>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Login Sessions</p>
+                      <p className="text-xs text-muted-foreground">Manage active sessions</p>
+                    </div>
+                    <Button variant="outline" size="sm">View</Button>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Data Export</p>
+                      <p className="text-xs text-muted-foreground">Download your data</p>
+                    </div>
+                    <Button variant="outline" size="sm">Export</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Preferences */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User2 className="h-5 w-5" />
+                  Preferences
+                </CardTitle>
+                <CardDescription>Customize your experience</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Email Notifications</p>
+                      <p className="text-xs text-muted-foreground">Receive updates about your documents</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Auto-save Documents</p>
+                      <p className="text-xs text-muted-foreground">Automatically save processed files</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Language</p>
+                      <p className="text-xs text-muted-foreground">Interface language</p>
+                    </div>
+                    <select className="text-sm border rounded px-2 py-1">
+                      <option>English</option>
+                      <option>Dutch</option>
+                      <option>German</option>
+                      <option>French</option>
+                    </select>
+                  </div>
+                </div>
               </CardContent>
             </Card>
             
