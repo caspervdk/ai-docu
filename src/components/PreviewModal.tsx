@@ -1,9 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import PDFPreview from "./PDFPreview";
-import { useState, useEffect, useRef } from "react";
 
 interface PreviewModalProps {
   previewDoc: { name: string; url: string } | null;
@@ -24,31 +22,6 @@ export default function PreviewModal({
   aiToolUsed,
   analysisResult 
 }: PreviewModalProps) {
-  const [isScrolling, setIsScrolling] = useState(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
-
-  const handleScroll = () => {
-    setIsScrolling(true);
-    
-    // Clear existing timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    // Set timeout to reset scrolling state after scrolling stops
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 150);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
-
   if (!previewDoc) return null;
 
   const isPrevOrig = lastSavedPair?.original && previewDoc.name === lastSavedPair.original.name;
@@ -126,8 +99,8 @@ export default function PreviewModal({
         </DialogHeader>
         
         <div className="flex md:flex-row flex-col h-[calc(95vh-120px)] md:h-[calc(80vh-120px)]">
-          {/* PDF Viewer Side - Responsive to scrolling */}
-          <div className={`${isScrolling ? 'flex-[1] md:flex-[1]' : 'flex-[2] md:flex-[2]'} bg-slate-800 relative min-h-[50vh] md:min-h-0 transition-all duration-300 ease-in-out`}>
+          {/* PDF Viewer Side - Wider */}
+          <div className="flex-[2] md:flex-[2] bg-slate-800 relative min-h-[50vh] md:min-h-0">
             {/* PDF Controls Bar */}
             <div className="absolute top-0 left-0 right-0 z-10 bg-slate-700/95 backdrop-blur-sm px-2 md:px-4 py-2 md:py-3 flex items-center justify-between border-b border-slate-600/50">
               <div className="flex items-center gap-2 md:gap-3">
@@ -192,22 +165,22 @@ export default function PreviewModal({
             </div>
             
             {/* PDF Content - Full size */}
-            <div className={`${isScrolling ? 'h-full pt-8 md:pt-10 p-2 md:p-4' : 'h-full pt-12 md:pt-16 p-3 md:p-6'} transition-all duration-300 ease-in-out`}>
-              <div className={`${isScrolling ? 'h-full bg-white rounded-lg shadow-xl overflow-hidden transform scale-95' : 'h-full bg-white rounded-lg shadow-2xl overflow-hidden'} transition-all duration-300 ease-in-out`}>
+            <div className="h-full pt-12 md:pt-16 p-3 md:p-6">
+              <div className="h-full bg-white rounded-lg shadow-2xl overflow-hidden">
                 {renderDocument(previewDoc, "w-full h-full")}
               </div>
             </div>
           </div>
           
-          {/* Output Panel Side - Responsive to scrolling */}
-          <div className={`${isScrolling ? 'flex-[2] md:flex-[2]' : 'flex-[1.2] md:flex-[1.2]'} bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0 transition-all duration-300 ease-in-out`}>
-            <ScrollArea className="flex-1 h-full" onScrollCapture={handleScroll}>
+          {/* Output Panel Side - Bigger and Better */}
+          <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
+            <div className="flex-1 overflow-y-auto">
               {(lastSavedPair?.output || analysisResult) ? (
-                <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-8 md:pb-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                  <div className="prose prose-sm max-w-none space-y-4 md:space-y-6">
+                <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+                  <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-4 md:p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50 mb-4 md:mb-6">
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                             AI Translation & Localization Results
@@ -231,7 +204,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             Processing Status
@@ -244,7 +217,7 @@ export default function PreviewModal({
                       </>
                     ) : aiToolUsed === 'Cross-Doc Linker' ? (
                       <>
-                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-4 md:p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50 mb-4 md:mb-6">
+                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
                           <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                             Cross-Document Analysis Results
@@ -268,7 +241,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             Processing Status
@@ -280,7 +253,7 @@ export default function PreviewModal({
                       </>
                     ) : (
                       <>
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50 mb-4 md:mb-6">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             AI Summary Results
@@ -303,7 +276,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-4 md:p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                             Processing Status
@@ -317,8 +290,8 @@ export default function PreviewModal({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full px-4 md:px-0 min-h-[300px]">
-                  <div className="text-center p-6 md:p-8">
+                <div className="flex items-center justify-center h-full px-4 md:px-0">
+                  <div className="text-center p-4 md:p-8">
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary w-6 h-6 md:w-8 md:h-8">
                         <path d="14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
@@ -335,7 +308,7 @@ export default function PreviewModal({
                   </div>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </div>
         
