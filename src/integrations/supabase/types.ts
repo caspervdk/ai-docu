@@ -47,6 +47,42 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          ai_tool_used: string | null
+          created_at: string
+          filename: string
+          id: string
+          original_url: string | null
+          processed_url: string | null
+          processing_status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_tool_used?: string | null
+          created_at?: string
+          filename: string
+          id?: string
+          original_url?: string | null
+          processed_url?: string | null
+          processing_status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_tool_used?: string | null
+          created_at?: string
+          filename?: string
+          id?: string
+          original_url?: string | null
+          processed_url?: string | null
+          processing_status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       folders: {
         Row: {
           created_at: string
