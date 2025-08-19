@@ -88,15 +88,6 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
                     <Copy className="h-3 w-3 mr-1" />
                     Copy
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleEdit}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <Edit3 className="h-3 w-3 mr-1" />
-                    Edit
-                  </Button>
                 </>
               )}
             </div>
@@ -222,15 +213,6 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
                   >
                     <Copy className="h-3 w-3 mr-1" />
                     Copy
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleEdit}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <Edit3 className="h-3 w-3 mr-1" />
-                    Edit
                   </Button>
                 </>
               )}
