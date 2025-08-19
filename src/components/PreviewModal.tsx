@@ -98,9 +98,9 @@ export default function PreviewModal({
           </div>
         </DialogHeader>
         
-        <div className="flex md:flex-row flex-col h-[calc(95vh-120px)] md:h-[calc(80vh-120px)]">
+        <div className="flex md:flex-row flex-col h-[calc(95vh-180px)] md:h-[calc(80vh-120px)]">
           {/* PDF Viewer Side - Wider */}
-          <div className="flex-[2] md:flex-[2] bg-slate-800 relative min-h-[50vh] md:min-h-0">
+          <div className="flex-[2] md:flex-[2] bg-slate-800 relative min-h-[40vh] md:min-h-0">
             {/* PDF Controls Bar */}
             <div className="absolute top-0 left-0 right-0 z-10 bg-slate-700/95 backdrop-blur-sm px-2 md:px-4 py-2 md:py-3 flex items-center justify-between border-b border-slate-600/50">
               <div className="flex items-center gap-2 md:gap-3">
@@ -165,7 +165,7 @@ export default function PreviewModal({
             </div>
             
             {/* PDF Content - Full size */}
-            <div className="h-full pt-12 md:pt-16 p-3 md:p-6">
+            <div className="h-full pt-12 md:pt-16 p-2 md:p-6">
               <div className="h-full bg-white rounded-lg shadow-2xl overflow-hidden">
                 {renderDocument(previewDoc, "w-full h-full")}
               </div>
@@ -173,10 +173,10 @@ export default function PreviewModal({
           </div>
           
           {/* Output Panel Side - Bigger and Better */}
-          <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
-            <div className="flex-1 overflow-y-auto">
+          <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[35vh] md:min-h-0">
+            <div className="flex-1 overflow-y-auto pb-16 md:pb-0">
               {(lastSavedPair?.output || analysisResult) ? (
-                <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+                <div className="p-2 md:p-6 space-y-3 md:space-y-6">
                   <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
@@ -312,27 +312,29 @@ export default function PreviewModal({
           </div>
         </div>
         
-        <DialogFooter className="px-6 py-4 border-t bg-muted/20">
-          <Button variant="outline" asChild>
-            <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <DialogFooter className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto px-4 md:px-6 py-3 md:py-4 border-t bg-background/95 md:bg-muted/20 backdrop-blur-sm md:backdrop-blur-none z-20 flex-row gap-2 md:gap-4">
+          <Button variant="outline" asChild className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm">
+            <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1 md:gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
                 <path d="18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15,3 21,3 21,9"/>
                 <line x1="10" x2="21" y1="14" y2="3"/>
               </svg>
-              Open in new tab
+              <span className="hidden md:inline">Open in new tab</span>
+              <span className="md:hidden">Open</span>
             </a>
           </Button>
-          <Button variant="default" className="flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <Button variant="default" className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm gap-1 md:gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="md:w-4 md:h-4">
+              <path d="M19 21H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
               <polyline points="17,21 17,13 7,13 7,21"/>
               <polyline points="7,3 7,8 15,8"/>
             </svg>
             Save
           </Button>
-          <Button onClick={onClose} className="flex items-center gap-2">
-            Close Preview
+          <Button onClick={onClose} className="flex-1 md:flex-initial h-10 md:h-auto text-xs md:text-sm gap-1 md:gap-2">
+            <span className="hidden md:inline">Close Preview</span>
+            <span className="md:hidden">Close</span>
           </Button>
         </DialogFooter>
       </DialogContent>
