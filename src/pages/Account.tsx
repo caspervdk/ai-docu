@@ -8,7 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Calendar, Star, Bookmark, Edit2, Save, X, Upload, Camera, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import AnalyzedFilesTimeline from "@/components/AnalyzedFilesTimeline";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,7 @@ export default function Account() {
   const [isSaving, setSaving] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   
   // Form fields
@@ -305,6 +307,48 @@ export default function Account() {
       });
     } finally {
       setAvatarUploading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      // Sign out the user first
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+
+      // Show success message
+      toast({
+        title: "Account deleted",
+        description: "Your account has been successfully deleted.",
+      });
+
+      // Redirect to home page after a short delay
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+
+    } catch (error: any) {
+      toast({
+        title: "Delete failed",
+        description: error.message || "Failed to delete account",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -703,6 +747,50 @@ export default function Account() {
                     </div>
                   </TabsContent>
                 </Tabs>
+              </CardContent>
+            </Card>
+            
+            {/* Delete Account Section */}
+            <Card className="border-destructive/20">
+              <CardHeader>
+                <CardTitle className="text-destructive">Delete Account</CardTitle>
+                <CardDescription>
+                  Permanently delete your account and all associated data. This action cannot be undone.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={isDeleting} className="flex items-center gap-2">
+                      <Trash2 className="h-4 w-4" />
+                      {isDeleting ? "Deleting..." : "Delete Account"}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your account
+                        and remove all your data from our servers including:
+                        <ul className="list-disc list-inside mt-2 space-y-1">
+                          <li>Profile information</li>
+                          <li>Uploaded documents and analysis results</li>
+                          <li>Account preferences and settings</li>
+                        </ul>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Deleting..." : "Yes, delete account"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardContent>
             </Card>
           </div>
