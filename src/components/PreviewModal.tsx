@@ -175,7 +175,7 @@ export default function PreviewModal({
           {/* Output Panel Side - Bigger and Better */}
           <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
             <div className="flex-1 overflow-y-auto">
-              {lastSavedPair?.output ? (
+              {(lastSavedPair?.output || analysisResult) ? (
                 <div className="p-3 md:p-6 space-y-4 md:space-y-6">
                   <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
