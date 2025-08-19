@@ -18,8 +18,109 @@ export function OutputPanel({ title = "AI summary", content, emptyText = "Result
   const [editedContent, setEditedContent] = useState("");
   const [savedContent, setSavedContent] = useState<string | null>(null);
   
-  // Use saved content if available, otherwise use original content
-  const raw = (savedContent || content || "").trim();
+  // If we have saved content, use it directly without processing
+  if (savedContent) {
+    const handleCopy = async () => {
+      try {
+        await navigator.clipboard.writeText(savedContent);
+        toast.success("Text copied to clipboard");
+      } catch (error) {
+        toast.error("Could not copy text to clipboard");
+      }
+    };
+
+    const handleEdit = () => {
+      setEditedContent(savedContent);
+      setIsEditing(true);
+    };
+
+    const handleSave = () => {
+      setSavedContent(editedContent);
+      setIsEditing(false);
+      toast.success("Changes saved successfully");
+    };
+
+    const handleCancel = () => {
+      setIsEditing(false);
+      setEditedContent("");
+    };
+
+    return (
+      <section aria-label={title} className="animate-fade-in">
+        <div className="rounded-2xl border border-primary/20 bg-gradient-subtle p-4 sm:p-6 shadow-sm">
+          <header className="mb-3 flex items-center justify-between text-primary">
+            <div className="flex items-center gap-2">
+              <div className="rounded-full border border-primary/30 p-1">
+                <WandSparkles className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <h3 className="text-xs font-semibold tracking-wide uppercase">{title}</h3>
+            </div>
+            <div className="flex items-center gap-1">
+              {isEditing ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSave}
+                    className="h-7 px-2 text-xs"
+                  >
+                    <Check className="h-3 w-3 mr-1" />
+                    Save
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="h-7 px-2 text-xs"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCopy}
+                    className="h-7 px-2 text-xs"
+                  >
+                    <Copy className="h-3 w-3 mr-1" />
+                    Copy
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleEdit}
+                    className="h-7 px-2 text-xs"
+                  >
+                    <Edit3 className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                </>
+              )}
+            </div>
+          </header>
+
+          <div className="max-h-80 overflow-y-auto rounded-xl bg-background/60 p-4">
+            {isEditing ? (
+              <Textarea
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="min-h-[200px] resize-none text-sm"
+                placeholder="Edit your text here..."
+              />
+            ) : (
+              <p className="text-sm leading-7 text-foreground whitespace-pre-wrap">{savedContent}</p>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  // Original content processing logic for non-edited content
+  const raw = (content || "").trim();
   let isEmpty = raw.length === 0;
 
   let displayValue = raw;
