@@ -230,7 +230,7 @@ const Dashboard = () => {
       "No items in Trash.": "Geen items in prullenbak.",
       "Upload": "Uploaden",
       "Upgrade to Pro": "Upgrade naar Pro",
-      "Open AI tool": "Open AI tool"
+      "Open AI tool": "AI-tool openen"
     }
   };
 
