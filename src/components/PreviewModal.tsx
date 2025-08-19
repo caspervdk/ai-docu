@@ -76,7 +76,7 @@ export default function PreviewModal({
 
   return (
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-[95vw] md:max-w-[80vw] h-[95vh] md:h-[80vh] p-0 gap-0">
+      <DialogContent className="w-full h-full md:max-w-[80vw] md:h-[80vh] p-0 gap-0 m-0 md:m-auto md:rounded-lg rounded-none">
         <DialogHeader className="px-6 py-4 border-b bg-background">
           <div className="flex items-center justify-between">
             <div>
