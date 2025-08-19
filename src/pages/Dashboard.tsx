@@ -1624,7 +1624,6 @@ const Dashboard = () => {
                   </AccordionTrigger>
                   <AccordionContent className="animate-fade-in">
                     <div className="space-y-2">
-                      <div className="text-sm text-muted-foreground">Create and manage folders to organize your documents.</div>
                       <div className="flex items-center gap-2">
                         <Input placeholder="New folder name" value={newFolderName} onChange={e => setNewFolderName(e.target.value)} className="text-sm" />
                         <Button size="sm" onClick={() => createFolder()} disabled={!userId || creatingFolder || !newFolderName.trim()}>
