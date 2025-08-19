@@ -1216,12 +1216,9 @@ const getPlaceholder = (title: string) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="z-50 w-56">
-                    <DropdownMenuItem onClick={() => document.getElementById('shared-with-me')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Shared with me</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('recent')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Recent</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => document.getElementById('starred')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Starred</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('trash')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Trash</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => document.getElementById('folders')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Folders</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => document.getElementById('tags')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Tags</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
