@@ -1627,26 +1627,37 @@ const Dashboard = () => {
                   </DropdownMenuTrigger>
                    <DropdownMenuContent align="start" className="z-50 w-56">
                      <DropdownMenuItem onClick={() => {
-                       // Navigate to Recent (main documents view)
+                       // Navigate to Recent (main documents view) 
                        handleCloseFolder();
                        setShowAllDocs(false);
+                       // Scroll to the main content area where documents are shown
                        document.querySelector('main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                      }}>Recent</DropdownMenuItem>
                      <DropdownMenuItem onClick={() => {
-                       // Navigate to Trash section
+                       // Navigate to and expand Trash section
                        handleCloseFolder();
-                       document.getElementById('trash')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                       // Expand trash accordion if it exists
-                       const trashTrigger = document.querySelector('[data-state="closed"] + [data-state="closed"] #trash .accordion-trigger') as HTMLElement;
-                       trashTrigger?.click();
+                       // Find and click the trash accordion trigger to expand it
+                       const trashAccordion = document.querySelector('[value="trash"]');
+                       if (trashAccordion) {
+                         trashAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                         const trashTrigger = trashAccordion.querySelector('[data-state]') as HTMLButtonElement;
+                         if (trashTrigger && trashTrigger.getAttribute('data-state') === 'closed') {
+                           trashTrigger.click();
+                         }
+                       }
                      }}>Trash</DropdownMenuItem>
                      <DropdownMenuItem onClick={() => {
-                       // Navigate to Folders section
-                       handleCloseFolder();
-                       document.getElementById('folders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                       // Expand folders accordion if it exists
-                       const foldersTrigger = document.querySelector('#folders .accordion-trigger') as HTMLElement;
-                       foldersTrigger?.click();
+                       // Navigate to and expand Folders section
+                       handleCloseFolder(); 
+                       // Find and click the folders accordion trigger to expand it
+                       const foldersAccordion = document.querySelector('[value="folders"]');
+                       if (foldersAccordion) {
+                         foldersAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                         const foldersTrigger = foldersAccordion.querySelector('[data-state]') as HTMLButtonElement;
+                         if (foldersTrigger && foldersTrigger.getAttribute('data-state') === 'closed') {
+                           foldersTrigger.click();
+                         }
+                       }
                      }}>Folders</DropdownMenuItem>
                    </DropdownMenuContent>
                 </DropdownMenu>
