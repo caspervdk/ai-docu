@@ -561,6 +561,7 @@ const Dashboard = () => {
     fetchDocs();
   }, [userId]);
 
+  // Fixed: Removed credit system - unlimited file analysis now available
   const summarizeWithAI = async (overrideFile?: File) => {
     const file = overrideFile ?? selectedFile;
     if (!file && !input.trim()) {
