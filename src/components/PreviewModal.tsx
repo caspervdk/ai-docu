@@ -192,8 +192,8 @@ export default function PreviewModal({
             </div>
             
             {/* PDF Content - Full size */}
-            <div className="h-full pt-12 md:pt-16 p-3 md:p-6">
-              <div className="h-full bg-white rounded-lg shadow-2xl overflow-hidden">
+            <div className={`${isScrolling ? 'h-full pt-8 md:pt-10 p-2 md:p-4' : 'h-full pt-12 md:pt-16 p-3 md:p-6'} transition-all duration-300 ease-in-out`}>
+              <div className={`${isScrolling ? 'h-full bg-white rounded-lg shadow-xl overflow-hidden transform scale-95' : 'h-full bg-white rounded-lg shadow-2xl overflow-hidden'} transition-all duration-300 ease-in-out`}>
                 {renderDocument(previewDoc, "w-full h-full")}
               </div>
             </div>
