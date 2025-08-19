@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import PDFPreview from "./PDFPreview";
 
 interface PreviewModalProps {
@@ -174,9 +175,9 @@ export default function PreviewModal({
           
           {/* Output Panel Side - Bigger and Better */}
           <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
-            <div className="flex-1 overflow-y-auto">
+            <ScrollArea className="flex-1 h-full">
               {(lastSavedPair?.output || analysisResult) ? (
-                <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+                <div className="p-4 md:p-6 space-y-6 md:space-y-8 pb-6 md:pb-8">
                   <div className="prose prose-sm max-w-none">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
@@ -290,8 +291,8 @@ export default function PreviewModal({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full px-4 md:px-0">
-                  <div className="text-center p-4 md:p-8">
+                <div className="flex items-center justify-center h-full px-4 md:px-0 min-h-[300px]">
+                  <div className="text-center p-6 md:p-8">
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary w-6 h-6 md:w-8 md:h-8">
                         <path d="14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
@@ -308,7 +309,7 @@ export default function PreviewModal({
                   </div>
                 </div>
               )}
-            </div>
+            </ScrollArea>
           </div>
         </div>
         
