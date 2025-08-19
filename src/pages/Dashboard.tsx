@@ -542,26 +542,7 @@ const slugFileName = (s: string) =>
           .from('documents')
           .createSignedUrl(outputPath, 600);
 
-        // Also save the original upload as-is for reference
-        try {
-          const originalName = slugFileName(selectedFile.name);
-          const originalPath = `${pathPrefix}/${originalName}`;
-          const { error: originalErr } = await supabase.storage
-            .from('documents')
-            .upload(originalPath, selectedFile, { upsert: false });
-          if (originalErr) {
-            toast({ title: 'Original file not saved', description: originalErr.message, variant: 'destructive' } as any);
-          } else {
-            const { data: originalSigned } = await supabase.storage
-              .from('documents')
-              .createSignedUrl(originalPath, 600);
-            originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
-            newEntries.push(originalEntry);
-          }
-        } catch (origErr: any) {
-          toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
-        }
-
+        // Save only the merged PDF (original + AI output combined)
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
 
@@ -578,28 +559,7 @@ const slugFileName = (s: string) =>
           .from('documents')
           .createSignedUrl(outputPath, 600);
 
-        // Save original if present
-        if (selectedFile) {
-          try {
-            const originalName = slugFileName(selectedFile.name);
-            const originalPath = `${pathPrefix}/${originalName}`;
-            const { error: originalErr } = await supabase.storage
-              .from('documents')
-              .upload(originalPath, selectedFile, { upsert: false });
-            if (originalErr) {
-              toast({ title: 'Original file not saved', description: originalErr.message, variant: 'destructive' } as any);
-            } else {
-              const { data: originalSigned } = await supabase.storage
-                .from('documents')
-                .createSignedUrl(originalPath, 600);
-              originalEntry = { name: originalName, url: originalSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
-              newEntries.push(originalEntry);
-            }
-          } catch (origErr: any) {
-            toast({ title: 'Original file not saved', description: origErr?.message || 'Unknown error' } as any);
-          }
-        }
-
+        // Save only the AI output as a text file
         outputEntry = { name: outputFilename, url: outputSigned?.signedUrl || '#', updatedAt: new Date().toISOString() };
         newEntries.push(outputEntry);
 
@@ -639,9 +599,9 @@ const slugFileName = (s: string) =>
         if (openFolder && openFolder.id === selectedFolder.id) {
           await fetchFolderDocs(selectedFolder.storage_path.replace('/.keep', ''));
         }
-        toast({ title: 'Saved to folder', description: `${newEntries.length} item(s) added to ${selectedFolder.name} with ${activeTool?.title || 'AI tool'} analysis` });
+        toast({ title: 'Saved to folder', description: `Document with ${activeTool?.title || 'AI tool'} analysis saved to ${selectedFolder.name}` });
       } else {
-        toast({ title: 'Saved to My documents', description: `${newEntries.length} item(s) added with ${activeTool?.title || 'AI tool'} analysis` });
+        toast({ title: 'Saved to My documents', description: `Document with ${activeTool?.title || 'AI tool'} analysis saved` });
       }
       
       setLastSavedPair({ original: originalEntry, output: outputEntry });
