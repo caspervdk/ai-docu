@@ -187,7 +187,14 @@ export default function PreviewModal({
                           </h4>
                           {analysisResult ? (
                             <div className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
-                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                              <div className="whitespace-pre-wrap font-sans">{(() => {
+                                try {
+                                  const parsed = JSON.parse(analysisResult);
+                                  return parsed.output || analysisResult;
+                                } catch {
+                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                }
+                              })()}</div>
                             </div>
                           ) : (
                             <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
@@ -217,7 +224,14 @@ export default function PreviewModal({
                           </h4>
                           {analysisResult ? (
                             <div className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
-                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                              <div className="whitespace-pre-wrap font-sans">{(() => {
+                                try {
+                                  const parsed = JSON.parse(analysisResult);
+                                  return parsed.output || analysisResult;
+                                } catch {
+                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                }
+                              })()}</div>
                             </div>
                           ) : (
                             <p className="text-sm leading-relaxed text-purple-800 dark:text-purple-200">
@@ -246,7 +260,14 @@ export default function PreviewModal({
                           </h4>
                           {analysisResult ? (
                             <div className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
-                              <pre className="whitespace-pre-wrap font-sans">{analysisResult}</pre>
+                              <div className="whitespace-pre-wrap font-sans">{(() => {
+                                try {
+                                  const parsed = JSON.parse(analysisResult);
+                                  return parsed.output || analysisResult;
+                                } catch {
+                                  return analysisResult.replace(/^.*?"output":\s*"?|"?\s*\}?$/g, '');
+                                }
+                              })()}</div>
                             </div>
                           ) : (
                             <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-200">
