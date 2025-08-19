@@ -38,12 +38,22 @@ export default function PreviewModal({
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="max-w-[80vw] h-[80vh] p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b bg-background">
-          <DialogTitle className="text-xl font-semibold text-primary">
-            Document Preview
-          </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
-            {previewDoc.name}
-          </DialogDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-xl font-semibold text-primary">
+                Document Preview
+              </DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
+                {previewDoc.name}
+              </DialogDescription>
+            </div>
+            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 px-4 py-2 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                Summarize Long Documents AI
+              </span>
+            </div>
+          </div>
         </DialogHeader>
         
         <div className="flex h-[calc(80vh-120px)]">
