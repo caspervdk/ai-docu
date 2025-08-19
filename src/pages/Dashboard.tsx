@@ -1667,41 +1667,6 @@ const Dashboard = () => {
             <Button className="w-full" onClick={() => setNewOpen(true)}>+ New File</Button>
           </div>
 
-          {/* Credits Section */}
-          <div className="rounded-lg border bg-card p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium">Analysis Credits</h3>
-              <div className="flex items-center gap-1">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="12 6v6l4 2"/>
-                </svg>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Credits Available</span>
-                <span className="text-sm font-medium text-primary">
-                  {10 - analyzedFilesCount} of 10
-                </span>
-              </div>
-              <div className="w-full bg-secondary rounded-full h-2">
-                <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${Math.max(0, (10 - analyzedFilesCount) / 10 * 100)}%` }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {analyzedFilesCount === 0 
-                  ? "Start with 10 free analysis credits" 
-                  : analyzedFilesCount >= 10 
-                    ? "All credits used - upgrade for more" 
-                    : `${10 - analyzedFilesCount} credits remaining`
-                }
-              </p>
-            </div>
-          </div>
-
           <nav className="space-y-2">
             <section aria-label="My Drive" className="md:rounded-lg md:border md:p-4">
               <div className="text-sm font-medium mb-2">My Drive</div>
