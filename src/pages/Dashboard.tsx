@@ -1801,43 +1801,6 @@ const Dashboard = () => {
           </section>
 
 
-          <section aria-label="Recent" className="rounded-lg border p-4">
-            <div className="text-sm font-medium mb-2">Recent</div>
-            {docs.length === 0 ? <div className="text-xs text-muted-foreground">No documents yet.</div> : <>
-                <ul className="space-y-2">
-                  {(showAllDocs ? docs : docs.slice(0, 5)).filter(d => d.name.includes('.')) // Only show files with extensions
-              .map(d => <li key={d.name} className="flex items-center justify-between gap-2 text-sm">
-                      <div className="min-w-0 flex-1">
-                        <FileNameDisplay fileName={d.name} className="block max-w-[9rem]" />
-                        {d.updatedAt && <span className="block text-[11px] text-muted-foreground">
-                            {formatDistanceToNow(new Date(d.updatedAt), {
-                      addSuffix: true
-                    })}
-                          </span>}
-                      </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" aria-label="Options">
-                            <Menu className="h-4 w-4" aria-hidden="true" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="z-50">
-                          <DropdownMenuItem onClick={() => handleDocAction('view', d)}>View</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocAction('share', d)}>Share</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocAction('move', d)}>Move to Folder</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocAction('rename', d)}>Rename</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDocAction('delete', d)}>Move to Trash</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </li>)}
-                </ul>
-                {docs.length > 5 && <div className="pt-2">
-                    <Button variant="outline" size="sm" className="w-full" onClick={() => setShowAllDocs(s => !s)}>
-                      {showAllDocs ? "Show less" : "Show all documents"}
-                    </Button>
-                  </div>}
-              </>}
-          </section>
         </aside>
 
         <main>
