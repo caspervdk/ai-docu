@@ -36,7 +36,7 @@ export default function PreviewModal({
 
   return (
     <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
+      <DialogContent className="max-w-[80vw] h-[80vh] p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b bg-background">
           <DialogTitle className="text-xl font-semibold text-primary">
             Document Preview
@@ -46,7 +46,7 @@ export default function PreviewModal({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex h-[calc(95vh-120px)]">
+        <div className="flex h-[calc(80vh-120px)]">
           {/* PDF Viewer Side - Wider */}
           <div className="flex-[2] bg-slate-800 relative">
             {/* PDF Controls Bar */}
