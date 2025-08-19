@@ -1751,15 +1751,15 @@ const Dashboard = () => {
                 <DropdownMenuContent align="end" className="z-50 w-44">
                   <DropdownMenuItem>
                     <Languages className="mr-2 h-4 w-4" />
-                    <span>Translate</span>
+                    <span>{getTranslation("Translate")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleMyAccount}>
                     <User2 className="mr-2 h-4 w-4" />
-                    <span>My account</span>
+                    <span>{getTranslation("My account")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>{getTranslation("Log out")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
