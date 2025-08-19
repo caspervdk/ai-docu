@@ -177,11 +177,11 @@ export default function PreviewModal({
           <div className="flex-[1.2] md:flex-[1.2] bg-background md:border-l flex flex-col border-t md:border-t-0 min-h-[40vh] md:min-h-0">
             <ScrollArea className="flex-1 h-full">
               {(lastSavedPair?.output || analysisResult) ? (
-                <div className="p-4 md:p-6 space-y-6 md:space-y-8 pb-6 md:pb-8">
-                  <div className="prose prose-sm max-w-none">
+                <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-8 md:pb-10" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  <div className="prose prose-sm max-w-none space-y-4 md:space-y-6">
                     {aiToolUsed === 'Translate & Localize' ? (
                       <>
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-4 md:p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50 mb-4 md:mb-6">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                             AI Translation & Localization Results
@@ -205,7 +205,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             Processing Status
@@ -218,7 +218,7 @@ export default function PreviewModal({
                       </>
                     ) : aiToolUsed === 'Cross-Doc Linker' ? (
                       <>
-                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
+                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-4 md:p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50 mb-4 md:mb-6">
                           <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                             Cross-Document Analysis Results
@@ -242,7 +242,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             Processing Status
@@ -254,7 +254,7 @@ export default function PreviewModal({
                       </>
                     ) : (
                       <>
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-4 md:p-5 rounded-xl border border-blue-200/50 dark:border-blue-800/50 mb-4 md:mb-6">
                           <h4 className="text-base font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             AI Summary Results
@@ -277,7 +277,7 @@ export default function PreviewModal({
                           )}
                         </div>
                         
-                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
+                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 p-4 md:p-5 rounded-xl border border-emerald-200/50 dark:border-emerald-800/50">
                           <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                             Processing Status
