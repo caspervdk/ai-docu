@@ -122,26 +122,6 @@ export default function PreviewModal({
           
           {/* Output Panel Side - Bigger and Better */}
           <div className="flex-[1.2] bg-background border-l flex flex-col">
-            {/* Header */}
-            <div className="p-6 border-b bg-gradient-to-r from-primary/5 to-primary/10">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-bold text-xl text-foreground mb-2">Testdocument</h3>
-                  <p className="text-sm text-muted-foreground mb-1">Voorbeeldtekst voor PDF-test</p>
-                  <p className="text-xs text-muted-foreground font-medium bg-muted/50 px-2 py-1 rounded-full inline-block">
-                    Datum: 18-08-2025
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-                    <path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h4"/>
-                    <path d="M11 5h4l2 2-2 2h-4V5z"/>
-                    <path d="M19 13h-6v8l6-8z"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto">
               {lastSavedPair?.output ? (
@@ -166,41 +146,6 @@ export default function PreviewModal({
                       <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
                         In dit document staan een titel, een subtitel, een datum en enkele voorbeeldparagrafen. Je 
                         kunt deze tekst later vervangen door dynamische content uit je applicatie.
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-5 rounded-xl border border-amber-200/50 dark:border-amber-800/50">
-                      <h4 className="text-base font-semibold text-amber-900 dark:text-amber-100 mb-4 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                        Validation Checklist
-                      </h4>
-                      <div className="space-y-3">
-                        {[
-                          "Kan ik dit bestand downloaden?",
-                          "Opent de PDF in de browser en op mobiel?",
-                          "Staat de opmaak netjes op één pagina?",
-                          "Wordt de bestandsnaam correct weergegeven?",
-                          "Wordt het document opgeslagen op de juiste plek (bijv. Supabase Storage)?"
-                        ].map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="w-5 h-5 bg-amber-200 dark:bg-amber-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <span className="text-xs font-medium text-amber-800 dark:text-amber-200">{index + 1}</span>
-                            </div>
-                            <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">{item}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 p-5 rounded-xl border border-purple-200/50 dark:border-purple-800/50">
-                      <h4 className="text-base font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                        Production Notes
-                      </h4>
-                      <p className="text-sm text-purple-800 dark:text-purple-200 leading-relaxed">
-                        <strong>Opmerking:</strong> voor een productie-omgeving kun je overwegen om een bibliotheek te gebruiken 
-                        zoals Reportlab of een HTML-naar-PDF oplossing, zodat je styles, tabellen en 
-                        paginanummering kunt toevoegen.
                       </p>
                     </div>
                   </div>
@@ -236,6 +181,14 @@ export default function PreviewModal({
               </svg>
               Open in new tab
             </a>
+          </Button>
+          <Button variant="default" className="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17,21 17,13 7,13 7,21"/>
+              <polyline points="7,3 7,8 15,8"/>
+            </svg>
+            Save
           </Button>
           <Button onClick={onClose} className="flex items-center gap-2">
             Close Preview
