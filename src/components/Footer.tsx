@@ -90,7 +90,7 @@ export default function Footer() {
             <Link to="/" className="inline-flex items-center gap-2" aria-label="DocMind AI home">
               <img src="/lovable-uploads/a7b1bee9-2646-4fcd-81c2-e4eceadd26f0.png" alt="AI Docu logo" className="h-[4.5rem] w-auto" loading="lazy" width={288} height={72} />
             </Link>
-            <img src="/lovable-uploads/ce6dae6b-781f-4945-b88e-e71f17ee12f9.png" alt="Powered by AXIANIC" className="h-8 w-auto" loading="lazy" />
+            <img src="/lovable-uploads/ce6dae6b-781f-4945-b88e-e71f17ee12f9.png" alt="Powered by AXIANIC" className="h-16 w-auto" loading="lazy" />
             <StatusPill />
             <ComplianceBadges />
           </div>
