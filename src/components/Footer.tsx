@@ -280,10 +280,6 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Subprocessors note */}
-        <div className="mt-10 text-sm text-muted-foreground">
-          Subprocessors include OpenAI, Anthropic, AWS (Deepgram), and Vercel. *In observation period for SOC 2 Type II compliance.
-        </div>
 
         <div className="mt-6 border-t" />
 
