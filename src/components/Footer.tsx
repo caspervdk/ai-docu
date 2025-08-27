@@ -77,28 +77,7 @@ function StatusPill() {
 
 function ComplianceBadges() {
   const badgeClass = "bg-secondary text-secondary-foreground border";
-  return (
-    <div className="mt-6 flex flex-wrap items-center gap-2">
-      <Badge className={cn(badgeClass)}>
-        <ShieldCheck className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> SOC 2 Type I
-      </Badge>
-      <Badge className={cn(badgeClass)}>
-        <ShieldCheck className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> SOC 2 Type II
-      </Badge>
-      <Badge className={cn(badgeClass)}>
-        <BadgeCheck className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> ISO 27001
-      </Badge>
-      <Badge className={cn(badgeClass)}>
-        <Lock className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> GDPR
-      </Badge>
-      <Badge className={cn(badgeClass)}>
-        <Scale className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> CCPA Compliant
-      </Badge>
-      <Badge className={cn(badgeClass)}>
-        <Stethoscope className="mr-1 h-3.5 w-3.5" aria-hidden="true" /> HIPAA
-      </Badge>
-    </div>
-  );
+  return null;
 }
 
 export default function Footer() {
